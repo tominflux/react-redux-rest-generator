@@ -1,0 +1,39 @@
+version: "3"
+
+services:
+  app:
+    container_name: rrrg-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    env_file:
+      - ./.env.docker
+    volumes:
+      - ./:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - "3000:3000"
+      - "9229:9229"
+    links:
+      - mongo
+    depends_on:
+      - mongo
+      
+  mongo:
+    container_name: rrrg-mongo
+    image: mongo
+    restart: always
+    volumes:
+      - ./data:/data/db
+    ports:
+      - "27017:27017"
+
+  mongo-admin:
+    container_name: rrrg-mongo-admin
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    links:
+      - mongo

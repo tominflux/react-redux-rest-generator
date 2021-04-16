@@ -32,3 +32,9 @@ yarn-error.log*
 
 # vercel
 .vercel
+
+# Docker env file
+.env.docker
+
+# MongoDB
+/data
