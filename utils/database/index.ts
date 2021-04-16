@@ -38,7 +38,7 @@ const recurConnect: (
     }
 }
 
-export const connect: () => Promise<Db> = async () => {
+export const connectToDatabase: () => Promise<Db> = async () => {
     const url = process.env.DB_URL
     if (!url) {
         throw new Error('No URL of db provided.')

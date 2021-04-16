@@ -47,6 +47,7 @@ type UpdateExampleParams = ExampleCompositeIdentifier
 type UpdateExampleData = ExampleSerialized
 type UpdateExampleResult = {
     status: 204 | 404 | 406
+    message: string
     payload: null
 }
 
@@ -54,5 +55,6 @@ type UpdateExampleResult = {
 type DeleteExampleParams = ExampleCompositeIdentifier
 type DeleteExampleResult = {
     status: 204 | 404 | 406
+    message: string
     payload: null
 }
