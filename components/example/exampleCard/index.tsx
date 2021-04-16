@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, Heading, Text, Stack, useColorModeValue } from '@chakra-ui/react'
+import { Box, Button, Heading, Text, Stack, useColorModeValue } from '@chakra-ui/react'
 import { DateTime } from 'luxon'
 
 type ExampleCardProps = {
@@ -8,8 +8,16 @@ type ExampleCardProps = {
     onDelete: (example: ExampleCompositeIdentifier & ExampleSerialized) => void
 }
 
-const ExampleCard = ({ example }: ExampleCardProps) => {
+const ExampleCard = ({ example, onClick, onDelete }: ExampleCardProps) => {
     const dateView = DateTime.fromISO(example.expiryDate).toLocaleString({ locale: 'en' })
+
+    const handleClick = () => {
+        onClick(example)
+    }
+    const handleDelete = (e) => {
+        e.stopPropagation()
+        onDelete(example)
+    }
 
     return (
         <Box
@@ -20,6 +28,8 @@ const ExampleCard = ({ example }: ExampleCardProps) => {
             rounded={'md'}
             p={6}
             overflow={'hidden'}
+            cursor={'pointer'}
+            onClick={handleClick}
         >
             <Stack>
                 <Heading
@@ -35,6 +45,9 @@ const ExampleCard = ({ example }: ExampleCardProps) => {
                 <Stack direction={'column'} spacing={0} fontSize={'sm'}>
                     <Text color={'gray.500'}>{dateView}</Text>
                 </Stack>
+            </Stack>
+            <Stack mt={6} direction={'row'} spacing={4} align={'center'}>
+                <Button onClick={handleDelete}>Delete</Button>
             </Stack>
         </Box>
     )
