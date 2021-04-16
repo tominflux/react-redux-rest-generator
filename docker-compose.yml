@@ -8,9 +8,7 @@ services:
       dockerfile: Dockerfile
     restart: always
     env_file:
-      - ./.env.docker
-    environment:
-      - DB_URL='${MONGO_DB_URI}'
+      - .env.docker
     volumes:
       - ./:/usr/src/app
       - /usr/src/app/node_modules
