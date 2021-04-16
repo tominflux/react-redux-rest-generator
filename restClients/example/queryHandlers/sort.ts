@@ -6,9 +6,8 @@ const sortExample = (
     params: ReadExampleParams
 ) => {
     const { byExpiryDate } = params
-
     // Sort by expiry date
-    const byExpiryDateEnabled = (byExpiryDate ?? null) !== null
+    const byExpiryDateEnabled = byExpiryDate === true
     if (byExpiryDateEnabled) {
         const timestampA = DateTime.fromISO(exampleA.expiryDate).valueOf()
         const timestampB = DateTime.fromISO(exampleB.expiryDate).valueOf()

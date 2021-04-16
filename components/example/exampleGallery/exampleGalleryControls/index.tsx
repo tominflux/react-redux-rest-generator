@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, Button, Menu, MenuButton, MenuList, MenuItem } from '@chakra-ui/react'
+import { Box, Button, Menu, MenuButton, MenuList, MenuItem, Wrap, WrapItem } from '@chakra-ui/react'
 import { ChevronDownIcon } from '@chakra-ui/icons'
 
 type ExampleGalleryControlsProps = {
@@ -35,33 +35,37 @@ const ExampleGalleryControls = ({ readParams, setReadParams }: ExampleGalleryCon
 
     return (
         <Box borderWidth="1px" borderRadius="lg" p="6">
-            <Box px="2">
-                <Menu>
-                    <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
-                        Filter By
-                    </MenuButton>
-                    <MenuList>
-                        <MenuItem onClick={() => handleFilterSelect('none')}>-None-</MenuItem>
-                        <MenuItem onClick={() => handleFilterSelect('expired')}>
-                            Only Expired
-                        </MenuItem>
-                        <MenuItem onClick={() => handleFilterSelect('notExpired')}>
-                            Only Not Expired
-                        </MenuItem>
-                    </MenuList>
-                </Menu>
-            </Box>
-            <Box px="2">
-                <Menu>
-                    <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
-                        Sort By
-                    </MenuButton>
-                    <MenuList>
-                        <MenuItem onClick={() => handleSortSelect('none')}>-None-</MenuItem>
-                        <MenuItem onClick={() => handleSortSelect('expiry')}>Expiry Date</MenuItem>
-                    </MenuList>
-                </Menu>
-            </Box>
+            <Wrap>
+                <WrapItem>
+                    <Menu>
+                        <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+                            Filter By
+                        </MenuButton>
+                        <MenuList>
+                            <MenuItem onClick={() => handleFilterSelect('none')}>-None-</MenuItem>
+                            <MenuItem onClick={() => handleFilterSelect('expired')}>
+                                Only Expired
+                            </MenuItem>
+                            <MenuItem onClick={() => handleFilterSelect('notExpired')}>
+                                Only Not Expired
+                            </MenuItem>
+                        </MenuList>
+                    </Menu>
+                </WrapItem>
+                <WrapItem>
+                    <Menu>
+                        <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+                            Sort By
+                        </MenuButton>
+                        <MenuList>
+                            <MenuItem onClick={() => handleSortSelect('none')}>-None-</MenuItem>
+                            <MenuItem onClick={() => handleSortSelect('expiry')}>
+                                Expiry Date
+                            </MenuItem>
+                        </MenuList>
+                    </Menu>
+                </WrapItem>
+            </Wrap>
         </Box>
     )
 }

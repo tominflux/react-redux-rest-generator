@@ -18,11 +18,11 @@ const filterExample = (
     const expiredFilterEnabled = (expired ?? null) !== null
     if (expiredFilterEnabled) {
         const expiryTimestamp = DateTime.fromISO(example.expiryDate).valueOf()
-        const currentTimestamp = DateTime.fromISO(example.expiryDate).valueOf()
+        const currentTimestamp = DateTime.now().valueOf()
         const isExpired = expiryTimestamp <= currentTimestamp
         const conditionGetters = {
-            true: () => !isExpired,
-            false: () => isExpired
+            true: () => isExpired,
+            false: () => !isExpired
         }
         const getCondition = conditionGetters[expired.toString()]
         const matchesCondition = getCondition()
