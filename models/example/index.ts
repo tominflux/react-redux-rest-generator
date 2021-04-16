@@ -120,7 +120,8 @@ const read: (db: Db, params: ReadExampleParams) => Promise<ReadExampleResult> = 
         $project: {
             key: '$key',
             title: '$title',
-            description: '$description'
+            description: '$description',
+            expiryDate: '$expiryDate'
         }
     })
 

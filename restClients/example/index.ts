@@ -10,7 +10,7 @@ const exampleRestClient = generateRestClient<
     ReadExampleParams
 >({
     name: 'example',
-    identifiers: ['trainerKey', 'key'],
+    identifiers: ['key'],
     primaryIdentifier: 'key',
     initialFields: {
         title: 'Lorem ipsum',

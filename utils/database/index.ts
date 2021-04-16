@@ -39,7 +39,7 @@ const recurConnect: (
 }
 
 export const connectToDatabase: () => Promise<Db> = async () => {
-    const url = process.env.DB_URL
+    const url = process.env.MONGO_DB_URI
     if (!url) {
         throw new Error('No URL of db provided.')
     }
