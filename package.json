@@ -3,9 +3,10 @@
   "version": "0.1.0",
   "private": false,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start"
+    "build": "npx tsc",
+    "dev:demo": "next dev",
+    "build:demo": "next build",
+    "start:demo": "next start"
   },
   "devDependencies": {
     "@chakra-ui/core": "^0.8.0",

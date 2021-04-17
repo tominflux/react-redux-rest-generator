@@ -48,7 +48,7 @@ export const connectToDatabase: () => Promise<Db> = async () => {
         useUnifiedTopology: true
     })
     const database = connection.db()
-    console.log('Connected to state db.')
+    console.log('Connected to db.')
 
     return database
 }

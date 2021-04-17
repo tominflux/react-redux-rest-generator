@@ -16,6 +16,7 @@
     "esModuleInterop": true,
     "module": "esnext",
     "moduleResolution": "node",
+    "outDir": "./dist",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
@@ -25,9 +26,9 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "desc.d.ts"
-, "jest.setup.js", "features/ui/components/styledSelector/index.test.js", "test/pages/[lang]/demo/index.test.js"  ],
+  ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "dist"
   ]
 }

@@ -8,6 +8,6 @@ RUN yarn install
 
 COPY . .
 
-RUN yarn run build
+RUN yarn run build:demo
 
-CMD ["yarn", "run", "dev"]
+CMD ["yarn", "run", "dev:demo"]
