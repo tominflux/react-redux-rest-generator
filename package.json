@@ -1,13 +1,35 @@
 {
   "name": "react-redux-rest-generator",
   "version": "0.1.0",
-  "private": false,
+  "author": "Tom Chesters",
+  "description": "Generate a reducer and a hook for interacting with a REST API without all the boilerplate.",
+  "keywords": [
+    "react",
+    "redux",
+    "rest",
+    "api",
+    "client",
+    "hook",
+    "resource",
+    "crud"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tominflux/react-redux-rest-generator/issues"
+  },
+  "homepage": "https://github.com/tominflux/react-redux-rest-generator#readme",
+  "main": "./dist/index.js",
   "scripts": {
     "build": "npx tsc",
     "dev:demo": "next dev",
     "build:demo": "next build",
     "start:demo": "next start"
   },
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
   "devDependencies": {
     "@chakra-ui/core": "^0.8.0",
     "@chakra-ui/icons": "^1.0.10",
