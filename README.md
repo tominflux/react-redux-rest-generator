@@ -2,6 +2,8 @@
 
 Generate a reducer and a hook for performing CRUD operations on a REST API without all the boilerplate. 
 
+---
+
 ## Types
 
 A few types need to be defined to ensure your hook is meaningfully typed.
@@ -49,6 +51,8 @@ type ReadExampleParams = {
     byExpiryDate?: boolean
 }
 ```
+
+---
 
 ## Query Functions
 
@@ -98,7 +102,104 @@ const filterExample = (
 
 ### Sort
 
-Resembling the native *Array.sort(...)* function, the R3G sort function is given two resources to compare and read parameters. It uses these to determine if resource A should come before or after resource B in the resulting array.
+Resembling the native *Array.sort(...)* function, the *R3G* sort function is given two resources to compare and read parameters. It uses these to determine if resource A should come before or after resource B in the resulting array.
 
 Returning value **greater than 0** indicates resource B comes after resource A. Returning value **less than 0** indicates resource B combes before resource A. Return value **equal to 0** leaves the resources in the same comparative position in the resulting array.
 
+---
+
+## Configuration
+
+*R3G's* generator function requires a configuration object to generate a reducer and hook for the specified resource. 
+
+```typescript
+const exampleRestClient = generateRestClient<
+    ExampleCompositeIdentifier,
+    ExampleSerialized,
+    ReadExampleParams
+>({
+    name: 'example',
+    identifiers: ['key'],
+    primaryIdentifier: 'key',
+    initialFields: {
+        title: 'Lorem ipsum',
+        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing',
+        expiryDate: DateTime.now().plus({ days: 7 }).toISO()
+    },
+    filter: filterExample,
+    sort: sortExample
+})
+```
+
+### Name
+
+The name of the resource in question.
+
+### Identifiers
+
+A list of all the resource's identifying properties (primary identifier + parent identifiers).
+
+### Primary Identifier
+
+The identifier belonging solely to the resource and not parents.
+
+### Initial Fields
+
+An initialized instance of your generic resource (no identifiers). This will be used as the initial state of a new resource being created.
+
+---
+
+## Conventions and Limitations
+
+The automated nature of REST client generation that *R3G* provides requires that you design your REST API in a highly standardized fashion. 
+
+### API Routes
+
+For sake of simplicity and keeping things systematic and therefore convenient for the REST client generator to interpret, API routes are always identified by singular nouns rather than plurals, and follow a specific pattern. Essentially, only a sub-set of the REST pattern is supported.
+
+**POST** (single) - `/api/parent/[pid]/child`
+
+Requires request body to contain all fields of serialized generic resource object.
+
+```typescript
+// e.g. req.body
+{
+    title: 'Sample Title',
+    description: 'Lorem ipsum dolor sit amet',
+    expiryDate: DateTime.now().plus({ days: 7 }).toISO()
+}
+```
+
+Returns composite identifier.
+```typescript
+// e.g. response.data
+{
+    key: 'abc'
+}
+```
+
+**GET** (many) - `/api/parent/child?[query]`
+
+Requires query string, which is the read params converted into URLSearchParams type.
+
+Returns array of identified resource objects (composite identifier & serialized generic) in property named as the resource name suffixed with '*List*'.
+
+```typescript
+// e.g. response.data
+{
+    exampleList: [
+        {
+            title: 'Sample Title',
+            description: 'Lorem ipsum dolor sit amet',
+            expiryDate: '2021-04-23T22:07:43.796+00:00'
+        },
+        ...
+    ]
+}
+```
+
+**PUT** - (single) - `/api/parent/[pid]/child/[cid]`
+
+
+
+**DELETE** - (single) - `/api/parent/[pid]/child/[cid]`
