@@ -1,33 +1,30 @@
 FROM node:15-alpine
 
-# BUILD LIB
-
-WORKDIR /usr/src/lib
-COPY ./lib/package*.json ./
-COPY ./lib/yarn.lock ./
-
-RUN yarn install
-
-COPY ./lib .
-
-RUN yarn build
-
-RUN yarn link
-
-
-# BUILD APP
-
 WORKDIR /usr/src/app
-COPY ./example/package*.json ./
-COPY ./example/yarn.lock ./
 
-RUN yarn install
+# PREPARE
 
-COPY ./example .
+COPY ./package.json ./
+COPY ./yarn.lock ./
+COPY ./lerna.json ./
 
-RUN yarn link react-redux-rest-generator
-RUN yarn install
+COPY ./packages/r3g-example/package.json  ./packages/r3g-example/
+COPY ./packages/r3g-example/yarn.lock  ./packages/r3g-example/
+
+COPY ./packages/react-redux-rest-generator/package.json ./packages/react-redux-rest-generator/
+COPY ./packages/react-redux-rest-generator/yarn.lock ./packages/react-redux-rest-generator/
+
+RUN npx lerna bootstrap
+
+# BUILD
+
+COPY . .
+
+WORKDIR /usr/src/app/packages/r3g-example
 
 RUN yarn build
+
+# RUN
+
 
 CMD ["yarn", "dev"]
