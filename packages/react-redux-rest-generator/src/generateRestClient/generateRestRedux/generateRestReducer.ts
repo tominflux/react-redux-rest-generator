@@ -1,4 +1,4 @@
-import reduceResourceList from 'utils/reduceResourceList'
+import reduceResourceList from '../../utils/reduceResourceList'
 
 const getInitialState: (
   initialFields: Record<string, unknown>

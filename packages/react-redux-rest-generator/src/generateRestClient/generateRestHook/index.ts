@@ -1,7 +1,7 @@
 import generateRestInterface from './generateRestInterface'
 import { useSelector, useDispatch } from 'react-redux'
 import { useEffect } from 'react'
-import flattenObjectArray from 'utils/flattenObjectArray'
+import flattenObjectArray from '../../utils/flattenObjectArray'
 
 /*
 <

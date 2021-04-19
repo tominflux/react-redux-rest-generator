@@ -8,10 +8,8 @@
         "declaration": true,
         "declarationMap": true,
         "lib": ["esnext", "dom"],
-        "moduleResolution": "node",
-        "module": "esnext",
-        "esModuleInterop": true,
-        "isolatedModules": true,
-        "baseUrl": "./src"
-    }
+        "module": "commonjs",
+    },
+    "include": ["src"],
+    "exclude": ["node_modules"]
 }

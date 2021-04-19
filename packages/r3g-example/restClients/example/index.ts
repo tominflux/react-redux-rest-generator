@@ -1,4 +1,4 @@
-import generateRestClient from 'lib/generateRestClient'
+import generateRestClient from 'react-redux-rest-generator'
 import filterExample from './queryHandlers/filter'
 import sortExample from './queryHandlers/sort'
 import { DateTime } from 'luxon'
