@@ -1,4 +1,4 @@
-import mapObj from 'lib/utils/mapObj'
+import mapObj from 'utils/mapObj'
 
 const actionsTemplate = {
     SET_FIELD: 'SET_FIELD',
