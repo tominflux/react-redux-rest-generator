@@ -21,8 +21,8 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
-    "build": "npx tsc lib/*/**.ts --declaration --outDir ./dist",
-    "prepublish": "npx tsc lib/*/**.ts --declaration --outDir ./dist",
+    "build": "npx tsc lib/*/**.ts --declaration --outDir ./dist --excludeDirectories ./node_modules ./dist",
+    "prepublish": "npx tsc lib/*/**.ts --declaration --outDir ./dist --excludeDirectories ./node_modules ./dist",
     "dev:demo": "next dev",
     "build:demo": "next build",
     "start:demo": "next start"
