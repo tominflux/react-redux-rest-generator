@@ -26,5 +26,4 @@ RUN yarn build
 
 # RUN
 
-
 CMD ["yarn", "dev"]

@@ -4,7 +4,7 @@ import generateRestRedux from './generateRestRedux'
 const generateRestClient = <
   CompositeIdentifierType extends Record<string, string>,
   AnonResourceType extends Record<string, unknown>,
-  ReadParamsType extends RestReadParams
+  ReadParamsType extends Record<string, string | number | boolean>
 >(
   resourceConfig: RestResourceConfig
 ) => {
