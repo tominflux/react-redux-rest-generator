@@ -6,7 +6,7 @@ import getApiUrlSingleAnon from './getApiUrl/getApiUrlSingleAnon'
 
 const generateRestInterface: (
   state: RestReduxState,
-  dispatch: (action: Action) => any,
+  dispatch: (action: Action) => void,
   creators: RestReduxCreatorSet,
   resourceConfig: RestResourceConfig
 ) => RestInterface = (state, dispatch, creators, resourceConfig) => ({
@@ -15,17 +15,17 @@ const generateRestInterface: (
   status: state.status,
   message: state.message,
   create: async (parentsIdentifier?) => {
+    // Ensure parentsIdentifier supplied if needed
+    if (resourceConfig.identifiers.length > 1 && !parentsIdentifier) {
+      throw new Error(
+        `Expected parents identifier for resource that has parents. [${resourceConfig.name}]`
+      )
+    }
+
     try {
       // Inform reducer that new resource is being created
       const fetchAction = creators.fetch('post')
       dispatch(fetchAction)
-
-      // Ensure parentsIdentifier supplied if needed
-      if (resourceConfig.identifiers.length > 1) {
-        throw new Error(
-          `Expected parents identifier for resource that has parents. [${resourceConfig.name}]`
-        )
-      }
 
       // Post new resource
       const url = getApiUrlSingleAnon(parentsIdentifier ?? {}, resourceConfig)
@@ -206,7 +206,7 @@ const generateRestInterface: (
   },
   getMany: (params?) => {
     const filterFn = resourceConfig.filter ?? (() => true)
-    const sortFn = resourceConfig.sort ?? (() => 1)
+    const sortFn = resourceConfig.sort ?? (() => 0)
     return state.resourceList
       .filter((resource) => filterFn(resource, params ?? {}))
       .sort((resourceA, resourceB) =>

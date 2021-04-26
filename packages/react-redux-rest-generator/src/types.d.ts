@@ -70,9 +70,9 @@ type RestReduxCreatorSet = {
       apiPayload: R3GApiPayload | null
     }
   }
-  invalidate: () => { type: string; payload: {} }
-  clearFields: () => { type: string; payload: {} }
-  clearResponse: () => { type: string; payload: {} }
+  invalidate: () => { type: string; payload: Record<string, never> }
+  clearFields: () => { type: string; payload: Record<string, never> }
+  clearResponse: () => { type: string; payload: Record<string, never> }
 }
 
 type RestReduxAction = {
