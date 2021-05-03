@@ -46,11 +46,14 @@ const generateRestInterface: (
 
       return { status, message, compositeIdentifier }
     } catch (err) {
+      // Throw error again if not recognizable API error
+      if (!err.response) {
+        throw err
+      }
+
       // Extract information from API response
-      const status = err.response ? err.response.status : 500
-      const message = err.response
-        ? err.response.data.message
-        : 'Internal Server Error'
+      const status = err.response.status
+      const message = err.response.data.message
 
       // Log both axios error message and API error message
       console.error(err.message)
@@ -95,19 +98,20 @@ const generateRestInterface: (
         resourceList,
       }
     } catch (err) {
-      // status >= 400
+      // Throw error again if not recognizable API error
+      if (!err.response) {
+        throw err
+      }
 
       // Extract information from API response
-      const status = err.response ? err.response.status : 500
-      const message = err.response
-        ? err.response.data.message
-        : 'Internal Server Error'
+      const status = err.response.status
+      const message = err.response.data.message
 
       // Log both axios error message and API error message
       console.error(err.message)
       console.error(message)
 
-      // Inform reducer that erroronous response has been received
+      // Inform reducer that erroneous response has been received
       const responseAction = creators.response(status, message, {
         resourceList: [],
       })
@@ -137,11 +141,14 @@ const generateRestInterface: (
 
       return { status, message, payload: null }
     } catch (err) {
+      // Throw error again if not recognizable API error
+      if (!err.response) {
+        throw err
+      }
+
       // Extract information from API response
-      const status = err.response ? err.response.status : 500
-      const message = err.response
-        ? err.response.data.message
-        : 'Internal Server Error'
+      const status = err.response.status
+      const message = err.response.data.message
 
       // Log both axios error message and API error message
       console.error(err.message)
@@ -174,11 +181,14 @@ const generateRestInterface: (
 
       return { status, message, payload: null }
     } catch (err) {
+      // Throw error again if not recognizable API error
+      if (!err.response) {
+        throw err
+      }
+
       // Extract information from API response
-      const status = err.response ? err.response.status : 500
-      const message = err.response
-        ? err.response.data.message
-        : 'Internal Server Error'
+      const status = err.response.status
+      const message = err.response.data.message
 
       // Log both axios error message and API error message
       console.error(err.message)
