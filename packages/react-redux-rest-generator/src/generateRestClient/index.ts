@@ -1,6 +1,7 @@
 import generateRestHook from './generateRestHook'
 import generateRestRedux from './generateRestRedux'
 
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const generateRestClient = <
   CompositeIdentifierType extends Record<string, string>,
   AnonResourceType extends Record<string, unknown>,
@@ -12,6 +13,7 @@ const generateRestClient = <
   const hook = generateRestHook(redux.creators, resourceConfig)
 
   return {
+    config: resourceConfig,
     reducer: redux.reducer,
     hook: hook as (
       paramsList?: Array<ReadParamsType>,
