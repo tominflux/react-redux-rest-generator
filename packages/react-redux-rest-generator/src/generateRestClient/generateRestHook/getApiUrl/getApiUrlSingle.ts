@@ -39,7 +39,7 @@ const getApiUrlSingle: (
       }
 
       // Get parent's primary identifier key from parent config
-      const primaryIdentifierKey = parentResourceConfig.primaryIdentifier
+      const primaryIdentifierKey = resourceConfig.identifiers[index]
 
       // Ensure parent's primary identifier key is not nullish
       if ((primaryIdentifierKey ?? null) === null) {
