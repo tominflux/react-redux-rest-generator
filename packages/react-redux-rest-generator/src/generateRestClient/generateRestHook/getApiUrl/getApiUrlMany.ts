@@ -11,7 +11,7 @@ const getApiUrlMany: (
   const parents: Array<string> = (composition ?? []).reduce<Array<string>>(
     (previous, parentResourceConfig, index) => {
       // Ensure parent config not nullish
-      const isParentConfigNullish = parentResourceConfig ?? null === null
+      const isParentConfigNullish = (parentResourceConfig ?? null) === null
       if (isParentConfigNullish) {
         throw new Error(
           `Parent resource config [index=${index}] for resource ` +
