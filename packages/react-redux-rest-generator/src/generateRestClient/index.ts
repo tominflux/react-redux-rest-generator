@@ -24,7 +24,7 @@ const generateRestClient = <
       status: number
       message: string
       create: (
-        parentsIdentifier?: CompositeIdentifierType
+        parentsIdentifier?: Record<string, string>
       ) => Promise<{
         status: number
         message: string
