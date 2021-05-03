@@ -23,15 +23,16 @@ const getApiUrlMany: (
   const url = path.join(apiRootPath ?? '/api', ...parents, child)
 
   // Create query-string
-  const urlParams = params
-    ? (mapObj(params, (key, value) => ({
-        key,
-        value:
-          typeof value === 'string'
-            ? value
-            : (value as RestReadParam).toString(),
-      })) as Record<string, string>)
-    : {}
+  const getStringifiedParams = () =>
+    mapObj(params as Record<string, unknown>, (key, value) => {
+      const param = value as RestReadParam
+      if (typeof value === 'string') return { key, value }
+      if (param === null) return { key, value: null }
+      if ((param.toString ?? null) !== null)
+        return { key, value: param.toString() }
+      return { key, value: null }
+    }) as Record<string, string>
+  const urlParams = params ? getStringifiedParams() : {}
   const query = new URLSearchParams(urlParams)
 
   return `${url}?${query}`
