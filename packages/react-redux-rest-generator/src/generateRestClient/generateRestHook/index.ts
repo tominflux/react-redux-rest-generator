@@ -35,17 +35,9 @@ const generateRestHook: (
       if (!paramsList) return
 
       paramsList.forEach((params) => {
-        const hasParams = Object.keys(params).length > 0
-        if (!hasParams) return
-
         _interface.read(params)
       })
     }, [...flattenObjectArray(paramsList ?? []), state.invalidationIndex])
-
-    // Fetch all
-    useEffect(() => {
-      if (!paramsList && !readExplicitly) _interface.read({})
-    }, [readExplicitly, state.invalidationIndex])
 
     return _interface
   }
