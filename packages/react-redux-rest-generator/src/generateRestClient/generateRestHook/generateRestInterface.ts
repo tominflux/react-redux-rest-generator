@@ -217,11 +217,15 @@ const generateRestInterface: (
   getMany: (params?) => {
     const filterFn = resourceConfig.filter ?? (() => true)
     const sortFn = resourceConfig.sort ?? (() => 0)
-    return state.resourceList
+    const postProcessFn =
+      resourceConfig.postProcess ?? ((resourceList) => resourceList)
+    const resourceList = state.resourceList
       .filter((resource, index) => filterFn(resource, params ?? {}, index))
       .sort((resourceA, resourceB) =>
         sortFn(resourceA, resourceB, params ?? {})
       )
+    const processedResourceList = postProcessFn(resourceList, params ?? {})
+    return processedResourceList
   },
   getOne: (compositeIdentifier) =>
     state.resourceList.find((resource) => {

@@ -8,13 +8,17 @@ type RestResourceConfig = {
   filter?: (
     resource: Record<string, unknown>,
     params: RestReadParams,
-    index: number
+    index?: number
   ) => boolean
   sort?: (
     resourceA: Record<string, unknown>,
     resourceB: Record<string, unknown>,
     params: RestReadParams
   ) => number
+  postProcess?: (
+    resourceList: Array<Record<string, unknown>>,
+    params: RestReadParams
+  ) => Array<Record<string, unknown>>
   apiRootPath?: string // /api
   composition?: Array<RestResourceConfig>
   stateName?: string
