@@ -218,7 +218,7 @@ const generateRestInterface: (
     const filterFn = resourceConfig.filter ?? (() => true)
     const sortFn = resourceConfig.sort ?? (() => 0)
     return state.resourceList
-      .filter((resource) => filterFn(resource, params ?? {}))
+      .filter((resource, index) => filterFn(resource, params ?? {}, index))
       .sort((resourceA, resourceB) =>
         sortFn(resourceA, resourceB, params ?? {})
       )

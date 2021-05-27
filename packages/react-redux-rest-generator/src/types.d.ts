@@ -7,7 +7,8 @@ type RestResourceConfig = {
   initialFields: Record<string, unknown>
   filter?: (
     resource: Record<string, unknown>,
-    params: RestReadParams
+    params: RestReadParams,
+    index: number
   ) => boolean
   sort?: (
     resourceA: Record<string, unknown>,
