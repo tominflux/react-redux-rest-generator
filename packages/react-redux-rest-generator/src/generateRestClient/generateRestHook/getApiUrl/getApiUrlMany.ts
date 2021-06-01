@@ -56,6 +56,8 @@ const getApiUrlMany: (
     mapObj(params as Record<string, unknown>, (key, value) => {
       const param = value as RestReadParam
       if (typeof value === 'string') return { key, value }
+      if (typeof value === 'object')
+        return { key, value: JSON.stringify(value) }
       if (param === null) return { key, value: null }
       if ((param.toString ?? null) !== null)
         return { key, value: param.toString() }
