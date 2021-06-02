@@ -1,5 +1,5 @@
-import mapObj from '../../../utils/mapObj'
 import * as path from 'path'
+import getStringifiedParams from './getStringifiedParams'
 
 const getApiUrlMany: (
   resourceConfig: RestResourceConfig,
@@ -52,18 +52,7 @@ const getApiUrlMany: (
   const url = path.join(apiRootPath ?? '/api', ...parents, child)
 
   // Create query-string
-  const getStringifiedParams = () =>
-    mapObj(params as Record<string, unknown>, (key, value) => {
-      const param = value as RestReadParam
-      if (typeof value === 'string') return { key, value }
-      if (typeof value === 'object')
-        return { key, value: JSON.stringify(value) }
-      if (param === null) return { key, value: null }
-      if ((param.toString ?? null) !== null)
-        return { key, value: param.toString() }
-      return { key, value: null }
-    }) as Record<string, string>
-  const urlParams = params ? getStringifiedParams() : {}
+  const urlParams = params ? getStringifiedParams(params) : {}
   const query = new URLSearchParams(urlParams)
 
   return `${url}?${query}`

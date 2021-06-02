@@ -26,7 +26,11 @@ type RestResourceConfig = {
 }
 
 type RestMethod = 'get' | 'post' | 'put' | 'patch' | 'delete'
-type RestReadParam = string | number | boolean
+type RestReadParam =
+  | string
+  | number
+  | boolean
+  | Array<string | number | boolean>
 type RestReadParams = Record<string, RestReadParam>
 
 // Redux
