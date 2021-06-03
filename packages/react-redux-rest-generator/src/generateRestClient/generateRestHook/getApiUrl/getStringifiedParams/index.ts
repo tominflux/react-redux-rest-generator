@@ -6,6 +6,11 @@ const getStringifiedParams: (
   mapObj(params, (key, value) => {
     const param = value as RestReadParam
 
+    // Return null values as is
+    if (param === null) {
+      return { key, value: null }
+    }
+
     // Return string as is
     if (typeof param === 'string') return { key, value: param }
 
