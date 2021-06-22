@@ -15,7 +15,7 @@ const generateRestHook: (
   creators: RestReduxCreatorSet,
   resourceConfig: RestResourceConfig
 ) => RestHook = (creators, resourceConfig) => {
-  const useRestResource: RestHook = (paramsList, readExplicitly) => {
+  const useRestResource: RestHook = (paramsList) => {
     const stateName = resourceConfig.stateName ?? `${resourceConfig.name}State`
     const state = useSelector<
       Record<string | number | symbol, unknown>,
