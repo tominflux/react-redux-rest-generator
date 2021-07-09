@@ -49,6 +49,13 @@ const generateRestReducer: (
       const { status, message, apiPayload } = action.payload
       // Handle read responses
       if (state.method === 'get') {
+        if ((apiPayload ?? null) === null) {
+          console.error('REST Resource Config', resourceConfig)
+          console.error('REST Reducer State', state)
+          throw new Error(
+            'No resource list returned - response payload is null.'
+          )
+        }
         const { resourceList } = apiPayload as R3GApiPayload
         const newResourceList = resourceList ?? []
         const nextResourceList = reduceResourceList(
@@ -67,6 +74,13 @@ const generateRestReducer: (
       }
       // Handle create responses
       if (state.method === 'post') {
+        if ((apiPayload ?? null) === null) {
+          console.error('REST Resource Config', resourceConfig)
+          console.error('REST Reducer State', state)
+          throw new Error(
+            'No composite identifier returned - response payload is null.'
+          )
+        }
         const { compositeIdentifier } = apiPayload as R3GApiPayload
         const nextState: RestReduxState = {
           ...state,
