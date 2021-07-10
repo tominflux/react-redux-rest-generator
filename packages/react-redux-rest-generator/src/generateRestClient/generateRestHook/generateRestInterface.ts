@@ -1,5 +1,5 @@
-import axios from 'axios'
 import { Action } from 'redux'
+import generateUuid from '../../utils/generateUuid'
 import getApiUrlMany from './getApiUrl/getApiUrlMany'
 import getApiUrlSingle from './getApiUrl/getApiUrlSingle'
 import getApiUrlSingleAnon from './getApiUrl/getApiUrlSingleAnon'
@@ -8,8 +8,21 @@ const generateRestInterface: (
   state: RestReduxState,
   dispatch: (action: Action) => void,
   creators: RestReduxCreatorSet,
-  resourceConfig: RestResourceConfig
-) => RestInterface = (state, dispatch, creators, resourceConfig) => {
+  resourceConfig: RestResourceConfig,
+  putCreatePromiseResolver: (resolver: RestCreatePromiseResolver) => void,
+  putReadPromiseResolver: (resolver: RestReadPromiseResolver) => void,
+  putUpdatePromiseResolver: (resolver: RestUpdatePromiseResolver) => void,
+  putDeletePromiseResolver: (resolver: RestDeletePromiseResolver) => void
+) => RestInterface = (
+  state,
+  dispatch,
+  creators,
+  resourceConfig,
+  putCreatePromiseResolver,
+  putReadPromiseResolver,
+  putUpdatePromiseResolver,
+  putDeletePromiseResolver
+) => {
   // Error Checks
   // - Ensure REST-redux state is not nullish
   if ((state ?? null) === null) {
@@ -30,184 +43,112 @@ const generateRestInterface: (
         )
       }
 
-      try {
-        // Inform reducer that new resource is being created
-        const fetchAction = creators.fetch('post')
-        dispatch(fetchAction)
+      // Generate key for queued request
+      const requestKey = generateUuid()
 
-        // Post new resource
-        const url = getApiUrlSingleAnon(parentsIdentifier ?? {}, resourceConfig)
-        const data = { ...state.fields }
-        const response = await axios.post(url, data)
-
-        // Extract information from API response
-        const status = response.status
-        const message = response.data.message
-        const payload = response.data.payload
-        const compositeIdentifier = payload
-
-        // Inform reducer that new resource has successfully been created
-        const responseAction = creators.response(status, message, {
-          compositeIdentifier,
-        })
-        dispatch(responseAction)
-
-        return { status, message, compositeIdentifier }
-      } catch (err) {
-        // Throw error again if not recognizable API error
-        if (!err.response) {
-          throw err
+      // Register request promise
+      const requestPromise = new Promise<{
+        status: number
+        message: string
+        compositeIdentifier: Record<string, unknown> | null
+      }>((resolve) => {
+        const promiseResolver = {
+          key: requestKey,
+          resolve,
         }
+        putCreatePromiseResolver(promiseResolver)
+      })
 
-        // Extract information from API response
-        const status = err.response.status
-        const message = err.response.data.message
+      // Prepare POST request information
+      const url = getApiUrlSingleAnon(parentsIdentifier ?? {}, resourceConfig)
+      const data = { ...state.fields }
+      const body = JSON.stringify(data)
 
-        // Log both axios error message and API error message
-        console.error(err.message)
-        console.error(message)
+      // Queue request
+      const queueAction = creators.queueRequest(requestKey, 'post', url, body)
+      dispatch(queueAction)
 
-        // Inform reducer that new resource failed to be created
-        const responseAction = creators.response(status, message, {})
-        dispatch(responseAction)
-
-        return { status, message, compositeIdentifier: null }
-      }
+      // Return request promise
+      return requestPromise
     },
     read: async (params?: RestReadParams) => {
-      try {
-        // Inform reducer that resources are being fetched
-        const fetchAction = creators.fetch('get')
-        dispatch(fetchAction)
+      // Generate key for queued request
+      const requestKey = generateUuid()
 
-        // Fetch resource from API
-        const url = getApiUrlMany(resourceConfig, params)
-        const response = await axios.get(url)
-
-        // 200 <= status < 300
-
-        // Extract information from API response
-        const status = response.status
-        const message = response.data.message
-        const listName =
-          resourceConfig.apiPayloadResourceListName ??
-          `${resourceConfig.name}List`
-        const { [listName]: resourceList } = response.data.payload
-
-        // Inform reducer that successful response has been received
-        const responseAction = creators.response(status, message, {
-          resourceList,
-        })
-        dispatch(responseAction)
-
-        return {
-          status,
-          message,
-          resourceList,
+      // Register request promise
+      const requestPromise = new Promise<{
+        status: number
+        message: string
+        resourceList: Array<Record<string, unknown>>
+      }>((resolve) => {
+        const promiseResolver = {
+          key: requestKey,
+          resolve,
         }
-      } catch (err) {
-        // Throw error again if not recognizable API error
-        if (!err.response) {
-          throw err
-        }
+        putReadPromiseResolver(promiseResolver)
+      })
 
-        // Extract information from API response
-        const status = err.response.status
-        const message = err.response.data.message
+      // Prepare GET request information
+      const url = getApiUrlMany(resourceConfig, params)
 
-        // Log both axios error message and API error message
-        console.error(err.message)
-        console.error(message)
+      // Queue request
+      const queueAction = creators.queueRequest(requestKey, 'get', url, null)
+      dispatch(queueAction)
 
-        // Inform reducer that erroneous response has been received
-        const responseAction = creators.response(status, message, {
-          resourceList: [],
-        })
-        dispatch(responseAction)
-
-        return { status, message, resourceList: [] }
-      }
+      // Return request promise
+      return requestPromise
     },
     update: async (compositeIdentifier: Record<string, string>) => {
-      try {
-        // Inform reducer that resource is being updated
-        const fetchAction = creators.fetch('put')
-        dispatch(fetchAction)
+      // Generate key for queued request
+      const requestKey = generateUuid()
 
-        // Post new resource
-        const url = getApiUrlSingle(compositeIdentifier, resourceConfig)
-        const data = { ...state.fields }
-        const response = await axios.put(url, data)
-
-        // Extract information form API response
-        const status = response.status
-        const message = response.data.message
-
-        // Inform reducer that resource has successfully been updated
-        const responseAction = creators.response(status, message, null)
-        dispatch(responseAction)
-
-        return { status, message, payload: null }
-      } catch (err) {
-        // Throw error again if not recognizable API error
-        if (!err.response) {
-          throw err
+      // Register request promise
+      const requestPromise = new Promise<{ status: number; message: string }>(
+        (resolve) => {
+          const promiseResolver = {
+            key: requestKey,
+            resolve,
+          }
+          putUpdatePromiseResolver(promiseResolver)
         }
+      )
 
-        // Extract information from API response
-        const status = err.response.status
-        const message = err.response.data.message
+      // Prepare PUT request information
+      const url = getApiUrlSingle(compositeIdentifier, resourceConfig)
+      const data = { ...state.fields }
+      const body = JSON.stringify(data)
 
-        // Log both axios error message and API error message
-        console.error(err.message)
-        console.error(message)
+      // Queue request
+      const queueAction = creators.queueRequest(requestKey, 'put', url, body)
+      dispatch(queueAction)
 
-        // Inform reducer that resource failed to be updated
-        const responseAction = creators.response(status, message, null)
-        dispatch(responseAction)
-
-        return { status, message, payload: null }
-      }
+      // Return request promise
+      return requestPromise
     },
     delete: async (compositeIdentifier: Record<string, string>) => {
-      try {
-        // Inform reducer that resource is being deleted
-        const fetchAction = creators.fetch('delete')
-        dispatch(fetchAction)
+      // Generate key for queued request
+      const requestKey = generateUuid()
 
-        // Delete test
-        const url = getApiUrlSingle(compositeIdentifier, resourceConfig)
-        const response = await axios.delete(url)
-
-        // Extract information from API response
-        const status = response.status
-        const message = response.data.message
-
-        // Inform reducer that resource has successfully been deleted
-        const responseAction = creators.response(status, message, null)
-        dispatch(responseAction)
-
-        return { status, message, payload: null }
-      } catch (err) {
-        // Throw error again if not recognizable API error
-        if (!err.response) {
-          throw err
+      // Register request promise
+      const requestPromise = new Promise<{ status: number; message: string }>(
+        (resolve) => {
+          const promiseResolver = {
+            key: requestKey,
+            resolve,
+          }
+          putDeletePromiseResolver(promiseResolver)
         }
+      )
 
-        // Extract information from API response
-        const status = err.response.status
-        const message = err.response.data.message
+      // Prepare DELETE request information
+      const url = getApiUrlSingle(compositeIdentifier, resourceConfig)
 
-        // Log both axios error message and API error message
-        console.error(err.message)
-        console.error(message)
+      // Queue request
+      const queueAction = creators.queueRequest(requestKey, 'delete', url, null)
+      dispatch(queueAction)
 
-        // Inform reducer that resource failed to be deleted
-        const responseAction = creators.response(status, message, null)
-        dispatch(responseAction)
-
-        return { status, message, payload: null }
-      }
+      // Return request promise
+      return requestPromise
     },
     getField: (name: string) => state.fields[name as string],
     setField: (name: string, value: unknown) => {

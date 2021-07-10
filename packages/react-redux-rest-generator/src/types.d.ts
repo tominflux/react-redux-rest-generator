@@ -25,7 +25,7 @@ type RestResourceConfig = {
   apiPayloadResourceListName?: string
 }
 
-type RestMethod = 'get' | 'post' | 'put' | 'patch' | 'delete'
+type RestMethod = 'get' | 'post' | 'put' | 'delete'
 type RestReadParam =
   | string
   | number
@@ -66,21 +66,21 @@ type RestReduxCreatorSet = {
     key: string,
     method: string,
     url: string,
-    body: string
+    body: string | null
   ) => {
     type: string
     payload: {
       key: string
       method: string
       url: string
-      body: string
+      body: string | null
     }
   }
   fetch: (
     requestKey: string
   ) => {
     type: string
-    payload: Record<string, never>
+    payload: { requestKey: string }
   }
   response: (
     status: number,
@@ -106,7 +106,7 @@ type RestReduxAction = {
 
 type RestRequest = {
   key: string
-  method: string
+  method: RestMethod
   url: string
   body: string
 }
