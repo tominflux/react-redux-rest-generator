@@ -64,11 +64,13 @@ type RestReduxCreatorSet = {
   }
   queueRequest: (
     method: string,
+    url: string,
     body: string
   ) => {
     type: string
     payload: {
       method: string
+      url: string
       body: string
     }
   }
@@ -100,6 +102,7 @@ type RestReduxAction = {
 
 type RestRequest = {
   method: string
+  url: string
   body: string
 }
 
