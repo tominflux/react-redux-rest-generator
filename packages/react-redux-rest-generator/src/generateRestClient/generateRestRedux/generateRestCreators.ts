@@ -5,9 +5,13 @@ const generateRestCreators: (
     type: actions.SET_FIELD,
     payload: { name, value },
   }),
-  fetch: (method) => ({
+  queueRequest: (method, body) => ({
+    type: actions.QUEUE_REQUEST,
+    payload: { method, body },
+  }),
+  fetch: () => ({
     type: actions.FETCH,
-    payload: { method },
+    payload: {},
   }),
   response: (status, message, apiPayload) => ({
     type: actions.RESPONSE,

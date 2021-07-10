@@ -37,6 +37,7 @@ type RestReadParams = Record<string, RestReadParam>
 
 type RestReduxActionIdentifier =
   | 'SET_FIELD'
+  | 'QUEUE_REQUEST'
   | 'FETCH'
   | 'RESPONSE'
   | 'INVALIDATE'
@@ -61,11 +62,19 @@ type RestReduxCreatorSet = {
       value: unknown
     }
   }
-  fetch: (
-    method: RestMethod
+  queueRequest: (
+    method: string,
+    body: string
   ) => {
     type: string
-    payload: { method: RestMethod }
+    payload: {
+      method: string
+      body: string
+    }
+  }
+  fetch: () => {
+    type: string
+    payload: Record<string, never>
   }
   response: (
     status: number,
@@ -89,9 +98,15 @@ type RestReduxAction = {
   payload: Record<string, unknown>
 }
 
+type RestRequest = {
+  method: string
+  body: string
+}
+
 type RestReduxState = {
   fields: Record<string, unknown>
   resourceList: Array<Record<string, unknown>>
+  pendingRequests: Array<RestRequest>
   fetching: boolean
   method: RestMethod | null
   status: number | null

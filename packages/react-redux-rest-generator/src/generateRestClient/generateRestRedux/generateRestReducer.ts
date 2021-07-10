@@ -5,6 +5,7 @@ const getInitialState: (
 ) => RestReduxState = (initialFields) => ({
   fields: initialFields,
   resourceList: [],
+  pendingRequests: [],
   fetching: false,
   method: null,
   status: null,
@@ -33,15 +34,43 @@ const generateRestReducer: (
       }
       return nextState
     }
-    case actions.FETCH: {
-      const { method } = action.payload
+    case actions.QUEUE_REQUEST: {
+      const { method, body } = action.payload
+      const request: RestRequest = {
+        method: method as string,
+        body: body as string,
+      }
+      const pendingRequests = [...state.pendingRequests, request]
       const nextState: RestReduxState = {
         ...state,
+        pendingRequests,
+      }
+      return nextState
+    }
+    case actions.FETCH: {
+      // Ensure a pending request exists
+      if (state.pendingRequests.length === 0) {
+        throw new Error(
+          `${resourceConfig.name} - Pending request queue is empty.`
+        )
+      }
+      // Remove pending request from queue
+      const currentRequest = state.pendingRequests.slice(0, 1)[0]
+      const pendingRequests = state.pendingRequests.slice(1)
+      // Extract data from request
+      const { method } = currentRequest
+      // Set current request flags
+      const requestFlags = {
         fetching: true,
         method: method as RestMethod,
         status: null,
         message: null,
         ...(method !== 'get' ? { compositeIdentifier: null } : {}),
+      }
+      const nextState: RestReduxState = {
+        ...state,
+        pendingRequests,
+        ...requestFlags,
       }
       return nextState
     }
