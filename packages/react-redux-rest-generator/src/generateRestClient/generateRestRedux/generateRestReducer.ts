@@ -38,7 +38,7 @@ const generateRestReducer: (
       const { key, method, url, body } = action.payload
       const request: RestRequest = {
         key: key as string,
-        method: method as string,
+        method: method as RestMethod,
         url: url as string,
         body: body as string,
       }
