@@ -50,15 +50,28 @@ const generateRestReducer: (
       return nextState
     }
     case actions.FETCH: {
+      const { requestKey } = action.payload
       // Ensure a pending request exists
       if (state.pendingRequests.length === 0) {
         throw new Error(
           `${resourceConfig.name} - Pending request queue is empty.`
         )
       }
+      // Find next request in queue
+      const currentRequest =
+        state.pendingRequests.find(
+          (pendingRequest) => pendingRequest.key === requestKey
+        ) ?? null
+      // Ensure request exists
+      if (currentRequest === null) {
+        throw new Error(
+          `${resourceConfig.name} - Queued request with key '${requestKey}' does not exist.`
+        )
+      }
       // Remove pending request from queue
-      const currentRequest = state.pendingRequests.slice(0, 1)[0]
-      const pendingRequests = state.pendingRequests.slice(1)
+      const pendingRequests = state.pendingRequests.filter(
+        (pendingRequest) => pendingRequest.key !== requestKey
+      )
       // Extract data from request
       const { method } = currentRequest
       // Set current request flags

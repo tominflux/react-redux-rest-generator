@@ -9,9 +9,9 @@ const generateRestCreators: (
     type: actions.QUEUE_REQUEST,
     payload: { key, method, url, body },
   }),
-  fetch: () => ({
+  fetch: (requestKey) => ({
     type: actions.FETCH,
-    payload: {},
+    payload: { requestKey },
   }),
   response: (status, message, apiPayload) => ({
     type: actions.RESPONSE,

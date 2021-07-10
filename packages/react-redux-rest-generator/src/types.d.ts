@@ -76,7 +76,9 @@ type RestReduxCreatorSet = {
       body: string
     }
   }
-  fetch: () => {
+  fetch: (
+    requestKey: string
+  ) => {
     type: string
     payload: Record<string, never>
   }
@@ -145,6 +147,23 @@ type RestUpdateResult = {
 type RestDeleteResult = {
   status: number
   message: string
+}
+
+type RestCreatePromiseResolver = {
+  key: string
+  resolve: (result: RestCreateResult) => void
+}
+type RestReadPromiseResolver = {
+  key: string
+  resolve: (result: RestReadResult) => void
+}
+type RestUpdatePromiseResolver = {
+  key: string
+  resolve: (result: RestUpdateResult) => void
+}
+type RestDeletePromiseResolver = {
+  key: string
+  resolve: (result: RestDeleteResult) => void
 }
 
 type RestInterface = {
