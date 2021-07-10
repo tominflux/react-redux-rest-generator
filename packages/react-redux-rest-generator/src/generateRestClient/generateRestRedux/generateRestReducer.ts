@@ -35,8 +35,9 @@ const generateRestReducer: (
       return nextState
     }
     case actions.QUEUE_REQUEST: {
-      const { method, url, body } = action.payload
+      const { key, method, url, body } = action.payload
       const request: RestRequest = {
+        key: key as string,
         method: method as string,
         url: url as string,
         body: body as string,

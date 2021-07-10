@@ -63,12 +63,14 @@ type RestReduxCreatorSet = {
     }
   }
   queueRequest: (
+    key: string,
     method: string,
     url: string,
     body: string
   ) => {
     type: string
     payload: {
+      key: string
       method: string
       url: string
       body: string
@@ -101,6 +103,7 @@ type RestReduxAction = {
 }
 
 type RestRequest = {
+  key: string
   method: string
   url: string
   body: string
@@ -124,6 +127,25 @@ type RestReducer = (
 ) => RestReduxState
 
 // Hook
+
+type RestCreateResult = {
+  status: number
+  message: string
+  compositeIdentifier: Record<string, unknown> | null
+}
+type RestReadResult = {
+  status: number
+  message: string
+  resourceList: Array<Record<string, unknown>>
+}
+type RestUpdateResult = {
+  status: number
+  message: string
+}
+type RestDeleteResult = {
+  status: number
+  message: string
+}
 
 type RestInterface = {
   fetching: boolean
