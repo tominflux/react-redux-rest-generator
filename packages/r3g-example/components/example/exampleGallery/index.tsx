@@ -1,4 +1,4 @@
-import React, { ReactElement, useState } from 'react'
+import React, { ReactElement, useEffect, useState } from 'react'
 import { Box, Grid, GridItem } from '@chakra-ui/react'
 import ExampleCard from '../exampleCard'
 import ExampleGalleryControls from './exampleGalleryControls'
@@ -26,6 +26,16 @@ export default function ExampleGallery({
     const exampleInterface = useExample()
     const { method, fetching } = exampleInterface
     const exampleList = exampleInterface.getMany(readParams)
+
+    // Effects
+    // - Read resources
+    useEffect(() => {
+        const readResources = async () => {
+            const result = await exampleInterface.read(readParams)
+            console.log({ result })
+        }
+        readResources()
+    }, [readParams.key, readParams.title, readParams.expired, readParams.byExpiryDate])
 
     return (
         <>

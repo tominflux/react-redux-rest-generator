@@ -113,7 +113,7 @@ const read: (db: Db, params: ReadExampleParams) => Promise<ReadExampleResult> = 
     // Define augmentation aggregations
     const getSortByExpiryDate = () => ({
         $sort: {
-            $expiryDate: -1
+            expiryDate: -1
         }
     })
     const getProjectFinal = () => ({
@@ -148,6 +148,8 @@ const read: (db: Db, params: ReadExampleParams) => Promise<ReadExampleResult> = 
             aggregation: getProjectFinal
         }
     ])
+
+    console.log(aggregations)
 
     // Aggregate Examples
     const cursor = await db.collection('example').aggregate(aggregations)
