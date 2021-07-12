@@ -53,7 +53,10 @@ const getApiUrlMany: (
 
   // Create query-string
   const urlParams = params ? getStringifiedParams(params) : {}
-  const query = new URLSearchParams(urlParams)
+  const filteredUrlParams = Object.fromEntries(
+    Object.entries(urlParams).filter((entry) => entry[1] !== null)
+  )
+  const query = new URLSearchParams(filteredUrlParams)
 
   return `${url}?${query}`
 }
