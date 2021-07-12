@@ -54,8 +54,7 @@ const generateRestHook: (
     const takeRequestPromiseResolver = (
       key: string,
       resolverList: Array<unknown>,
-      setResolverList: React.Dispatch<React.SetStateAction<Array<unknown>>>,
-      resolverTypeName: 'Create' | 'Read' | 'Update' | 'Delete'
+      setResolverList: React.Dispatch<React.SetStateAction<Array<unknown>>>
     ) => {
       // Find resolver with specified key in list.
       const resolver =
@@ -66,11 +65,7 @@ const generateRestHook: (
           const isMatch = keyedResolver.key === key
           return isMatch
         }) ?? null
-      if (resolver === null) {
-        throw new Error(
-          `No '${resolverTypeName}' promise resolver registered with key '${key}'.`
-        )
-      }
+      if (resolver === null) return null
 
       // Remove resolver with specified key from list.
       setResolverList((prevResolverList) =>
@@ -100,8 +95,7 @@ const generateRestHook: (
         createPromiseResolverList,
         setCreatePromiseResolverList as React.Dispatch<
           React.SetStateAction<Array<unknown>>
-        >,
-        'Create'
+        >
       ) as RestCreatePromiseResolver
     // - Read
     const putReadPromiseResolver = (resolver: RestReadPromiseResolver) =>
@@ -117,8 +111,7 @@ const generateRestHook: (
         readPromiseResolverList,
         setReadPromiseResolverList as React.Dispatch<
           React.SetStateAction<Array<unknown>>
-        >,
-        'Read'
+        >
       ) as RestReadPromiseResolver
     // - Update
     const putUpdatePromiseResolver = (resolver: RestUpdatePromiseResolver) =>
@@ -134,8 +127,7 @@ const generateRestHook: (
         updatePromiseResolverList,
         setUpdatePromiseResolverList as React.Dispatch<
           React.SetStateAction<Array<unknown>>
-        >,
-        'Update'
+        >
       ) as RestUpdatePromiseResolver
     // - Delete
     const putDeletePromiseResolver = (resolver: RestDeletePromiseResolver) =>
@@ -151,8 +143,7 @@ const generateRestHook: (
         deletePromiseResolverList,
         setDeletePromiseResolverList as React.Dispatch<
           React.SetStateAction<Array<unknown>>
-        >,
-        'Delete'
+        >
       ) as RestDeletePromiseResolver
 
     // Interface (methods and flags)
@@ -182,11 +173,7 @@ const generateRestHook: (
 
       const processNextRequest = async () => {
         // Ensure request queue is not empty
-        if (pendingRequests.length === 0) {
-          throw new Error(
-            `${resourceConfig.name} - Pending request queue is empty.`
-          )
-        }
+        if (pendingRequests.length === 0) return
 
         // Get next pending request
         const request = pendingRequests.slice(0, 1)[0]
@@ -200,6 +187,10 @@ const generateRestHook: (
           delete: takeDeletePromiseResolver,
         }
         const requestPromiseResolver = resolverTakers[method](key)
+
+        // If resolver is null, current request does not
+        // belong to this hook... do nothing.
+        if (requestPromiseResolver === null) return
 
         // Inform reducer that request is being handled
         const fetchAction = creators.fetch(key)
@@ -241,7 +232,10 @@ const generateRestHook: (
               break
             }
             case 'get': {
-              const resourceList = payload.resourceList
+              const listName =
+                resourceConfig.apiPayloadResourceListName ??
+                `${resourceConfig.name}List`
+              const { [listName]: resourceList } = payload
 
               // Inform reducer of read response
               const responseAction = creators.response(status, message, {
@@ -254,7 +248,7 @@ const generateRestHook: (
               readPromiseResolver.resolve({
                 status,
                 message,
-                resourceList: [],
+                resourceList,
               })
               break
             }
@@ -342,7 +336,12 @@ const generateRestHook: (
       }
 
       processNextRequest()
-    }, [fetching])
+    }, [
+      fetching,
+      pendingRequests
+        .map((request) => request.key)
+        .reduce((accumulator, current) => `${accumulator}-${current}`, ''),
+    ])
 
     return _interface
   }
