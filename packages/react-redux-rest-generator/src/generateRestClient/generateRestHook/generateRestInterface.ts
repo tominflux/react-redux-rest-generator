@@ -98,7 +98,10 @@ const generateRestInterface: (
       // Return request promise
       return requestPromise
     },
-    update: async (compositeIdentifier: Record<string, string>) => {
+    update: async (
+      compositeIdentifier: Record<string, string>,
+      overrideData?: Record<string, unknown>
+    ) => {
       // Generate key for queued request
       const requestKey = generateUuid()
 
@@ -115,7 +118,7 @@ const generateRestInterface: (
 
       // Prepare PUT request information
       const url = getApiUrlSingle(compositeIdentifier, resourceConfig)
-      const data = { ...state.fields }
+      const data = overrideData ? overrideData : { ...state.fields }
       const body = JSON.stringify(data)
 
       // Queue request

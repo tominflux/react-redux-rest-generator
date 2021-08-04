@@ -38,7 +38,8 @@ const generateRestClient = <
         resourceList: Array<CompositeIdentifierType & AnonResourceType>
       }>
       update: (
-        compositeIdentifier: CompositeIdentifierType
+        compositeIdentifier: CompositeIdentifierType,
+        overrideData?: CompositeIdentifierType & AnonResourceType
       ) => Promise<{ status: number; message: string }>
       delete: (
         compositeIdentifier: CompositeIdentifierType

@@ -186,7 +186,8 @@ type RestInterface = {
     resourceList: Array<Record<string, unknown>>
   }>
   update: (
-    compositeIdentifier: Record<string, string>
+    compositeIdentifier: Record<string, string>,
+    overrideData?: Record<string, unknown>
   ) => Promise<{ status: number; message: string }>
   delete: (
     compositeIdentifier: Record<string, string>
