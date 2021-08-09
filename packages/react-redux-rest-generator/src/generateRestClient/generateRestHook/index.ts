@@ -188,9 +188,22 @@ const generateRestHook: (
         }
         const requestPromiseResolver = resolverTakers[method](key)
 
-        // If resolver is null, current request does not
-        // belong to this hook... do nothing.
-        if (requestPromiseResolver === null) return
+        // Determine if request belongs to this hook.
+        const shouldHandle = requestPromiseResolver !== null
+        if (resourceConfig.verboseLogging)
+          console.log(
+            'R3G - Found Request | ',
+            shouldHandle ? 'Processing...' : 'Skipping.',
+            request
+          )
+
+        // If does not belong, skip.
+        if (!shouldHandle) {
+          return
+        }
+
+        // There is a potential that some requests get stuck
+        // because the hook they belong to no longer exists.
 
         // Inform reducer that request is being handled
         const fetchAction = creators.fetch(key)
@@ -229,6 +242,9 @@ const generateRestHook: (
                 message,
                 compositeIdentifier,
               })
+
+              if (resourceConfig.verboseLogging)
+                console.log('R3G - Request Resolved | ', 'Success', request)
               break
             }
             case 'get': {
@@ -250,6 +266,9 @@ const generateRestHook: (
                 message,
                 resourceList,
               })
+
+              if (resourceConfig.verboseLogging)
+                console.log('R3G - Request Resolved | ', 'Success', request)
               break
             }
             case 'put':
@@ -266,12 +285,16 @@ const generateRestHook: (
                 status,
                 message,
               })
+
+              if (resourceConfig.verboseLogging)
+                console.log('R3G - Request Resolved | ', 'Success', request)
               break
             }
           }
         } catch (err) {
           // Throw error again if not recognizable API error
           if (!err.response) {
+            console.error('Processing R3G request failed for unknown reason.')
             throw err
           }
 
@@ -297,6 +320,9 @@ const generateRestHook: (
                 message,
                 compositeIdentifier: null,
               })
+
+              if (resourceConfig.verboseLogging)
+                console.log('R3G - Request Resolved | ', 'Error', request)
               break
             }
             case 'get': {
@@ -313,6 +339,9 @@ const generateRestHook: (
                 message,
                 resourceList: [],
               })
+
+              if (resourceConfig.verboseLogging)
+                console.log('R3G - Request Resolved | ', 'Error', request)
               break
             }
             case 'put':
@@ -322,13 +351,16 @@ const generateRestHook: (
               dispatch(responseAction)
 
               // Resolve promise
-              const resolver = requestPromiseResolver as
+              const promiseResolver = requestPromiseResolver as
                 | RestUpdatePromiseResolver
                 | RestDeletePromiseResolver
-              resolver.resolve({
+              promiseResolver.resolve({
                 status,
                 message,
               })
+
+              if (resourceConfig.verboseLogging)
+                console.log('R3G - Request Resolved | ', 'Error', request)
               break
             }
           }

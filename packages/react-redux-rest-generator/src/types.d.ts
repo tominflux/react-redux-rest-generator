@@ -23,6 +23,7 @@ type RestResourceConfig = {
   composition?: Array<RestResourceConfig>
   stateName?: string
   apiPayloadResourceListName?: string
+  verboseLogging?: boolean
 }
 
 type RestMethod = 'get' | 'post' | 'put' | 'delete'
