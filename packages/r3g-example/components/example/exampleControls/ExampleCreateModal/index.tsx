@@ -31,6 +31,7 @@ export default function ExampleCreateModal({
     // Events
     const handleCreate = () => {
         create()
+        onClose()
     }
     const handleClose = () => {
         clearFields()

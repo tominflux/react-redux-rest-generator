@@ -26,16 +26,26 @@ export default function ExampleGallery({
     const exampleInterface = useExample()
     const { method, fetching } = exampleInterface
     const exampleList = exampleInterface.getMany(readParams)
+    const didJustCreate = exampleInterface.method === 'post' && exampleInterface.status === 201
+    const didJustUpdate = exampleInterface.method === 'update' && exampleInterface.status === 204
+    const didJustDelete = exampleInterface.method === 'delete' && exampleInterface.status === 204
+    const invalidCache = didJustCreate || didJustUpdate || didJustDelete
+
+    // Actions
+    const readResources = async () => {
+        await exampleInterface.read(readParams)
+    }
 
     // Effects
-    // - Read resources
+    // - Read resources when gallery settings change
     useEffect(() => {
-        const readResources = async () => {
-            const result = await exampleInterface.read(readParams)
-            console.log({ result })
-        }
         readResources()
     }, [readParams.key, readParams.title, readParams.expired, readParams.byExpiryDate])
+    // - Read resources when resource just created, updated or deleted
+    useEffect(() => {
+        if (!invalidCache) return
+        readResources()
+    }, [didJustCreate, didJustUpdate, didJustDelete])
 
     return (
         <>
