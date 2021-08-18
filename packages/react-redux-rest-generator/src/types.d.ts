@@ -39,6 +39,7 @@ type RestReadParams = Record<string, RestReadParam>
 type RestReduxActionIdentifier =
   | 'SET_FIELD'
   | 'QUEUE_REQUEST'
+  | 'CANCEL_REQUEST'
   | 'FETCH'
   | 'RESPONSE'
   | 'INVALIDATE'
@@ -75,6 +76,14 @@ type RestReduxCreatorSet = {
       method: string
       url: string
       body: string | null
+    }
+  }
+  cancelRequest: (
+    key: string
+  ) => {
+    type: string
+    payload: {
+      key: string
     }
   }
   fetch: (
@@ -153,18 +162,22 @@ type RestDeleteResult = {
 type RestCreatePromiseResolver = {
   key: string
   resolve: (result: RestCreateResult) => void
+  reject: (reason: string) => void
 }
 type RestReadPromiseResolver = {
   key: string
   resolve: (result: RestReadResult) => void
+  reject: (reason: string) => void
 }
 type RestUpdatePromiseResolver = {
   key: string
   resolve: (result: RestUpdateResult) => void
+  reject: (reason: string) => void
 }
 type RestDeletePromiseResolver = {
   key: string
   resolve: (result: RestDeleteResult) => void
+  reject: (reason: string) => void
 }
 
 type RestInterface = {

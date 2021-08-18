@@ -51,10 +51,11 @@ const generateRestInterface: (
         status: number
         message: string
         compositeIdentifier: Record<string, unknown> | null
-      }>((resolve) => {
+      }>((resolve, reject) => {
         const promiseResolver = {
           key: requestKey,
           resolve,
+          reject,
         }
         putCreatePromiseResolver(promiseResolver)
       })
@@ -80,10 +81,11 @@ const generateRestInterface: (
         status: number
         message: string
         resourceList: Array<Record<string, unknown>>
-      }>((resolve) => {
+      }>((resolve, reject) => {
         const promiseResolver = {
           key: requestKey,
           resolve,
+          reject,
         }
         putReadPromiseResolver(promiseResolver)
       })
@@ -107,10 +109,11 @@ const generateRestInterface: (
 
       // Register request promise
       const requestPromise = new Promise<{ status: number; message: string }>(
-        (resolve) => {
+        (resolve, reject) => {
           const promiseResolver = {
             key: requestKey,
             resolve,
+            reject,
           }
           putUpdatePromiseResolver(promiseResolver)
         }
@@ -134,10 +137,11 @@ const generateRestInterface: (
 
       // Register request promise
       const requestPromise = new Promise<{ status: number; message: string }>(
-        (resolve) => {
+        (resolve, reject) => {
           const promiseResolver = {
             key: requestKey,
             resolve,
+            reject,
           }
           putDeletePromiseResolver(promiseResolver)
         }

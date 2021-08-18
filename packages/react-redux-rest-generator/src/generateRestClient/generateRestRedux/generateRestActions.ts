@@ -3,6 +3,7 @@ import mapObj from '../../utils/mapObj'
 const actionsTemplate = {
   SET_FIELD: 'SET_FIELD',
   QUEUE_REQUEST: 'QUEUE_REQUEST',
+  CANCEL_REQUEST: 'CANCEL_REQUEST',
   FETCH: 'FETCH',
   RESPONSE: 'RESPONSE',
   INVALIDATE: 'INVALIDATE',

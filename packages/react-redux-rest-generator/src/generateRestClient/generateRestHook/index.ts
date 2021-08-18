@@ -204,10 +204,9 @@ const generateRestHook: (
           console.log(
             'R3G - Found Request | ',
             shouldHandle ? 'Processing...' : 'Skipping.',
-            request,
             {
               hook: hookKey,
-              key,
+              ...request,
               resolverKeys,
             }
           )
@@ -397,7 +396,31 @@ const generateRestHook: (
 
       processNextRequest()
 
-      // return () => {}
+      // Clean up
+      return () => {
+        const resolverList = [
+          ...createPromiseResolverList,
+          ...readPromiseResolverList,
+          ...updatePromiseResolverList,
+          ...deletePromiseResolverList,
+        ]
+
+        // Reject promise resolvers
+        resolverList.forEach((resolver) => {
+          // TODO: Reject promise
+          const { key: requestKey, reject } = resolver
+          reject(
+            `R3G hook ${hookKey} dismounted before request ${requestKey} could be handled.`
+          )
+        })
+
+        // Remove requests from queue
+        const requestKeyList = resolverList.map((resolver) => resolver.key)
+        requestKeyList.forEach((requestKey) => {
+          const cancelAction = creators.cancelRequest(requestKey)
+          dispatch(cancelAction)
+        })
+      }
     }, [
       fetching,
       pendingRequests

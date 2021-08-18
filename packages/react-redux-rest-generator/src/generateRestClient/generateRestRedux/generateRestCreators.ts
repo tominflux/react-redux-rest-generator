@@ -9,6 +9,10 @@ const generateRestCreators: (
     type: actions.QUEUE_REQUEST,
     payload: { key, method, url, body },
   }),
+  cancelRequest: (key) => ({
+    type: actions.CANCEL_REQUEST,
+    payload: { key },
+  }),
   fetch: (requestKey) => ({
     type: actions.FETCH,
     payload: { requestKey },

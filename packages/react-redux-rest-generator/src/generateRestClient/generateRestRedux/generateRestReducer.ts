@@ -49,6 +49,22 @@ const generateRestReducer: (
       }
       return nextState
     }
+    case actions.CANCEL_REQUEST: {
+      const { key } = action.payload
+      const index = state.pendingRequests.findIndex(
+        (request) => request.key === key
+      )
+      if (index === -1) return state
+      const pendingRequests = [
+        ...state.pendingRequests.slice(0, index),
+        ...state.pendingRequests.slice(index + 1),
+      ]
+      const nextState = {
+        ...state,
+        pendingRequests,
+      }
+      return nextState
+    }
     case actions.FETCH: {
       const { requestKey } = action.payload
       // Ensure a pending request exists
