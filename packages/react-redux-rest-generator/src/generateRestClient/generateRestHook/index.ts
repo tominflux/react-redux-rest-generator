@@ -178,10 +178,6 @@ const generateRestHook: (
         // Ensure request queue is not empty
         if (pendingRequests.length === 0) return
 
-        // Get next pending request
-        const request = pendingRequests.slice(0, 1)[0]
-        const { key, method, url, body } = request
-
         // Get the request promise resolver
         const resolverTakers = {
           post: takeCreatePromiseResolver,
@@ -189,44 +185,62 @@ const generateRestHook: (
           put: takeUpdatePromiseResolver,
           delete: takeDeletePromiseResolver,
         }
-        const requestPromiseResolver = resolverTakers[method](key)
 
-        // Determine if request belongs to this hook.
-        const shouldHandle = requestPromiseResolver !== null
-        if (resourceConfig.verboseLogging) {
-          const resolverKeyLists = {
-            post: createPromiseResolverList,
-            get: readPromiseResolverList,
-            put: updatePromiseResolverList,
-            delete: deletePromiseResolverList,
+        // Get next pending request and resolver
+        const findMatchedRequestAndResolver: (
+          index?: number
+        ) => {
+          request: RestRequest
+          resolver:
+            | RestCreatePromiseResolver
+            | RestReadPromiseResolver
+            | RestUpdatePromiseResolver
+            | RestDeletePromiseResolver
+        } | null = (index = 0) => {
+          if (index >= pendingRequests.length) return null
+          const request = pendingRequests[index]
+          const { method, key } = request
+          const requestPromiseResolver = resolverTakers[method](key)
+          if (requestPromiseResolver === null)
+            return findMatchedRequestAndResolver(index + 1)
+          return {
+            request,
+            resolver: requestPromiseResolver,
           }
-          const resolverKeys = resolverKeyLists[method]
-          console.log(
-            'R3G - Found Request | ',
-            shouldHandle ? 'Processing...' : 'Skipping.',
-            {
-              hook: hookKey,
-              ...request,
-              resolverKeys,
-            }
-          )
         }
+        const requestAndResolver = findMatchedRequestAndResolver()
 
         // If does not belong, skip.
-        if (!shouldHandle) {
+        if (requestAndResolver === null) {
+          if (resourceConfig.verboseLogging) {
+            console.log('R3G - Could not find matched request', {
+              hook: hookKey,
+            })
+          }
           return
+        }
+        const { request, resolver } = requestAndResolver
+
+        // Determine if request belongs to this hook.
+        if (resourceConfig.verboseLogging) {
+          console.log('R3G - Processing Request', {
+            hook: hookKey,
+            ...request,
+          })
         }
 
         // There is a potential that some requests get stuck
         // because the hook they belong to no longer exists.
 
         // Inform reducer that request is being handled
+        const { key } = request
         const fetchAction = creators.fetch(key)
         dispatch(fetchAction)
 
         // Attempt to contact API and run operation
         try {
           // Send request to API
+          const { method, url, body } = request
           const response = await axios.request({
             method,
             url,
@@ -251,7 +265,7 @@ const generateRestHook: (
               dispatch(responseAction)
 
               // Resolve promise
-              const createPromiseResolver = requestPromiseResolver as RestCreatePromiseResolver
+              const createPromiseResolver = resolver as RestCreatePromiseResolver
               createPromiseResolver.resolve({
                 status,
                 message,
@@ -259,8 +273,9 @@ const generateRestHook: (
               })
 
               if (resourceConfig.verboseLogging)
-                console.log('R3G - Request Resolved | ', 'Success', request, {
+                console.log('R3G - Request Resolved | ', 'Success', {
                   hook: hookKey,
+                  ...request,
                 })
               break
             }
@@ -277,7 +292,7 @@ const generateRestHook: (
               dispatch(responseAction)
 
               // Resolve promise
-              const readPromiseResolver = requestPromiseResolver as RestReadPromiseResolver
+              const readPromiseResolver = resolver as RestReadPromiseResolver
               readPromiseResolver.resolve({
                 status,
                 message,
@@ -285,8 +300,9 @@ const generateRestHook: (
               })
 
               if (resourceConfig.verboseLogging)
-                console.log('R3G - Request Resolved | ', 'Success', request, {
+                console.log('R3G - Request Resolved | ', 'Success', {
                   hook: hookKey,
+                  ...request,
                 })
               break
             }
@@ -297,17 +313,18 @@ const generateRestHook: (
               dispatch(responseAction)
 
               // Resolve promise
-              const resolver = requestPromiseResolver as
+              const putOrDeleteResolver = resolver as
                 | RestUpdatePromiseResolver
                 | RestDeletePromiseResolver
-              resolver.resolve({
+              putOrDeleteResolver.resolve({
                 status,
                 message,
               })
 
               if (resourceConfig.verboseLogging)
-                console.log('R3G - Request Resolved | ', 'Success', request, {
+                console.log('R3G - Request Resolved | ', 'Success', {
                   hook: hookKey,
+                  ...request,
                 })
               break
             }
@@ -328,6 +345,7 @@ const generateRestHook: (
           console.error(message)
 
           // Dispatch response action & resolve promise
+          const { method } = request
           switch (method) {
             case 'post': {
               // Inform reducer that new resource failed to be created
@@ -335,7 +353,7 @@ const generateRestHook: (
               dispatch(responseAction)
 
               // Resolve promise
-              const createPromiseResolver = requestPromiseResolver as RestCreatePromiseResolver
+              const createPromiseResolver = resolver as RestCreatePromiseResolver
               createPromiseResolver.resolve({
                 status,
                 message,
@@ -343,8 +361,9 @@ const generateRestHook: (
               })
 
               if (resourceConfig.verboseLogging)
-                console.log('R3G - Request Resolved | ', 'Error', request, {
+                console.log('R3G - Request Resolved | ', 'Error', {
                   hook: hookKey,
+                  ...request,
                 })
               break
             }
@@ -356,7 +375,7 @@ const generateRestHook: (
               dispatch(responseAction)
 
               // Resolve promise
-              const readPromiseResolver = requestPromiseResolver as RestReadPromiseResolver
+              const readPromiseResolver = resolver as RestReadPromiseResolver
               readPromiseResolver.resolve({
                 status,
                 message,
@@ -364,8 +383,9 @@ const generateRestHook: (
               })
 
               if (resourceConfig.verboseLogging)
-                console.log('R3G - Request Resolved | ', 'Error', request, {
+                console.log('R3G - Request Resolved | ', 'Error', {
                   hook: hookKey,
+                  ...request,
                 })
               break
             }
@@ -376,7 +396,7 @@ const generateRestHook: (
               dispatch(responseAction)
 
               // Resolve promise
-              const promiseResolver = requestPromiseResolver as
+              const promiseResolver = resolver as
                 | RestUpdatePromiseResolver
                 | RestDeletePromiseResolver
               promiseResolver.resolve({
@@ -385,8 +405,9 @@ const generateRestHook: (
               })
 
               if (resourceConfig.verboseLogging)
-                console.log('R3G - Request Resolved | ', 'Error', request, {
+                console.log('R3G - Request Resolved | ', 'Error', {
                   hook: hookKey,
+                  ...request,
                 })
               break
             }
