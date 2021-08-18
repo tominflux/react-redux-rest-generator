@@ -229,9 +229,6 @@ const generateRestHook: (
           })
         }
 
-        // There is a potential that some requests get stuck
-        // because the hook they belong to no longer exists.
-
         // Inform reducer that request is being handled
         const { key } = request
         const fetchAction = creators.fetch(key)
@@ -425,6 +422,10 @@ const generateRestHook: (
     // - Clean up on dismount
     useEffect(() => {
       return () => {
+        if (resourceConfig.verboseLogging) {
+          console.log('R3G - Hook dismounting', { hook: hookKey })
+        }
+
         const resolverList = [
           ...createPromiseResolverList,
           ...readPromiseResolverList,
@@ -434,7 +435,6 @@ const generateRestHook: (
 
         // Reject promise resolvers
         resolverList.forEach((resolver) => {
-          // TODO: Reject promise
           const { key: requestKey, reject } = resolver
           reject(
             `R3G hook ${hookKey} dismounted before request ${requestKey} could be handled.`
