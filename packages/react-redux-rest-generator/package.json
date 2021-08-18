@@ -1,6 +1,6 @@
 {
     "name": "react-redux-rest-generator",
-    "version": "0.2.6",
+    "version": "0.2.7",
     "author": "Tom Chesters",
     "description": "Generate a reducer and a hook for interacting with a REST API without all the boilerplate.",
     "keywords": [
