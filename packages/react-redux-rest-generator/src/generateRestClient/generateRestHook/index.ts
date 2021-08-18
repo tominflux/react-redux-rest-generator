@@ -190,12 +190,24 @@ const generateRestHook: (
 
         // Determine if request belongs to this hook.
         const shouldHandle = requestPromiseResolver !== null
-        if (resourceConfig.verboseLogging)
+        if (resourceConfig.verboseLogging) {
+          const resolverKeyLists = {
+            post: createPromiseResolverList,
+            get: readPromiseResolverList,
+            put: updatePromiseResolverList,
+            delete: deletePromiseResolverList,
+          }
+          const resolverKeys = resolverKeyLists[method]
           console.log(
             'R3G - Found Request | ',
             shouldHandle ? 'Processing...' : 'Skipping.',
-            request
+            request,
+            {
+              key,
+              resolverKeys,
+            }
           )
+        }
 
         // If does not belong, skip.
         if (!shouldHandle) {
@@ -368,6 +380,8 @@ const generateRestHook: (
       }
 
       processNextRequest()
+
+      return () => {}
     }, [
       fetching,
       pendingRequests
