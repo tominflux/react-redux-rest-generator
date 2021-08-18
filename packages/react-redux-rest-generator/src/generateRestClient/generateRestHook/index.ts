@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useEffect, useState } from 'react'
 import flattenObjectArray from '../../utils/flattenObjectArray'
 import axios from 'axios'
+import generateUuid from '../../utils/generateUuid'
 
 /*
 <
@@ -28,6 +29,8 @@ const generateRestHook: (
     const { fetching, pendingRequests } = state
 
     // State (local)
+    // - Hook Key (for logging/debugging)
+    const [hookKey] = useState(generateUuid())
     // - Request promise resolvers
     const [createPromiseResolverList, setCreatePromiseResolverList] = useState<
       Array<RestCreatePromiseResolver>
@@ -203,6 +206,7 @@ const generateRestHook: (
             shouldHandle ? 'Processing...' : 'Skipping.',
             request,
             {
+              hook: hookKey,
               key,
               resolverKeys,
             }
@@ -256,7 +260,9 @@ const generateRestHook: (
               })
 
               if (resourceConfig.verboseLogging)
-                console.log('R3G - Request Resolved | ', 'Success', request)
+                console.log('R3G - Request Resolved | ', 'Success', request, {
+                  hook: hookKey,
+                })
               break
             }
             case 'get': {
@@ -280,7 +286,9 @@ const generateRestHook: (
               })
 
               if (resourceConfig.verboseLogging)
-                console.log('R3G - Request Resolved | ', 'Success', request)
+                console.log('R3G - Request Resolved | ', 'Success', request, {
+                  hook: hookKey,
+                })
               break
             }
             case 'put':
@@ -299,7 +307,9 @@ const generateRestHook: (
               })
 
               if (resourceConfig.verboseLogging)
-                console.log('R3G - Request Resolved | ', 'Success', request)
+                console.log('R3G - Request Resolved | ', 'Success', request, {
+                  hook: hookKey,
+                })
               break
             }
           }
@@ -334,7 +344,9 @@ const generateRestHook: (
               })
 
               if (resourceConfig.verboseLogging)
-                console.log('R3G - Request Resolved | ', 'Error', request)
+                console.log('R3G - Request Resolved | ', 'Error', request, {
+                  hook: hookKey,
+                })
               break
             }
             case 'get': {
@@ -353,7 +365,9 @@ const generateRestHook: (
               })
 
               if (resourceConfig.verboseLogging)
-                console.log('R3G - Request Resolved | ', 'Error', request)
+                console.log('R3G - Request Resolved | ', 'Error', request, {
+                  hook: hookKey,
+                })
               break
             }
             case 'put':
@@ -372,7 +386,9 @@ const generateRestHook: (
               })
 
               if (resourceConfig.verboseLogging)
-                console.log('R3G - Request Resolved | ', 'Error', request)
+                console.log('R3G - Request Resolved | ', 'Error', request, {
+                  hook: hookKey,
+                })
               break
             }
           }
@@ -381,7 +397,7 @@ const generateRestHook: (
 
       processNextRequest()
 
-      return () => {}
+      // return () => {}
     }, [
       fetching,
       pendingRequests
