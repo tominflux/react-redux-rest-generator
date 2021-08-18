@@ -395,8 +395,14 @@ const generateRestHook: (
       }
 
       processNextRequest()
-
-      // Clean up
+    }, [
+      fetching,
+      pendingRequests
+        .map((request) => request.key)
+        .reduce((accumulator, current) => `${accumulator}-${current}`, ''),
+    ])
+    // - Clean up on dismount
+    useEffect(() => {
       return () => {
         const resolverList = [
           ...createPromiseResolverList,
@@ -421,12 +427,7 @@ const generateRestHook: (
           dispatch(cancelAction)
         })
       }
-    }, [
-      fetching,
-      pendingRequests
-        .map((request) => request.key)
-        .reduce((accumulator, current) => `${accumulator}-${current}`, ''),
-    ])
+    }, [])
 
     return _interface
   }
