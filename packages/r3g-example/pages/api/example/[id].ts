@@ -9,6 +9,7 @@ export default generateApiHandler({
 
         const { status, message, payload } = await ExampleModel.update(db, { key }, { ...example })
 
+        res.setHeader('Access-Control-Allow-Methods', 'PUT')
         res.status(status).json({ message, payload })
     },
     delete: async (req, res, db) => {
@@ -17,6 +18,7 @@ export default generateApiHandler({
 
         const { status, message, payload } = await ExampleModel.delete(db, { key })
 
+        res.setHeader('Access-Control-Allow-Methods', 'DELETE')
         res.status(status).json({ message, payload })
     }
 })

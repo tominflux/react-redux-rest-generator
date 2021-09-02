@@ -7,6 +7,7 @@ export default generateApiHandler({
 
         const { status, message, payload } = await ExampleModel.create(db, createData)
 
+        res.setHeader('Access-Control-Allow-Methods', 'POST')
         res.status(status).json({ message, payload })
     },
     get: async (req, res, db) => {
@@ -14,6 +15,7 @@ export default generateApiHandler({
 
         const { status, message, payload } = await ExampleModel.read(db, readParams)
 
+        res.setHeader('Access-Control-Allow-Methods', 'GET')
         res.status(status).json({ message, payload })
     }
 })
