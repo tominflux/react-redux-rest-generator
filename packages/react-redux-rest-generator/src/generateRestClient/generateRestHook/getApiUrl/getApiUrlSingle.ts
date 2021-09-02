@@ -88,7 +88,7 @@ const getApiUrlSingle: (
   const childId = compositeIdentifier[resourceConfig.primaryIdentifier]
   const child: Array<string> = [resourceConfig.name, childId]
 
-  const trail = path.join(apiRootPath ?? '/api', ...parents, ...child)
+  const trail = path.join(apiRootPath ?? '/api', ...parents, ...child, '/')
 
   return `${trail}`
 }
