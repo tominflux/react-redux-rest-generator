@@ -242,7 +242,9 @@ const generateRestHook: (
             method,
             url,
             data: body,
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+              'Content-Type': 'application/json',
+            },
           })
 
           // Extract information from API response
