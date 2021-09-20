@@ -2,7 +2,7 @@ import generateRestInterface from './generateRestInterface'
 import { useSelector, useDispatch } from 'react-redux'
 import { useEffect, useState } from 'react'
 import flattenObjectArray from '../../utils/flattenObjectArray'
-import axios from 'axios'
+import axios, { AxiosError } from 'axios'
 import generateUuid from '../../utils/generateUuid'
 
 /*
@@ -329,18 +329,20 @@ const generateRestHook: (
             }
           }
         } catch (err) {
+          const axiosErr = err as AxiosError
+
           // Throw error again if not recognizable API error
-          if (!err.response) {
+          if (!axiosErr.isAxiosError || !axiosErr.response) {
             console.error('Processing R3G request failed for unknown reason.')
             throw err
           }
 
           // Extract information from API response
-          const status = err.response.status
-          const message = err.response.data.message
+          const status = axiosErr.response.status
+          const message = axiosErr.response.data.message
 
           // Log both axios error message and API error message
-          console.error(err.message)
+          console.error(axiosErr.message)
           console.error(message)
 
           // Dispatch response action & resolve promise
