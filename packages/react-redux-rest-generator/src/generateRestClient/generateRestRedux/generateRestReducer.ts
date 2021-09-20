@@ -1,18 +1,5 @@
 import reduceResourceList from '../../utils/reduceResourceList'
-
-const getInitialState: (
-  initialFields: Record<string, unknown>
-) => RestReduxState = (initialFields) => ({
-  fields: initialFields,
-  resourceList: [],
-  pendingRequests: [],
-  fetching: false,
-  method: null,
-  status: null,
-  message: null,
-  invalidationIndex: 0,
-  compositeIdentifier: null,
-})
+import getInitialState from './getInitialState'
 
 const generateRestReducer: (
   actions: RestReduxActionSet,

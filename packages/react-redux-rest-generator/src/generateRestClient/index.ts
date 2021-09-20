@@ -1,5 +1,6 @@
 import generateRestHook from './generateRestHook'
 import generateRestRedux from './generateRestRedux'
+import { default as getGenericInitialState } from './generateRestRedux/getInitialState'
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const generateRestClient = <
@@ -11,6 +12,8 @@ const generateRestClient = <
 ) => {
   const redux = generateRestRedux(resourceConfig)
   const hook = generateRestHook(redux.creators, resourceConfig)
+  const getInitialState = () =>
+    getGenericInitialState(resourceConfig.initialFields)
 
   return {
     config: resourceConfig,
@@ -56,6 +59,7 @@ const generateRestClient = <
       ) => CompositeIdentifierType & AnonResourceType
       invalidate: () => void
     },
+    getInitialState,
   }
 }
 
