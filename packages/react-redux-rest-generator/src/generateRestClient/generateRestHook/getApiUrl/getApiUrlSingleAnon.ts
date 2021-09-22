@@ -1,9 +1,12 @@
 import * as path from 'path'
 
-const getApiUrlSingleAnon: (
+const getApiUrlSingleAnon: RestSingleAnonApiUrlGetter = <
+  AnonResourceType,
+  ReadParamsType
+>(
   parentsIdentifier: Record<string, string>,
-  resourceConfig: RestResourceConfig
-) => string = (parentsIdentifier, resourceConfig) => {
+  resourceConfig: RestResourceConfig<AnonResourceType, ReadParamsType>
+) => {
   const { apiRootPath, composition } = resourceConfig
 
   // Build parents resource segment of route ('.../parent1/abc/parent2/abc/...')

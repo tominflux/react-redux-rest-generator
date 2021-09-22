@@ -1,7 +1,9 @@
 /**
- * Flattens an object array into an array of values.
+ * Flattens an array of objects of primitives into an array of primitives.
  */
-const flattenObjectArray = (objArray: Array<Record<string, unknown>>) =>
+const flattenPrimitiveObjectArray: (
+  objArray: Array<Record<string, string | number | boolean | null>>
+) => Array<string | number | boolean | null> = (objArray) =>
   objArray.map((obj) => Object.values(obj)).flat(1)
 
-export default flattenObjectArray
+export default flattenPrimitiveObjectArray

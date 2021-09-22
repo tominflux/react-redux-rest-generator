@@ -1,29 +1,36 @@
 import generateRestInterface from './generateRestInterface'
 import { useSelector, useDispatch } from 'react-redux'
 import { useEffect, useState } from 'react'
-import flattenObjectArray from '../../utils/flattenObjectArray'
+import flattenPrimitiveObjectArray from '../../utils/flattenObjectArray'
 import axios, { AxiosError } from 'axios'
 import generateUuid from '../../utils/generateUuid'
+import concatPrimitivesToString from '../../utils/concatMisc'
 
-/*
-<
-    CompositeIdentifierType extends Record<string, unknown>,
-    AnonResourceType extends Record<string, unknown>,
-    ReadParamsType extends Record<string, unknown>
->
-*/
-
-const generateRestHook: (
-  creators: RestReduxCreatorSet,
-  resourceConfig: RestResourceConfig
-) => RestHook = (creators, resourceConfig) => {
-  const useRestResource: RestHook = (paramsList) => {
+const generateRestHook: RestHookGenerator = <
+  CompositeIdentifierType,
+  AnonResourceType,
+  ReadParamsType
+>(
+  creators: RestReduxCreatorSet<CompositeIdentifierType, AnonResourceType>,
+  resourceConfig: RestResourceConfig<AnonResourceType, ReadParamsType>
+) => {
+  const useRestResource: RestHook<
+    CompositeIdentifierType,
+    AnonResourceType,
+    ReadParamsType
+  > = (paramsList?: Array<ReadParamsType>, readExplicitly?: boolean) => {
     // Redux
     const stateName = resourceConfig.stateName ?? `${resourceConfig.name}State`
     const state = useSelector<
       Record<string | number | symbol, unknown>,
-      RestReduxState
-    >((state) => state[stateName] as RestReduxState)
+      RestReduxState<CompositeIdentifierType, AnonResourceType>
+    >(
+      (state) =>
+        state[stateName] as RestReduxState<
+          CompositeIdentifierType,
+          AnonResourceType
+        >
+    )
     const dispatch = useDispatch()
     // - Sub-selections
     const { fetching, pendingRequests } = state
@@ -33,10 +40,10 @@ const generateRestHook: (
     const [hookKey] = useState(generateUuid())
     // - Request promise resolvers
     const [createPromiseResolverList, setCreatePromiseResolverList] = useState<
-      Array<RestCreatePromiseResolver>
+      Array<RestCreatePromiseResolver<CompositeIdentifierType>>
     >([])
     const [readPromiseResolverList, setReadPromiseResolverList] = useState<
-      Array<RestReadPromiseResolver>
+      Array<RestReadPromiseResolver<AnonResourceType>>
     >([])
     const [updatePromiseResolverList, setUpdatePromiseResolverList] = useState<
       Array<RestUpdatePromiseResolver>
@@ -85,7 +92,9 @@ const generateRestHook: (
       return resolver
     }
     // - Create
-    const putCreatePromiseResolver = (resolver: RestCreatePromiseResolver) =>
+    const putCreatePromiseResolver = (
+      resolver: RestCreatePromiseResolver<CompositeIdentifierType>
+    ) =>
       putRequestPromiseResolver(
         resolver,
         setCreatePromiseResolverList as React.Dispatch<
@@ -99,9 +108,11 @@ const generateRestHook: (
         setCreatePromiseResolverList as React.Dispatch<
           React.SetStateAction<Array<unknown>>
         >
-      ) as RestCreatePromiseResolver
+      ) as RestCreatePromiseResolver<CompositeIdentifierType>
     // - Read
-    const putReadPromiseResolver = (resolver: RestReadPromiseResolver) =>
+    const putReadPromiseResolver = (
+      resolver: RestReadPromiseResolver<AnonResourceType>
+    ) =>
       putRequestPromiseResolver(
         resolver,
         setReadPromiseResolverList as React.Dispatch<
@@ -115,7 +126,7 @@ const generateRestHook: (
         setReadPromiseResolverList as React.Dispatch<
           React.SetStateAction<Array<unknown>>
         >
-      ) as RestReadPromiseResolver
+      ) as RestReadPromiseResolver<AnonResourceType>
     // - Update
     const putUpdatePromiseResolver = (resolver: RestUpdatePromiseResolver) =>
       putRequestPromiseResolver(
@@ -153,7 +164,10 @@ const generateRestHook: (
     const _interface = generateRestInterface(
       state,
       dispatch,
-      creators as RestReduxCreatorSet,
+      creators as RestReduxCreatorSet<
+        CompositeIdentifierType,
+        AnonResourceType
+      >,
       resourceConfig,
       putCreatePromiseResolver,
       putReadPromiseResolver,
@@ -163,13 +177,22 @@ const generateRestHook: (
 
     // Effects
     // - Fetch resources specified in params list
+    const getParamsListDep: () => string | null = () => {
+      const paramsListNullish = (paramsList ?? null) === null
+      if (paramsListNullish) return null
+      const flatParams: Array<RestPrimitive> = flattenPrimitiveObjectArray(
+        (paramsList as Array<unknown>) as Array<Record<string, RestPrimitive>>
+      )
+      const depString = concatPrimitivesToString(flatParams)
+      return depString
+    }
     useEffect(() => {
       if (!paramsList) return
 
       paramsList.forEach((params) => {
         _interface.read(params)
       })
-    }, [...flattenObjectArray(paramsList ?? []), state.invalidationIndex])
+    }, [getParamsListDep(), state.invalidationIndex])
     // - Process request queue
     useEffect(() => {
       if (fetching) return
@@ -192,8 +215,8 @@ const generateRestHook: (
         ) => {
           request: RestRequest
           resolver:
-            | RestCreatePromiseResolver
-            | RestReadPromiseResolver
+            | RestCreatePromiseResolver<CompositeIdentifierType>
+            | RestReadPromiseResolver<AnonResourceType>
             | RestUpdatePromiseResolver
             | RestDeletePromiseResolver
         } | null = (index = 0) => {
@@ -264,7 +287,7 @@ const generateRestHook: (
               dispatch(responseAction)
 
               // Resolve promise
-              const createPromiseResolver = resolver as RestCreatePromiseResolver
+              const createPromiseResolver = resolver as RestCreatePromiseResolver<CompositeIdentifierType>
               createPromiseResolver.resolve({
                 status,
                 message,
@@ -291,7 +314,7 @@ const generateRestHook: (
               dispatch(responseAction)
 
               // Resolve promise
-              const readPromiseResolver = resolver as RestReadPromiseResolver
+              const readPromiseResolver = resolver as RestReadPromiseResolver<AnonResourceType>
               readPromiseResolver.resolve({
                 status,
                 message,
@@ -354,7 +377,7 @@ const generateRestHook: (
               dispatch(responseAction)
 
               // Resolve promise
-              const createPromiseResolver = resolver as RestCreatePromiseResolver
+              const createPromiseResolver = resolver as RestCreatePromiseResolver<CompositeIdentifierType>
               createPromiseResolver.resolve({
                 status,
                 message,
@@ -376,7 +399,7 @@ const generateRestHook: (
               dispatch(responseAction)
 
               // Resolve promise
-              const readPromiseResolver = resolver as RestReadPromiseResolver
+              const readPromiseResolver = resolver as RestReadPromiseResolver<AnonResourceType>
               readPromiseResolver.resolve({
                 status,
                 message,

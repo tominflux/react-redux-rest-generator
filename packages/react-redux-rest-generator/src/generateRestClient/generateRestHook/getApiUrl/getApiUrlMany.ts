@@ -1,10 +1,10 @@
 import * as path from 'path'
 import getStringifiedParams from './getStringifiedParams'
 
-const getApiUrlMany: (
-  resourceConfig: RestResourceConfig,
-  params?: Record<string, unknown>
-) => string = (resourceConfig, params) => {
+const getApiUrlMany: RestManyApiUrlGetter = <AnonResourceType, ReadParamsType>(
+  resourceConfig: RestResourceConfig<AnonResourceType, ReadParamsType>,
+  params?: ReadParamsType
+) => {
   const { apiRootPath, composition } = resourceConfig
 
   // Build parents resource segment of route ('.../parent1/parent2/...')
@@ -52,7 +52,9 @@ const getApiUrlMany: (
   const url = path.join(apiRootPath ?? '/api', ...parents, child)
 
   // Create query-string
-  const urlParams = params ? getStringifiedParams(params) : {}
+  const urlParams = params
+    ? getStringifiedParams(params as Record<string, unknown>)
+    : {}
   const filteredUrlParams = Object.fromEntries(
     Object.entries(urlParams).filter((entry) => entry[1] !== null)
   )

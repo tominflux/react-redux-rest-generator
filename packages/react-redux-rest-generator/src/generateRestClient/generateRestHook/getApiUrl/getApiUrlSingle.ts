@@ -1,9 +1,13 @@
 import * as path from 'path'
 
-const getApiUrlSingle: (
-  compositeIdentifier: Record<string, string>,
-  resourceConfig: RestResourceConfig
-) => string = (compositeIdentifier, resourceConfig) => {
+const getApiUrlSingle: RestSingleApiUrlGetter = <
+  CompositeIdentifierType,
+  AnonResourceType,
+  ReadParamsType
+>(
+  compositeIdentifier: CompositeIdentifierType,
+  resourceConfig: RestResourceConfig<AnonResourceType, ReadParamsType>
+) => {
   const { apiRootPath, composition } = resourceConfig
 
   // Build parents resource segment of route ('.../parent1/abc/parent2/abc/...')
@@ -59,7 +63,9 @@ const getApiUrlSingle: (
       }
 
       // Get parent's primary identifier from composite identifier
-      const id = compositeIdentifier[primaryIdentifierKey]
+      const id = ((compositeIdentifier as unknown) as Record<string, string>)[
+        primaryIdentifierKey
+      ]
 
       // Ensure parent's primary identifier is not nullish
       if ((id ?? null) === null) {
@@ -85,7 +91,9 @@ const getApiUrlSingle: (
 
   // TODO: camel to snake case
   // Build child resource segment of route ('.../child/abc123')
-  const childId = compositeIdentifier[resourceConfig.primaryIdentifier]
+  const childId = ((compositeIdentifier as unknown) as Record<string, string>)[
+    resourceConfig.primaryIdentifier
+  ]
   const child: Array<string> = [resourceConfig.name, childId]
 
   const trail = path.join(apiRootPath ?? '/api', ...parents, ...child)

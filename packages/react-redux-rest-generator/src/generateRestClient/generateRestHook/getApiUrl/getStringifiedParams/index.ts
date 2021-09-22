@@ -4,7 +4,7 @@ const getStringifiedParams: (
   params: Record<string, unknown>
 ) => Record<string, string> = (params) =>
   mapObj(params, (key, value) => {
-    const param = value as RestReadParam
+    const param = value as unknown
 
     // Return null values as is
     if (param === null) {
@@ -40,8 +40,10 @@ const getStringifiedParams: (
     }
 
     // Attempt to use toString on any other type
-    if ((param.toString ?? null) !== null) {
-      return { key, value: param.toString() }
+    const potentiallyStringable = param as { toString?: () => string }
+    if ((potentiallyStringable.toString ?? null) !== null) {
+      const stringable = potentiallyStringable as { toString: () => string }
+      return { key, value: stringable.toString() }
     }
 
     throw new Error(

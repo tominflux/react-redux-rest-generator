@@ -11,9 +11,7 @@ const actionsTemplate = {
   CLEAR_RESPONSE: 'CLEAR_RESPONSE',
 }
 
-const generateRestActions: (
-  resourceConfig: RestResourceConfig
-) => RestReduxActionSet = (resourceConfig) => {
+const generateRestActions: RestReduxActionsGenerator = (resourceConfig) => {
   const { name: resourceName } = resourceConfig
 
   const actions = mapObj(actionsTemplate, (key, value) => ({

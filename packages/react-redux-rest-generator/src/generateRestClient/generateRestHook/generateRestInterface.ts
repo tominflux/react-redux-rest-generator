@@ -1,27 +1,25 @@
-import { Action } from 'redux'
 import generateUuid from '../../utils/generateUuid'
 import getApiUrlMany from './getApiUrl/getApiUrlMany'
 import getApiUrlSingle from './getApiUrl/getApiUrlSingle'
 import getApiUrlSingleAnon from './getApiUrl/getApiUrlSingleAnon'
 
-const generateRestInterface: (
-  state: RestReduxState,
-  dispatch: (action: Action) => void,
-  creators: RestReduxCreatorSet,
-  resourceConfig: RestResourceConfig,
-  putCreatePromiseResolver: (resolver: RestCreatePromiseResolver) => void,
-  putReadPromiseResolver: (resolver: RestReadPromiseResolver) => void,
+const generateRestInterface: RestInterfaceGenerator = <
+  CompositeIdentifierType,
+  AnonResourceType,
+  ReadParamsType
+>(
+  state: RestReduxState<CompositeIdentifierType, AnonResourceType>,
+  dispatch: (action: { type: string; payload: unknown }) => void,
+  creators: RestReduxCreatorSet<CompositeIdentifierType, AnonResourceType>,
+  resourceConfig: RestResourceConfig<AnonResourceType, ReadParamsType>,
+  putCreatePromiseResolver: (
+    resolver: RestCreatePromiseResolver<CompositeIdentifierType>
+  ) => void,
+  putReadPromiseResolver: (
+    resolver: RestReadPromiseResolver<AnonResourceType>
+  ) => void,
   putUpdatePromiseResolver: (resolver: RestUpdatePromiseResolver) => void,
   putDeletePromiseResolver: (resolver: RestDeletePromiseResolver) => void
-) => RestInterface = (
-  state,
-  dispatch,
-  creators,
-  resourceConfig,
-  putCreatePromiseResolver,
-  putReadPromiseResolver,
-  putUpdatePromiseResolver,
-  putDeletePromiseResolver
 ) => {
   // Error Checks
   // - Ensure REST-redux state is not nullish
@@ -50,7 +48,7 @@ const generateRestInterface: (
       const requestPromise = new Promise<{
         status: number
         message: string
-        compositeIdentifier: Record<string, unknown> | null
+        compositeIdentifier: CompositeIdentifierType | null
       }>((resolve, reject) => {
         const promiseResolver = {
           key: requestKey,
@@ -61,7 +59,10 @@ const generateRestInterface: (
       })
 
       // Prepare POST request information
-      const url = getApiUrlSingleAnon(parentsIdentifier ?? {}, resourceConfig)
+      const url = getApiUrlSingleAnon<AnonResourceType, ReadParamsType>(
+        parentsIdentifier ?? {},
+        resourceConfig
+      )
       const data = { ...state.fields }
       const body = JSON.stringify(data)
 
@@ -72,7 +73,7 @@ const generateRestInterface: (
       // Return request promise
       return requestPromise
     },
-    read: async (params?: RestReadParams) => {
+    read: async (params?: ReadParamsType) => {
       // Generate key for queued request
       const requestKey = generateUuid()
 
@@ -80,7 +81,7 @@ const generateRestInterface: (
       const requestPromise = new Promise<{
         status: number
         message: string
-        resourceList: Array<Record<string, unknown>>
+        resourceList: Array<AnonResourceType>
       }>((resolve, reject) => {
         const promiseResolver = {
           key: requestKey,
@@ -91,7 +92,10 @@ const generateRestInterface: (
       })
 
       // Prepare GET request information
-      const url = getApiUrlMany(resourceConfig, params)
+      const url = getApiUrlMany<AnonResourceType, ReadParamsType>(
+        resourceConfig,
+        params
+      )
 
       // Queue request
       const queueAction = creators.queueRequest(requestKey, 'get', url, null)
@@ -101,8 +105,8 @@ const generateRestInterface: (
       return requestPromise
     },
     update: async (
-      compositeIdentifier: Record<string, string>,
-      overrideData?: Record<string, unknown>
+      compositeIdentifier: CompositeIdentifierType,
+      overrideData?: AnonResourceType
     ) => {
       // Generate key for queued request
       const requestKey = generateUuid()
@@ -120,7 +124,11 @@ const generateRestInterface: (
       )
 
       // Prepare PUT request information
-      const url = getApiUrlSingle(compositeIdentifier, resourceConfig)
+      const url = getApiUrlSingle<
+        CompositeIdentifierType,
+        AnonResourceType,
+        ReadParamsType
+      >(compositeIdentifier, resourceConfig)
       const data = overrideData ? overrideData : { ...state.fields }
       const body = JSON.stringify(data)
 
@@ -131,7 +139,7 @@ const generateRestInterface: (
       // Return request promise
       return requestPromise
     },
-    delete: async (compositeIdentifier: Record<string, string>) => {
+    delete: async (compositeIdentifier: CompositeIdentifierType) => {
       // Generate key for queued request
       const requestKey = generateUuid()
 
@@ -157,8 +165,8 @@ const generateRestInterface: (
       // Return request promise
       return requestPromise
     },
-    getField: (name: string) => state.fields[name as string],
-    setField: (name: string, value: unknown) => {
+    getField: (name: keyof AnonResourceType) => state.fields[name],
+    setField: (name: keyof AnonResourceType, value: unknown) => {
       const action = creators.setField(name, value)
       dispatch(action)
     },
@@ -170,7 +178,7 @@ const generateRestInterface: (
       const action = creators.clearResponse()
       dispatch(action)
     },
-    getMany: (params?: RestReadParams) => {
+    getMany: (params?: ReadParamsType) => {
       const filterFn = resourceConfig.filter ?? (() => true)
       const sortFn = resourceConfig.sort ?? (() => 0)
       const postProcessFn =
@@ -183,12 +191,15 @@ const generateRestInterface: (
       const processedResourceList = postProcessFn(resourceList, params ?? {})
       return processedResourceList
     },
-    getOne: (compositeIdentifier: Record<string, string>) =>
+    getOne: (compositeIdentifier: CompositeIdentifierType) =>
       state.resourceList.find((resource) => {
         const doIdentifiersMatch = resourceConfig.identifiers
           .map(
             (identifier) =>
-              compositeIdentifier[identifier] === resource[identifier]
+              ((compositeIdentifier as unknown) as Record<string, string>)[
+                identifier
+              ] ===
+              ((resource as unknown) as Record<string, string>)[identifier]
           )
           .reduce(
             (doPreviousAllMatch, doesCurrentMatch) =>

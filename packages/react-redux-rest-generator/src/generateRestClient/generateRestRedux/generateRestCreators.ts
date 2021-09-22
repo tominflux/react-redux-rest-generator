@@ -1,6 +1,6 @@
-const generateRestCreators: (
+const generateRestCreators: RestReduxCreatorsGenerator = (
   actions: RestReduxActionSet
-) => RestReduxCreatorSet = (actions) => ({
+) => ({
   setField: (name, value) => ({
     type: actions.SET_FIELD,
     payload: { name, value },
