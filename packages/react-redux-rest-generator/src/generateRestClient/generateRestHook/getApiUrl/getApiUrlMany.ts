@@ -1,4 +1,5 @@
 import * as path from 'path'
+import { RestManyApiUrlGetter, RestResourceConfig } from '../../../types'
 import getStringifiedParams from './getStringifiedParams'
 
 const getApiUrlMany: RestManyApiUrlGetter = <AnonResourceType, ReadParamsType>(

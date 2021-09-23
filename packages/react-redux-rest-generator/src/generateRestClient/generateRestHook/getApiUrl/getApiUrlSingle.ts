@@ -1,4 +1,5 @@
 import * as path from 'path'
+import { RestSingleApiUrlGetter, RestResourceConfig } from '../../../types'
 
 const getApiUrlSingle: RestSingleApiUrlGetter = <
   CompositeIdentifierType,

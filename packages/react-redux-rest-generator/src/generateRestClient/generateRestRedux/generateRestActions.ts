@@ -1,3 +1,4 @@
+import { RestReduxActionsGenerator, RestReduxActionSet } from '../../types'
 import mapObj from '../../utils/mapObj'
 
 const actionsTemplate = {

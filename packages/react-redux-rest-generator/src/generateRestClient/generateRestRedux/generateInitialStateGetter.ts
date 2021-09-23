@@ -1,3 +1,8 @@
+import {
+  RestReduxInitialStateGetterGenerator,
+  RestResourceConfig,
+} from '../../types'
+
 const generateInitialStateGetter: RestReduxInitialStateGetterGenerator = <
   CompositeIdentifierType,
   AnonResourceType,

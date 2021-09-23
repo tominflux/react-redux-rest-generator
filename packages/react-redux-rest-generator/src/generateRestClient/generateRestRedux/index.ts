@@ -1,3 +1,4 @@
+import { RestReduxGenerator, RestResourceConfig } from '../../types'
 import generateInitialStateGetter from './generateInitialStateGetter'
 import generateRestActions from './generateRestActions'
 import generateRestCreators from './generateRestCreators'

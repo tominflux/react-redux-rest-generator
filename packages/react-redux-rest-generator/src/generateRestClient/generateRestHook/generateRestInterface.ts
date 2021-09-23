@@ -1,3 +1,13 @@
+import {
+  RestInterfaceGenerator,
+  RestReduxState,
+  RestReduxCreatorSet,
+  RestResourceConfig,
+  RestCreatePromiseResolver,
+  RestReadPromiseResolver,
+  RestUpdatePromiseResolver,
+  RestDeletePromiseResolver,
+} from '../../types'
 import generateUuid from '../../utils/generateUuid'
 import getApiUrlMany from './getApiUrl/getApiUrlMany'
 import getApiUrlSingle from './getApiUrl/getApiUrlSingle'

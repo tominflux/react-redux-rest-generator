@@ -5,6 +5,19 @@ import flattenPrimitiveObjectArray from '../../utils/flattenObjectArray'
 import axios, { AxiosError } from 'axios'
 import generateUuid from '../../utils/generateUuid'
 import concatPrimitivesToString from '../../utils/concatMisc'
+import {
+  RestHookGenerator,
+  RestReduxCreatorSet,
+  RestResourceConfig,
+  RestHook,
+  RestReduxState,
+  RestCreatePromiseResolver,
+  RestReadPromiseResolver,
+  RestUpdatePromiseResolver,
+  RestDeletePromiseResolver,
+  RestPrimitive,
+  RestRequest,
+} from '../../types'
 
 const generateRestHook: RestHookGenerator = <
   CompositeIdentifierType,

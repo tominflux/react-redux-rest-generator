@@ -1,3 +1,15 @@
+import {
+  RestReducerGenerator,
+  RestReduxInitialStateGetter,
+  RestReduxActionSet,
+  RestResourceConfig,
+  RestReducer,
+  RestPrimitive,
+  RestRequest,
+  RestMethod,
+  RestReduxState,
+  RestApiPayload,
+} from '../../types'
 import reduceResourceList from '../../utils/reduceResourceList'
 
 const generateRestReducer: RestReducerGenerator = <

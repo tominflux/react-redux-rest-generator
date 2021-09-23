@@ -1,3 +1,4 @@
+import { RestClientGenerator, RestResourceConfig } from '../types'
 import generateRestHook from './generateRestHook'
 import generateRestRedux from './generateRestRedux'
 
