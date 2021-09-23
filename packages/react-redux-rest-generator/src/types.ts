@@ -344,10 +344,7 @@ export type RestInterface<
   ) => Promise<RestDeleteResult>
   // Form
   getField: (name: keyof AnonResourceType) => unknown
-  setField: (
-    name: keyof AnonResourceType,
-    value: string | number | boolean | null
-  ) => void
+  setField: (name: keyof AnonResourceType, value: unknown) => void
   clearFields: () => void
   // Cache
   getMany: (
