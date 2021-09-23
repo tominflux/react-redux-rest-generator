@@ -10,7 +10,11 @@ export type RestReadParams = Record<string, RestPrimitive>
 /********** CONFIG  ***********/
 /******************************/
 
-export type RestResourceConfig<AnonResourceType, ReadParamsType> = {
+export type RestResourceConfig<
+  CompositeIdentifierType,
+  AnonResourceType,
+  ReadParamsType
+> = {
   name: string
   identifiers: Array<string>
   primaryIdentifier: string
@@ -26,11 +30,11 @@ export type RestResourceConfig<AnonResourceType, ReadParamsType> = {
     params: ReadParamsType | Record<string, never>
   ) => number
   postProcess?: (
-    resourceList: Array<AnonResourceType>,
+    resourceList: Array<CompositeIdentifierType & AnonResourceType>,
     params: ReadParamsType | Record<string, never>
-  ) => Array<AnonResourceType>
+  ) => Array<CompositeIdentifierType & AnonResourceType>
   apiRootPath?: string
-  composition?: Array<RestResourceConfig<unknown, unknown>>
+  composition?: Array<RestResourceConfig<unknown, unknown, unknown>>
   stateName?: string
   apiPayloadResourceListName?: string
   verboseLogging?: boolean
@@ -51,10 +55,18 @@ export type RestRequest = {
 
 export type RestApiPayload<CompositeIdentifierType, AnonResourceType> = {
   compositeIdentifier?: CompositeIdentifierType
-  resourceList?: Array<AnonResourceType>
+  resourceList?: Array<CompositeIdentifierType & AnonResourceType>
 }
-export type RestManyApiUrlGetter = <AnonResourceType, ReadParamsType>(
-  resourceConfig: RestResourceConfig<AnonResourceType, ReadParamsType>,
+export type RestManyApiUrlGetter = <
+  CompositeIdentifierType,
+  AnonResourceType,
+  ReadParamsType
+>(
+  resourceConfig: RestResourceConfig<
+    CompositeIdentifierType,
+    AnonResourceType,
+    ReadParamsType
+  >,
   params?: ReadParamsType
 ) => string
 
@@ -64,12 +76,24 @@ export type RestSingleApiUrlGetter = <
   ReadParamsType
 >(
   compositeIdentifier: CompositeIdentifierType,
-  resourceConfig: RestResourceConfig<AnonResourceType, ReadParamsType>
+  resourceConfig: RestResourceConfig<
+    CompositeIdentifierType,
+    AnonResourceType,
+    ReadParamsType
+  >
 ) => string
 
-export type RestSingleAnonApiUrlGetter = <AnonResourceType, ReadParamsType>(
+export type RestSingleAnonApiUrlGetter = <
+  CompositeIdentifierType,
+  AnonResourceType,
+  ReadParamsType
+>(
   parentsIdentifier: Record<string, string>,
-  resourceConfig: RestResourceConfig<AnonResourceType, ReadParamsType>
+  resourceConfig: RestResourceConfig<
+    CompositeIdentifierType,
+    AnonResourceType,
+    ReadParamsType
+  >
 ) => string
 
 /******************************/
@@ -93,8 +117,16 @@ export type RestReduxAction = {
 
 export type RestReduxActionSet = Record<RestReduxActionKey, string>
 
-export type RestReduxActionsGenerator = <AnonResourceType, ReadParamsType>(
-  resourceConfig: RestResourceConfig<AnonResourceType, ReadParamsType>
+export type RestReduxActionsGenerator = <
+  CompositeIdentifierType,
+  AnonResourceType,
+  ReadParamsType
+>(
+  resourceConfig: RestResourceConfig<
+    CompositeIdentifierType,
+    AnonResourceType,
+    ReadParamsType
+  >
 ) => RestReduxActionSet
 
 export type RestReduxCreatorSet<CompositeIdentifierType, AnonResourceType> = {
@@ -165,7 +197,7 @@ export type RestReduxCreatorsGenerator = <
 
 export type RestReduxState<CompositeIdentifierType, AnonResourceType> = {
   fields: AnonResourceType
-  resourceList: Array<AnonResourceType>
+  resourceList: Array<CompositeIdentifierType & AnonResourceType>
   pendingRequests: Array<RestRequest>
   fetching: boolean
   method: RestMethod | null
@@ -185,7 +217,11 @@ export type RestReduxInitialStateGetterGenerator = <
   AnonResourceType,
   ReadParamsType
 >(
-  resourceConfig: RestResourceConfig<AnonResourceType, ReadParamsType>
+  resourceConfig: RestResourceConfig<
+    CompositeIdentifierType,
+    AnonResourceType,
+    ReadParamsType
+  >
 ) => RestReduxInitialStateGetter<CompositeIdentifierType, AnonResourceType>
 
 export type RestReducer<CompositeIdentifierType, AnonResourceType> = (
@@ -203,7 +239,11 @@ export type RestReducerGenerator = <
     AnonResourceType
   >,
   actions: RestReduxActionSet,
-  resourceConfig: RestResourceConfig<AnonResourceType, ReadParamsType>
+  resourceConfig: RestResourceConfig<
+    CompositeIdentifierType,
+    AnonResourceType,
+    ReadParamsType
+  >
 ) => RestReducer<CompositeIdentifierType, AnonResourceType>
 
 export type RestRedux<CompositeIdentifierType, AnonResourceType> = {
@@ -221,7 +261,11 @@ export type RestReduxGenerator = <
   AnonResourceType,
   ReadParamsType
 >(
-  resourceConfig: RestResourceConfig<AnonResourceType, ReadParamsType>
+  resourceConfig: RestResourceConfig<
+    CompositeIdentifierType,
+    AnonResourceType,
+    ReadParamsType
+  >
 ) => RestRedux<CompositeIdentifierType, AnonResourceType>
 
 /******************************/
@@ -233,10 +277,10 @@ export type RestCreateResult<CompositeIdentifierType> = {
   message: string
   compositeIdentifier: CompositeIdentifierType | null
 }
-export type RestReadResult<AnonResourceType> = {
+export type RestReadResult<CompositeIdentifierType, AnonResourceType> = {
   status: number
   message: string
-  resourceList: Array<AnonResourceType>
+  resourceList: Array<CompositeIdentifierType & AnonResourceType>
 }
 export type RestUpdateResult = {
   status: number
@@ -252,9 +296,14 @@ export type RestCreatePromiseResolver<CompositeIdentifierType> = {
   resolve: (result: RestCreateResult<CompositeIdentifierType>) => void
   reject: (reason: string) => void
 }
-export type RestReadPromiseResolver<AnonResourceType> = {
+export type RestReadPromiseResolver<
+  CompositeIdentifierType,
+  AnonResourceType
+> = {
   key: string
-  resolve: (result: RestReadResult<AnonResourceType>) => void
+  resolve: (
+    result: RestReadResult<CompositeIdentifierType, AnonResourceType>
+  ) => void
   reject: (reason: string) => void
 }
 export type RestUpdatePromiseResolver = {
@@ -282,25 +331,17 @@ export type RestInterface<
   // CRUD
   create: (
     parentsIdentifier?: Record<string, string>
-  ) => Promise<{
-    status: number
-    message: string
-    compositeIdentifier: CompositeIdentifierType | null
-  }>
+  ) => Promise<RestCreateResult<CompositeIdentifierType>>
   read: (
     params: ReadParamsType
-  ) => Promise<{
-    status: number
-    message: string
-    resourceList: Array<AnonResourceType>
-  }>
+  ) => Promise<RestReadResult<CompositeIdentifierType, AnonResourceType>>
   update: (
     compositeIdentifier: CompositeIdentifierType,
     overrideData?: AnonResourceType
-  ) => Promise<{ status: number; message: string }>
+  ) => Promise<RestUpdateResult>
   delete: (
     compositeIdentifier: CompositeIdentifierType
-  ) => Promise<{ status: number; message: string }>
+  ) => Promise<RestDeleteResult>
   // Form
   getField: (name: keyof AnonResourceType) => unknown
   setField: (
@@ -309,10 +350,12 @@ export type RestInterface<
   ) => void
   clearFields: () => void
   // Cache
-  getMany: (params?: ReadParamsType) => Array<AnonResourceType>
+  getMany: (
+    params?: ReadParamsType
+  ) => Array<CompositeIdentifierType & AnonResourceType>
   getOne: (
     compositeIdentifier: CompositeIdentifierType
-  ) => AnonResourceType | null
+  ) => (CompositeIdentifierType & AnonResourceType) | null
   invalidate: () => void
 }
 
@@ -324,12 +367,16 @@ export type RestInterfaceGenerator = <
   state: RestReduxState<CompositeIdentifierType, AnonResourceType>,
   dispatch: (action: { type: string; payload: unknown }) => void,
   creators: RestReduxCreatorSet<CompositeIdentifierType, AnonResourceType>,
-  resourceConfig: RestResourceConfig<AnonResourceType, ReadParamsType>,
+  resourceConfig: RestResourceConfig<
+    CompositeIdentifierType,
+    AnonResourceType,
+    ReadParamsType
+  >,
   putCreatePromiseResolver: (
     resolver: RestCreatePromiseResolver<CompositeIdentifierType>
   ) => void,
   putReadPromiseResolver: (
-    resolver: RestReadPromiseResolver<AnonResourceType>
+    resolver: RestReadPromiseResolver<CompositeIdentifierType, AnonResourceType>
   ) => void,
   putUpdatePromiseResolver: (resolver: RestUpdatePromiseResolver) => void,
   putDeletePromiseResolver: (resolver: RestDeletePromiseResolver) => void
@@ -350,7 +397,11 @@ export type RestHookGenerator = <
   ReadParamsType
 >(
   creators: RestReduxCreatorSet<CompositeIdentifierType, AnonResourceType>,
-  resourceConfig: RestResourceConfig<AnonResourceType, ReadParamsType>
+  resourceConfig: RestResourceConfig<
+    CompositeIdentifierType,
+    AnonResourceType,
+    ReadParamsType
+  >
 ) => RestHook<CompositeIdentifierType, AnonResourceType, ReadParamsType>
 
 /******************************/
@@ -362,7 +413,11 @@ export type RestClient<
   AnonResourceType,
   ReadParamsType
 > = {
-  config: RestResourceConfig<AnonResourceType, ReadParamsType>
+  config: RestResourceConfig<
+    CompositeIdentifierType,
+    AnonResourceType,
+    ReadParamsType
+  >
   reducer: RestReducer<CompositeIdentifierType, AnonResourceType>
   hook: RestHook<CompositeIdentifierType, AnonResourceType, ReadParamsType>
   getInitialState: RestReduxInitialStateGetter<
@@ -376,5 +431,9 @@ export type RestClientGenerator = <
   AnonResourceType,
   ReadParamsType
 >(
-  resourceConfig: RestResourceConfig<AnonResourceType, ReadParamsType>
+  resourceConfig: RestResourceConfig<
+    CompositeIdentifierType,
+    AnonResourceType,
+    ReadParamsType
+  >
 ) => RestClient<CompositeIdentifierType, AnonResourceType, ReadParamsType>

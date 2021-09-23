@@ -25,7 +25,11 @@ const generateRestHook: RestHookGenerator = <
   ReadParamsType
 >(
   creators: RestReduxCreatorSet<CompositeIdentifierType, AnonResourceType>,
-  resourceConfig: RestResourceConfig<AnonResourceType, ReadParamsType>
+  resourceConfig: RestResourceConfig<
+    CompositeIdentifierType,
+    AnonResourceType,
+    ReadParamsType
+  >
 ) => {
   const useRestResource: RestHook<
     CompositeIdentifierType,
@@ -56,7 +60,7 @@ const generateRestHook: RestHookGenerator = <
       Array<RestCreatePromiseResolver<CompositeIdentifierType>>
     >([])
     const [readPromiseResolverList, setReadPromiseResolverList] = useState<
-      Array<RestReadPromiseResolver<AnonResourceType>>
+      Array<RestReadPromiseResolver<CompositeIdentifierType, AnonResourceType>>
     >([])
     const [updatePromiseResolverList, setUpdatePromiseResolverList] = useState<
       Array<RestUpdatePromiseResolver>
@@ -124,7 +128,10 @@ const generateRestHook: RestHookGenerator = <
       ) as RestCreatePromiseResolver<CompositeIdentifierType>
     // - Read
     const putReadPromiseResolver = (
-      resolver: RestReadPromiseResolver<AnonResourceType>
+      resolver: RestReadPromiseResolver<
+        CompositeIdentifierType,
+        AnonResourceType
+      >
     ) =>
       putRequestPromiseResolver(
         resolver,
@@ -139,7 +146,7 @@ const generateRestHook: RestHookGenerator = <
         setReadPromiseResolverList as React.Dispatch<
           React.SetStateAction<Array<unknown>>
         >
-      ) as RestReadPromiseResolver<AnonResourceType>
+      ) as RestReadPromiseResolver<CompositeIdentifierType, AnonResourceType>
     // - Update
     const putUpdatePromiseResolver = (resolver: RestUpdatePromiseResolver) =>
       putRequestPromiseResolver(
@@ -229,7 +236,7 @@ const generateRestHook: RestHookGenerator = <
           request: RestRequest
           resolver:
             | RestCreatePromiseResolver<CompositeIdentifierType>
-            | RestReadPromiseResolver<AnonResourceType>
+            | RestReadPromiseResolver<CompositeIdentifierType, AnonResourceType>
             | RestUpdatePromiseResolver
             | RestDeletePromiseResolver
         } | null = (index = 0) => {
@@ -327,7 +334,10 @@ const generateRestHook: RestHookGenerator = <
               dispatch(responseAction)
 
               // Resolve promise
-              const readPromiseResolver = resolver as RestReadPromiseResolver<AnonResourceType>
+              const readPromiseResolver = resolver as RestReadPromiseResolver<
+                CompositeIdentifierType,
+                AnonResourceType
+              >
               readPromiseResolver.resolve({
                 status,
                 message,
@@ -412,7 +422,10 @@ const generateRestHook: RestHookGenerator = <
               dispatch(responseAction)
 
               // Resolve promise
-              const readPromiseResolver = resolver as RestReadPromiseResolver<AnonResourceType>
+              const readPromiseResolver = resolver as RestReadPromiseResolver<
+                CompositeIdentifierType,
+                AnonResourceType
+              >
               readPromiseResolver.resolve({
                 status,
                 message,

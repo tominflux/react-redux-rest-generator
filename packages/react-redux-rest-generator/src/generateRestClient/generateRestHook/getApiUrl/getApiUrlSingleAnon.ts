@@ -2,11 +2,16 @@ import * as path from 'path'
 import { RestSingleAnonApiUrlGetter, RestResourceConfig } from '../../../types'
 
 const getApiUrlSingleAnon: RestSingleAnonApiUrlGetter = <
+  CompositeIdentifierType,
   AnonResourceType,
   ReadParamsType
 >(
   parentsIdentifier: Record<string, string>,
-  resourceConfig: RestResourceConfig<AnonResourceType, ReadParamsType>
+  resourceConfig: RestResourceConfig<
+    CompositeIdentifierType,
+    AnonResourceType,
+    ReadParamsType
+  >
 ) => {
   const { apiRootPath, composition } = resourceConfig
 

@@ -8,10 +8,14 @@ const generateInitialStateGetter: RestReduxInitialStateGetterGenerator = <
   AnonResourceType,
   ReadParamsType
 >(
-  resourceConfig: RestResourceConfig<AnonResourceType, ReadParamsType>
+  resourceConfig: RestResourceConfig<
+    CompositeIdentifierType,
+    AnonResourceType,
+    ReadParamsType
+  >
 ) => () => ({
   fields: resourceConfig.initialFields,
-  resourceList: [] as Array<AnonResourceType>,
+  resourceList: [] as Array<CompositeIdentifierType & AnonResourceType>,
   pendingRequests: [],
   fetching: false,
   method: null,

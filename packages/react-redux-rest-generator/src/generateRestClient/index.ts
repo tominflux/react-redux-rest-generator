@@ -7,7 +7,11 @@ const generateRestClient: RestClientGenerator = <
   AnonResourceType,
   ReadParamsType
 >(
-  resourceConfig: RestResourceConfig<AnonResourceType, ReadParamsType>
+  resourceConfig: RestResourceConfig<
+    CompositeIdentifierType,
+    AnonResourceType,
+    ReadParamsType
+  >
 ) => {
   const { creators, reducer, getInitialState } = generateRestRedux<
     CompositeIdentifierType,

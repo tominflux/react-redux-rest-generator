@@ -22,7 +22,11 @@ const generateRestReducer: RestReducerGenerator = <
     AnonResourceType
   >,
   actions: RestReduxActionSet,
-  resourceConfig: RestResourceConfig<AnonResourceType, ReadParamsType>
+  resourceConfig: RestResourceConfig<
+    CompositeIdentifierType,
+    AnonResourceType,
+    ReadParamsType
+  >
 ) => {
   const reducer: RestReducer<CompositeIdentifierType, AnonResourceType> = (
     state = getInitialState(),
@@ -145,7 +149,7 @@ const generateRestReducer: RestReducerGenerator = <
             state.resourceList as Array<Record<string, unknown>>,
             newResourceList as Array<Record<string, unknown>>,
             resourceConfig.identifiers
-          ) as Array<AnonResourceType>
+          ) as Array<CompositeIdentifierType & AnonResourceType>
           const nextState: RestReduxState<
             CompositeIdentifierType,
             AnonResourceType

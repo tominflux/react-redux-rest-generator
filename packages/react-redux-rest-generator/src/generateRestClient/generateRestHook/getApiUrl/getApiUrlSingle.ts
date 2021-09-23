@@ -7,7 +7,11 @@ const getApiUrlSingle: RestSingleApiUrlGetter = <
   ReadParamsType
 >(
   compositeIdentifier: CompositeIdentifierType,
-  resourceConfig: RestResourceConfig<AnonResourceType, ReadParamsType>
+  resourceConfig: RestResourceConfig<
+    CompositeIdentifierType,
+    AnonResourceType,
+    ReadParamsType
+  >
 ) => {
   const { apiRootPath, composition } = resourceConfig
 

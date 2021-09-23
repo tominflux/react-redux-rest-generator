@@ -7,6 +7,10 @@ import {
   RestReadPromiseResolver,
   RestUpdatePromiseResolver,
   RestDeletePromiseResolver,
+  RestReadResult,
+  RestCreateResult,
+  RestUpdateResult,
+  RestDeleteResult,
 } from '../../types'
 import generateUuid from '../../utils/generateUuid'
 import getApiUrlMany from './getApiUrl/getApiUrlMany'
@@ -21,12 +25,16 @@ const generateRestInterface: RestInterfaceGenerator = <
   state: RestReduxState<CompositeIdentifierType, AnonResourceType>,
   dispatch: (action: { type: string; payload: unknown }) => void,
   creators: RestReduxCreatorSet<CompositeIdentifierType, AnonResourceType>,
-  resourceConfig: RestResourceConfig<AnonResourceType, ReadParamsType>,
+  resourceConfig: RestResourceConfig<
+    CompositeIdentifierType,
+    AnonResourceType,
+    ReadParamsType
+  >,
   putCreatePromiseResolver: (
     resolver: RestCreatePromiseResolver<CompositeIdentifierType>
   ) => void,
   putReadPromiseResolver: (
-    resolver: RestReadPromiseResolver<AnonResourceType>
+    resolver: RestReadPromiseResolver<CompositeIdentifierType, AnonResourceType>
   ) => void,
   putUpdatePromiseResolver: (resolver: RestUpdatePromiseResolver) => void,
   putDeletePromiseResolver: (resolver: RestDeletePromiseResolver) => void
@@ -55,11 +63,9 @@ const generateRestInterface: RestInterfaceGenerator = <
       const requestKey = generateUuid()
 
       // Register request promise
-      const requestPromise = new Promise<{
-        status: number
-        message: string
-        compositeIdentifier: CompositeIdentifierType | null
-      }>((resolve, reject) => {
+      const requestPromise = new Promise<
+        RestCreateResult<CompositeIdentifierType>
+      >((resolve, reject) => {
         const promiseResolver = {
           key: requestKey,
           resolve,
@@ -69,10 +75,11 @@ const generateRestInterface: RestInterfaceGenerator = <
       })
 
       // Prepare POST request information
-      const url = getApiUrlSingleAnon<AnonResourceType, ReadParamsType>(
-        parentsIdentifier ?? {},
-        resourceConfig
-      )
+      const url = getApiUrlSingleAnon<
+        CompositeIdentifierType,
+        AnonResourceType,
+        ReadParamsType
+      >(parentsIdentifier ?? {}, resourceConfig)
       const data = { ...state.fields }
       const body = JSON.stringify(data)
 
@@ -88,11 +95,9 @@ const generateRestInterface: RestInterfaceGenerator = <
       const requestKey = generateUuid()
 
       // Register request promise
-      const requestPromise = new Promise<{
-        status: number
-        message: string
-        resourceList: Array<AnonResourceType>
-      }>((resolve, reject) => {
+      const requestPromise = new Promise<
+        RestReadResult<CompositeIdentifierType, AnonResourceType>
+      >((resolve, reject) => {
         const promiseResolver = {
           key: requestKey,
           resolve,
@@ -102,10 +107,11 @@ const generateRestInterface: RestInterfaceGenerator = <
       })
 
       // Prepare GET request information
-      const url = getApiUrlMany<AnonResourceType, ReadParamsType>(
-        resourceConfig,
-        params
-      )
+      const url = getApiUrlMany<
+        CompositeIdentifierType,
+        AnonResourceType,
+        ReadParamsType
+      >(resourceConfig, params)
 
       // Queue request
       const queueAction = creators.queueRequest(requestKey, 'get', url, null)
@@ -122,7 +128,7 @@ const generateRestInterface: RestInterfaceGenerator = <
       const requestKey = generateUuid()
 
       // Register request promise
-      const requestPromise = new Promise<{ status: number; message: string }>(
+      const requestPromise = new Promise<RestUpdateResult>(
         (resolve, reject) => {
           const promiseResolver = {
             key: requestKey,
@@ -154,7 +160,7 @@ const generateRestInterface: RestInterfaceGenerator = <
       const requestKey = generateUuid()
 
       // Register request promise
-      const requestPromise = new Promise<{ status: number; message: string }>(
+      const requestPromise = new Promise<RestDeleteResult>(
         (resolve, reject) => {
           const promiseResolver = {
             key: requestKey,

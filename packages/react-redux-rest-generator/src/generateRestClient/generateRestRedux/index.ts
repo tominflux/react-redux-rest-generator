@@ -9,16 +9,22 @@ const generateRestRedux: RestReduxGenerator = <
   AnonResourceType,
   ReadParamsType
 >(
-  resourceConfig: RestResourceConfig<AnonResourceType, ReadParamsType>
+  resourceConfig: RestResourceConfig<
+    CompositeIdentifierType,
+    AnonResourceType,
+    ReadParamsType
+  >
 ) => {
   const getInitialState = generateInitialStateGetter<
     CompositeIdentifierType,
     AnonResourceType,
     ReadParamsType
   >(resourceConfig)
-  const actions = generateRestActions<AnonResourceType, ReadParamsType>(
-    resourceConfig
-  )
+  const actions = generateRestActions<
+    CompositeIdentifierType,
+    AnonResourceType,
+    ReadParamsType
+  >(resourceConfig)
   const creators = generateRestCreators<
     CompositeIdentifierType,
     AnonResourceType

@@ -2,8 +2,16 @@ import * as path from 'path'
 import { RestManyApiUrlGetter, RestResourceConfig } from '../../../types'
 import getStringifiedParams from './getStringifiedParams'
 
-const getApiUrlMany: RestManyApiUrlGetter = <AnonResourceType, ReadParamsType>(
-  resourceConfig: RestResourceConfig<AnonResourceType, ReadParamsType>,
+const getApiUrlMany: RestManyApiUrlGetter = <
+  CompositeIdentifierType,
+  AnonResourceType,
+  ReadParamsType
+>(
+  resourceConfig: RestResourceConfig<
+    CompositeIdentifierType,
+    AnonResourceType,
+    ReadParamsType
+  >,
   params?: ReadParamsType
 ) => {
   const { apiRootPath, composition } = resourceConfig
