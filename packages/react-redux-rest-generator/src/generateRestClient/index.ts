@@ -2,6 +2,9 @@ import { RestClientGenerator, RestResourceConfig } from '../types'
 import generateRestHook from './generateRestHook'
 import generateRestRedux from './generateRestRedux'
 
+/**
+ * Generate a react-redux REST client for the described resource.
+ */
 const generateRestClient: RestClientGenerator = <
   CompositeIdentifierType,
   AnonResourceType,

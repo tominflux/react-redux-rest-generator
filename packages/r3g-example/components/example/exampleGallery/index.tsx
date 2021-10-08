@@ -27,7 +27,7 @@ export default function ExampleGallery({
     const { method, fetching } = exampleInterface
     const exampleList = exampleInterface.getMany(readParams)
     const didJustCreate = exampleInterface.method === 'post' && exampleInterface.status === 201
-    const didJustUpdate = exampleInterface.method === 'update' && exampleInterface.status === 204
+    const didJustUpdate = exampleInterface.method === 'put' && exampleInterface.status === 204
     const didJustDelete = exampleInterface.method === 'delete' && exampleInterface.status === 204
     const invalidCache = didJustCreate || didJustUpdate || didJustDelete
 
