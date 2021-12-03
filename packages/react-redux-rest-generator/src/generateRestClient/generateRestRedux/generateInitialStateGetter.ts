@@ -18,6 +18,7 @@ const generateInitialStateGetter: RestReduxInitialStateGetterGenerator = <
   resourceList: [] as Array<CompositeIdentifierType & AnonResourceType>,
   pendingRequests: [],
   fetching: false,
+  key: null,
   method: null,
   status: null,
   message: null,

@@ -169,12 +169,14 @@ export type RestReduxCreatorSet<CompositeIdentifierType, AnonResourceType> = {
     payload: { requestKey: string }
   }
   response: (
+    key: string,
     status: number,
     message: string,
     apiPayload: RestApiPayload<CompositeIdentifierType, AnonResourceType> | null
   ) => {
     type: string
     payload: {
+      key: string
       status: number
       message: string
       apiPayload: RestApiPayload<
@@ -200,6 +202,7 @@ export type RestReduxState<CompositeIdentifierType, AnonResourceType> = {
   resourceList: Array<CompositeIdentifierType & AnonResourceType>
   pendingRequests: Array<RestRequest>
   fetching: boolean
+  key: string | null
   method: RestMethod | null
   status: number | null
   message: string | null

@@ -301,7 +301,7 @@ const generateRestHook: RestHookGenerator = <
               const compositeIdentifier = payload
 
               // Inform reducer of create response
-              const responseAction = creators.response(status, message, {
+              const responseAction = creators.response(key, status, message, {
                 compositeIdentifier,
               })
               dispatch(responseAction)
@@ -328,7 +328,7 @@ const generateRestHook: RestHookGenerator = <
               const { [listName]: resourceList } = payload
 
               // Inform reducer of read response
-              const responseAction = creators.response(status, message, {
+              const responseAction = creators.response(key, status, message, {
                 resourceList,
               })
               dispatch(responseAction)
@@ -354,7 +354,12 @@ const generateRestHook: RestHookGenerator = <
             case 'put':
             case 'delete': {
               // Inform reducer of update or delete response
-              const responseAction = creators.response(status, message, null)
+              const responseAction = creators.response(
+                key,
+                status,
+                message,
+                null
+              )
               dispatch(responseAction)
 
               // Resolve promise
@@ -396,7 +401,7 @@ const generateRestHook: RestHookGenerator = <
           switch (method) {
             case 'post': {
               // Inform reducer that new resource failed to be created
-              const responseAction = creators.response(status, message, {})
+              const responseAction = creators.response(key, status, message, {})
               dispatch(responseAction)
 
               // Resolve promise
@@ -416,7 +421,7 @@ const generateRestHook: RestHookGenerator = <
             }
             case 'get': {
               // Inform reducer that resourceList failed to be read
-              const responseAction = creators.response(status, message, {
+              const responseAction = creators.response(key, status, message, {
                 resourceList: [],
               })
               dispatch(responseAction)
@@ -442,7 +447,12 @@ const generateRestHook: RestHookGenerator = <
             case 'put':
             case 'delete': {
               // Inform reducer that update/delete operation failed
-              const responseAction = creators.response(status, message, null)
+              const responseAction = creators.response(
+                key,
+                status,
+                message,
+                null
+              )
               dispatch(responseAction)
 
               // Resolve promise

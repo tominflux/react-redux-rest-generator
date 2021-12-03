@@ -82,6 +82,7 @@ const generateRestReducer: RestReducerGenerator = <
         ]
         const nextState = {
           ...state,
+          key: null,
           pendingRequests,
         }
         return nextState
@@ -113,6 +114,7 @@ const generateRestReducer: RestReducerGenerator = <
         const { method } = currentRequest
         // Set current request flags
         const requestFlags = {
+          key: requestKey as string,
           fetching: true,
           method: method as RestMethod,
           status: null,
@@ -130,12 +132,23 @@ const generateRestReducer: RestReducerGenerator = <
         return nextState
       }
       case actions.RESPONSE: {
-        const { status, message, apiPayload } = action.payload
+        const { key, status, message, apiPayload } = action.payload
+        // Ensure response key matches current request key
+        if (key !== state.key) {
+          console.error('R3G response key mismatch', {
+            responseKey: key,
+            requestKey: state.key,
+          })
+          throw new Error(
+            `Request key mismatch. New request was likely made whilst waiting for response.`
+          )
+        }
         // Handle read responses
         if (state.method === 'get') {
           if ((apiPayload ?? null) === null) {
             console.error('REST Resource Config', resourceConfig)
             console.error('REST Reducer State', state)
+            console.error('REST Action Payload', action.payload)
             throw new Error(
               'No resource list returned - response payload is null.'
             )
