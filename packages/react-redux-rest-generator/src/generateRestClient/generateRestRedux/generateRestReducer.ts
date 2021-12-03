@@ -83,16 +83,32 @@ const generateRestReducer: RestReducerGenerator = <
         const nextState = {
           ...state,
           key: null,
+          fetching: false,
+          status: null,
+          method: null,
+          message: null,
           pendingRequests,
         }
         return nextState
       }
       case actions.FETCH: {
         const { requestKey } = action.payload
+        // Ensure not already fetching
+        if (state.fetching) {
+          throw new Error(
+            `R3G - ${resourceConfig.name} - Attempted to fetch whilst already fetching.`
+          )
+        }
+        // Ensure existing request key is null
+        if (state.key !== null) {
+          throw new Error(
+            `R3G - ${resourceConfig.name} - Attempted to fetch but a request key already exists.`
+          )
+        }
         // Ensure a pending request exists
         if (state.pendingRequests.length === 0) {
           throw new Error(
-            `${resourceConfig.name} - Pending request queue is empty.`
+            `R3G - ${resourceConfig.name} - Pending request queue is empty.`
           )
         }
         // Find next request in queue
@@ -103,7 +119,7 @@ const generateRestReducer: RestReducerGenerator = <
         // Ensure request exists
         if (currentRequest === null) {
           throw new Error(
-            `${resourceConfig.name} - Queued request with key '${requestKey}' does not exist.`
+            `R3G - ${resourceConfig.name} - Queued request with key '${requestKey}' does not exist.`
           )
         }
         // Remove pending request from queue
@@ -140,7 +156,7 @@ const generateRestReducer: RestReducerGenerator = <
             requestKey: state.key,
           })
           throw new Error(
-            `Request key mismatch. New request was likely made whilst waiting for response.`
+            `R3G - ${resourceConfig.name} - Request key mismatch. New request was likely made whilst waiting for response.`
           )
         }
         // Handle read responses
@@ -150,7 +166,7 @@ const generateRestReducer: RestReducerGenerator = <
             console.error('REST Reducer State', state)
             console.error('REST Action Payload', action.payload)
             throw new Error(
-              'No resource list returned - response payload is null.'
+              `R3G - ${resourceConfig.name} - No resource list returned, response payload is null.`
             )
           }
           const { resourceList } = apiPayload as RestApiPayload<
@@ -170,6 +186,7 @@ const generateRestReducer: RestReducerGenerator = <
             ...state,
             resourceList: nextResourceList,
             fetching: false,
+            key: null,
             status: status as number,
             message: message as string,
           }
@@ -181,7 +198,7 @@ const generateRestReducer: RestReducerGenerator = <
             console.error('REST Resource Config', resourceConfig)
             console.error('REST Reducer State', state)
             throw new Error(
-              'No composite identifier returned - response payload is null.'
+              `R3G - ${resourceConfig.name} - No composite identifier returned, response payload is null.`
             )
           }
           const { compositeIdentifier } = apiPayload as RestApiPayload<
@@ -194,6 +211,7 @@ const generateRestReducer: RestReducerGenerator = <
           > = {
             ...state,
             fetching: false,
+            key: null,
             status: status as number,
             message: message as string,
             compositeIdentifier: compositeIdentifier ?? null,
@@ -207,6 +225,7 @@ const generateRestReducer: RestReducerGenerator = <
         > = {
           ...state,
           fetching: false,
+          key: null,
           status: status as number,
           message: message as string,
         }
@@ -229,6 +248,7 @@ const generateRestReducer: RestReducerGenerator = <
         return {
           ...state,
           fetching: false,
+          key: null,
           method: null,
           status: null,
           message: null,

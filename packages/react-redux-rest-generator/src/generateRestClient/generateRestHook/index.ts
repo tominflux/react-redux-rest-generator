@@ -216,6 +216,12 @@ const generateRestHook: RestHookGenerator = <
     // - Process request queue
     useEffect(() => {
       if (fetching) return
+      if (state.key !== null) {
+        // console.error(error)
+        throw new Error(
+          `R3G - ${resourceConfig.name} - Not currently fetching but request key is not null.`
+        )
+      }
 
       const processNextRequest = async () => {
         // Ensure request queue is not empty
@@ -256,9 +262,12 @@ const generateRestHook: RestHookGenerator = <
         // If does not belong, skip.
         if (requestAndResolver === null) {
           if (resourceConfig.verboseLogging) {
-            console.log('R3G - Could not find matched request', {
-              hook: hookKey,
-            })
+            console.log(
+              `R3G - ${resourceConfig.name} - Could not find matched request`,
+              {
+                hook: hookKey,
+              }
+            )
           }
           return
         }
@@ -266,7 +275,7 @@ const generateRestHook: RestHookGenerator = <
 
         // Determine if request belongs to this hook.
         if (resourceConfig.verboseLogging) {
-          console.log('R3G - Processing Request', {
+          console.log(`R3G - ${resourceConfig.name} - Processing Request`, {
             hook: hookKey,
             ...request,
           })
@@ -315,10 +324,14 @@ const generateRestHook: RestHookGenerator = <
               })
 
               if (resourceConfig.verboseLogging)
-                console.log('R3G - Request Resolved | ', 'Success', {
-                  hook: hookKey,
-                  ...request,
-                })
+                console.log(
+                  `R3G - ${resourceConfig.name} - Request Resolved | `,
+                  'Success',
+                  {
+                    hook: hookKey,
+                    ...request,
+                  }
+                )
               break
             }
             case 'get': {
@@ -345,10 +358,14 @@ const generateRestHook: RestHookGenerator = <
               })
 
               if (resourceConfig.verboseLogging)
-                console.log('R3G - Request Resolved | ', 'Success', {
-                  hook: hookKey,
-                  ...request,
-                })
+                console.log(
+                  `R3G - ${resourceConfig.name} - Request Resolved | `,
+                  'Success',
+                  {
+                    hook: hookKey,
+                    ...request,
+                  }
+                )
               break
             }
             case 'put':
@@ -372,10 +389,14 @@ const generateRestHook: RestHookGenerator = <
               })
 
               if (resourceConfig.verboseLogging)
-                console.log('R3G - Request Resolved | ', 'Success', {
-                  hook: hookKey,
-                  ...request,
-                })
+                console.log(
+                  `R3G - ${resourceConfig.name} - Request Resolved | `,
+                  'Success',
+                  {
+                    hook: hookKey,
+                    ...request,
+                  }
+                )
               break
             }
           }
@@ -413,10 +434,14 @@ const generateRestHook: RestHookGenerator = <
               })
 
               if (resourceConfig.verboseLogging)
-                console.log('R3G - Request Resolved | ', 'Error', {
-                  hook: hookKey,
-                  ...request,
-                })
+                console.log(
+                  `R3G - ${resourceConfig.name} - Request Resolved | `,
+                  'Error',
+                  {
+                    hook: hookKey,
+                    ...request,
+                  }
+                )
               break
             }
             case 'get': {
@@ -438,10 +463,14 @@ const generateRestHook: RestHookGenerator = <
               })
 
               if (resourceConfig.verboseLogging)
-                console.log('R3G - Request Resolved | ', 'Error', {
-                  hook: hookKey,
-                  ...request,
-                })
+                console.log(
+                  `R3G - ${resourceConfig.name} - Request Resolved | `,
+                  'Error',
+                  {
+                    hook: hookKey,
+                    ...request,
+                  }
+                )
               break
             }
             case 'put':
@@ -465,10 +494,14 @@ const generateRestHook: RestHookGenerator = <
               })
 
               if (resourceConfig.verboseLogging)
-                console.log('R3G - Request Resolved | ', 'Error', {
-                  hook: hookKey,
-                  ...request,
-                })
+                console.log(
+                  `R3G - ${resourceConfig.name} - Request Resolved | `,
+                  'Error',
+                  {
+                    hook: hookKey,
+                    ...request,
+                  }
+                )
               break
             }
           }
@@ -486,7 +519,9 @@ const generateRestHook: RestHookGenerator = <
     useEffect(() => {
       return () => {
         if (resourceConfig.verboseLogging) {
-          console.log('R3G - Hook dismounting', { hook: hookKey })
+          console.log(`R3G - ${resourceConfig.name} - Hook dismounting`, {
+            hook: hookKey,
+          })
         }
 
         const resolverList = [
@@ -500,7 +535,7 @@ const generateRestHook: RestHookGenerator = <
         resolverList.forEach((resolver) => {
           const { key: requestKey, reject } = resolver
           reject(
-            `R3G hook ${hookKey} dismounted before request ${requestKey} could be handled.`
+            `R3G - ${resourceConfig.name} - Hook ${hookKey} dismounted before request ${requestKey} could be handled.`
           )
         })
 
