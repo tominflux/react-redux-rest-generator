@@ -1,21 +1,21 @@
 import {
-  RestInterfaceGenerator,
-  RestReduxState,
-  RestReduxCreatorSet,
-  RestResourceConfig,
   RestCreatePromiseResolver,
-  RestReadPromiseResolver,
-  RestUpdatePromiseResolver,
-  RestDeletePromiseResolver,
-  RestReadResult,
   RestCreateResult,
-  RestUpdateResult,
+  RestDeletePromiseResolver,
   RestDeleteResult,
+  RestReadPromiseResolver,
+  RestReadResult,
+  RestResourceConfig,
+  RestUpdatePromiseResolver,
+  RestUpdateResult,
 } from '../../../types'
 import generateUuid from '../../../utils/generateUuid'
+import { RestReduxCreatorSet } from '../../generateRestRedux/generateRestCreators/types'
+import { RestReduxState } from '../../generateRestRedux/types'
 import getApiUrlMany from './getApiUrl/getApiUrlMany'
 import getApiUrlSingle from './getApiUrl/getApiUrlSingle'
 import getApiUrlSingleAnon from './getApiUrl/getApiUrlSingleAnon'
+import { RestInterfaceGenerator } from './types'
 
 const generateRestInterface: RestInterfaceGenerator = <
   CompositeIdentifierType,

@@ -1,8 +1,6 @@
 import * as path from 'path'
-import {
-  RestSingleAnonApiUrlGetter,
-  RestResourceConfig,
-} from '../../../../types'
+import { RestResourceConfig } from '../../../../../types'
+import { RestSingleAnonApiUrlGetter } from './types'
 
 const getApiUrlSingleAnon: RestSingleAnonApiUrlGetter = <
   CompositeIdentifierType,

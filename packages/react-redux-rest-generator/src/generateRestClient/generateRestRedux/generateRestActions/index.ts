@@ -1,5 +1,5 @@
-import { RestReduxActionsGenerator, RestReduxActionSet } from '../../types'
-import mapObj from '../../utils/mapObj'
+import mapObj from '../../../utils/mapObj'
+import { RestReduxActionSet, RestReduxActionsGenerator } from './types'
 
 const actionsTemplate = {
   SET_FIELD: 'SET_FIELD',

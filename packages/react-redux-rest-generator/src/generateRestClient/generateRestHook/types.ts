@@ -57,3 +57,25 @@ export type RestHookContext<
   putDeletePromiseResolver: (resolver: RestDeletePromiseResolver) => void
   takeDeletePromiseResolver: (key: string) => RestDeletePromiseResolver
 }
+
+export type RestHook<
+  CompositeIdentifierType,
+  AnonResourceType,
+  ReadParamsType
+> = (
+  paramsList?: Array<ReadParamsType>,
+  readExplicitly?: boolean
+) => RestInterface<CompositeIdentifierType, AnonResourceType, ReadParamsType>
+
+export type RestHookGenerator = <
+  CompositeIdentifierType,
+  AnonResourceType,
+  ReadParamsType
+>(
+  creators: RestReduxCreatorSet<CompositeIdentifierType, AnonResourceType>,
+  resourceConfig: RestResourceConfig<
+    CompositeIdentifierType,
+    AnonResourceType,
+    ReadParamsType
+  >
+) => RestHook<CompositeIdentifierType, AnonResourceType, ReadParamsType>

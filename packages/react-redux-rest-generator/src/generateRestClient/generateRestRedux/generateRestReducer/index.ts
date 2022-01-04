@@ -1,16 +1,18 @@
 import {
-  RestReducerGenerator,
-  RestReduxInitialStateGetter,
-  RestReduxActionSet,
-  RestResourceConfig,
-  RestReducer,
+  RestApiPayload,
+  RestMethod,
   RestPrimitive,
   RestRequest,
-  RestMethod,
-  RestReduxState,
-  RestApiPayload,
-} from '../../types'
-import reduceResourceList from '../../utils/reduceResourceList'
+  RestResourceConfig,
+} from '../../../types'
+import reduceResourceList from '../../../utils/reduceResourceList'
+import { RestReduxActionSet } from '../generateRestActions/types'
+import { RestReduxState } from '../types'
+import {
+  RestReducer,
+  RestReducerGenerator,
+  RestReduxInitialStateGetter,
+} from './types'
 
 const generateRestReducer: RestReducerGenerator = <
   CompositeIdentifierType,

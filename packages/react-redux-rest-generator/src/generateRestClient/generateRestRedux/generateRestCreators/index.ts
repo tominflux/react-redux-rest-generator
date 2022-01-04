@@ -1,4 +1,5 @@
-import { RestReduxCreatorsGenerator, RestReduxActionSet } from '../../types'
+import { RestReduxActionSet } from '../generateRestActions/types'
+import { RestReduxCreatorsGenerator } from './types'
 
 const generateRestCreators: RestReduxCreatorsGenerator = (
   actions: RestReduxActionSet

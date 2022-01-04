@@ -1,6 +1,7 @@
 import * as path from 'path'
-import { RestManyApiUrlGetter, RestResourceConfig } from '../../../../types'
-import getStringifiedParams from './getStringifiedParams'
+import { RestResourceConfig } from '../../../../../types'
+import getStringifiedParams from '../getStringifiedParams'
+import { RestManyApiUrlGetter } from './types'
 
 const getApiUrlMany: RestManyApiUrlGetter = <
   CompositeIdentifierType,
