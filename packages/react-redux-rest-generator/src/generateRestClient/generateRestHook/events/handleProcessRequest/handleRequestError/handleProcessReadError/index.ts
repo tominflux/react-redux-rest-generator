@@ -1,9 +1,9 @@
 import {
-  RestReadPromiseResolver,
-  RestReadResult,
   RestRequest,
-} from '../../../../../types'
-import { RestHookContext } from '../../../types'
+  RestReadResult,
+  RestReadPromiseResolver,
+} from '../../../../../../types'
+import { RestHookContext } from '../../../../types'
 import RestProcessReadErrorEventHandler from './types'
 
 const handleProcessCreateError: RestProcessReadErrorEventHandler = async <

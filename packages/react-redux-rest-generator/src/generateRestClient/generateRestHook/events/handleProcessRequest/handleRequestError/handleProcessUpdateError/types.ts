@@ -1,9 +1,9 @@
 import {
   RestRequest,
-  RestUpdatePromiseResolver,
   RestUpdateResult,
-} from '../../../../../types'
-import { RestHookContext } from '../../../types'
+  RestUpdatePromiseResolver,
+} from '../../../../../../types'
+import { RestHookContext } from '../../../../types'
 
 type RestProcessUpdateErrorEventHandler = <
   CompositeIdentifierType,
