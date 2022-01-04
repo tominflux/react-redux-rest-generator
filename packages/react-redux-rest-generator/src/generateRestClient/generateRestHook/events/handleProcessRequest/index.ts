@@ -1,22 +1,16 @@
 import axios, { AxiosError } from 'axios'
 import {
+  RestAmbiguousResult,
   RestCreatePromiseResolver,
-  RestCreateResult,
   RestDeletePromiseResolver,
-  RestDeleteResult,
   RestReadPromiseResolver,
-  RestReadResult,
   RestRequest,
   RestUpdatePromiseResolver,
-  RestUpdateResult,
 } from '../../../../types'
 import { RestHookContext } from '../../types'
-import handleProcessCreateError from './handleProcessCreateError'
-import handleProcessCreateRequest from './handleProcessCreateRequest'
-import handleProcessDeleteRequest from './handleProcessDeleteRequest'
-import handleProcessReadRequest from './handleProcessReadRequest'
-import handleProcessUpdateRequest from './handleProcessUpdateRequest'
+import handleRequestSuccess from './handleRequestSuccess'
 import RestProcessRequestEventHandler from './types'
+import handleRequestError from './handleRequestError'
 
 const handleProcessRequest: RestProcessRequestEventHandler = async <
   CompositeIdentifierType,
@@ -122,95 +116,19 @@ const handleProcessRequest: RestProcessRequestEventHandler = async <
     const message = response.data.message as string
     const payload = response.data.payload as unknown
 
-    //
-    switch (method) {
-      // CREATE
-      case 'post': {
-        const result: RestCreateResult<CompositeIdentifierType> = {
-          status,
-          message,
-          compositeIdentifier: payload as CompositeIdentifierType,
-        }
-
-        handleProcessCreateRequest<
-          CompositeIdentifierType,
-          AnonResourceType,
-          ReadParamsType
-        >(
-          hookContext,
-          request,
-          result,
-          resolver as RestCreatePromiseResolver<CompositeIdentifierType>
-        )
-        break
-      }
-      // READ
-      case 'get': {
-        // Extract resource list from payload
-        const listName =
-          resourceConfig.apiPayloadResourceListName ??
-          `${resourceConfig.name}List`
-        const { [listName]: resourceList } = payload as Record<
-          string,
-          Array<CompositeIdentifierType & AnonResourceType>
-        >
-
-        // Compose read request result
-        const result: RestReadResult<
-          CompositeIdentifierType,
-          AnonResourceType
-        > = {
-          status,
-          message,
-          resourceList,
-        }
-
-        handleProcessReadRequest<
-          CompositeIdentifierType,
-          AnonResourceType,
-          ReadParamsType
-        >(
-          hookContext,
-          request,
-          result,
-          resolver as RestReadPromiseResolver<
-            CompositeIdentifierType,
-            AnonResourceType
-          >
-        )
-
-        break
-      }
-      // UPDATE & DELETE
-      case 'put': {
-        const result: RestUpdateResult = {
-          status,
-          message,
-        }
-
-        handleProcessUpdateRequest<
-          CompositeIdentifierType,
-          AnonResourceType,
-          ReadParamsType
-        >(hookContext, request, result, resolver as RestUpdatePromiseResolver)
-
-        break
-      }
-      case 'delete': {
-        const result: RestDeleteResult = {
-          status,
-          message,
-        }
-
-        handleProcessDeleteRequest<
-          CompositeIdentifierType,
-          AnonResourceType,
-          ReadParamsType
-        >(hookContext, request, result, resolver as RestUpdatePromiseResolver)
-
-        break
-      }
+    // Re-construct into ambiguous REST result
+    const result: RestAmbiguousResult = {
+      status,
+      message,
+      payload,
     }
+
+    // Handle request success case
+    await handleRequestSuccess<
+      CompositeIdentifierType,
+      AnonResourceType,
+      ReadParamsType
+    >(hookContext, request, result, resolver)
   } catch (err) {
     const axiosErr = err as AxiosError
 
@@ -223,87 +141,18 @@ const handleProcessRequest: RestProcessRequestEventHandler = async <
     // Extract information from API response
     const status = axiosErr.response.status
     const message = axiosErr.response.data.message
+    const payload = null
+    const result: RestAmbiguousResult = { status, message, payload }
 
-    // Log both axios error message and API error message
-    console.error(axiosErr.message)
-    console.error(message)
+    // Extract information from error
+    const axiosMessage = axiosErr.message
 
-    // Dispatch response action & resolve promise
-    const { method } = request
-    switch (method) {
-      // CREATE
-      case 'post': {
-        const result: RestCreateResult<CompositeIdentifierType> = {
-          status,
-          message,
-          compositeIdentifier: null,
-        }
-
-        handleProcessCreateError(
-          hookContext,
-          request,
-          result,
-          resolver as RestCreatePromiseResolver<CompositeIdentifierType>
-        )
-
-        break
-      }
-      // READ
-      case 'get': {
-        const result: RestReadResult<
-          CompositeIdentifierType,
-          AnonResourceType
-        > = {
-          status,
-          message,
-          resourceList: [],
-        }
-
-        handleProcessReadRequest(
-          hookContext,
-          request,
-          result,
-          resolver as RestReadPromiseResolver<
-            CompositeIdentifierType,
-            AnonResourceType
-          >
-        )
-
-        break
-      }
-      // UPDATE
-      case 'put': {
-        const result: RestUpdateResult = {
-          status,
-          message,
-        }
-
-        handleProcessUpdateRequest(
-          hookContext,
-          request,
-          result,
-          resolver as RestUpdatePromiseResolver
-        )
-
-        break
-      }
-      // DELETE
-      case 'delete': {
-        const result: RestDeleteResult = {
-          status,
-          message,
-        }
-
-        handleProcessDeleteRequest(
-          hookContext,
-          request,
-          result,
-          resolver as RestDeletePromiseResolver
-        )
-
-        break
-      }
-    }
+    // Handle request error case
+    handleRequestError<
+      CompositeIdentifierType,
+      AnonResourceType,
+      ReadParamsType
+    >(hookContext, request, result, resolver, axiosMessage)
   }
 }
 

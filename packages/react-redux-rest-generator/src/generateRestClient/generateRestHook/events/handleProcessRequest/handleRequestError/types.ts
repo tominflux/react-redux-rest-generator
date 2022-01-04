@@ -1,11 +1,11 @@
 import {
+  RestAmbiguousPromiseResolver,
+  RestAmbiguousResult,
   RestRequest,
-  RestUpdatePromiseResolver,
-  RestUpdateResult,
 } from '../../../../../types'
 import { RestHookContext } from '../../../types'
 
-type RestProcessUpdateRequestEventHandler = <
+type RestRequestErrorEventHandler = <
   CompositeIdentifierType,
   AnonResourceType,
   ReadParamsType
@@ -16,8 +16,12 @@ type RestProcessUpdateRequestEventHandler = <
     ReadParamsType
   >,
   request: RestRequest,
-  result: RestUpdateResult,
-  resolver: RestUpdatePromiseResolver
+  result: RestAmbiguousResult,
+  resolver: RestAmbiguousPromiseResolver<
+    CompositeIdentifierType,
+    AnonResourceType
+  >,
+  axiosMessage: string
 ) => Promise<void>
 
-export default RestProcessUpdateRequestEventHandler
+export default RestRequestErrorEventHandler

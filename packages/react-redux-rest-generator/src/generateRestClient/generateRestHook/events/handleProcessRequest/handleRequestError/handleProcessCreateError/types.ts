@@ -2,8 +2,8 @@ import {
   RestCreatePromiseResolver,
   RestCreateResult,
   RestRequest,
-} from '../../../../../types'
-import { RestHookContext } from '../../../types'
+} from '../../../../../../types'
+import { RestHookContext } from '../../../../types'
 
 type RestProcessCreateErrorEventHandler = <
   CompositeIdentifierType,

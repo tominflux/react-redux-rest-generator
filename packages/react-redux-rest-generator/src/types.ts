@@ -275,6 +275,11 @@ export type RestReduxGenerator = <
 /*********** HOOK  ************/
 /******************************/
 
+export type RestAmbiguousResult = {
+  status: number
+  message: string
+  payload: unknown
+}
 export type RestCreateResult<CompositeIdentifierType> = {
   status: number
   message: string
@@ -294,6 +299,14 @@ export type RestDeleteResult = {
   message: string
 }
 
+export type RestAmbiguousPromiseResolver<
+  CompositeIdentifierType,
+  AnonResourceType
+> =
+  | RestCreatePromiseResolver<CompositeIdentifierType>
+  | RestReadPromiseResolver<CompositeIdentifierType, AnonResourceType>
+  | RestUpdatePromiseResolver
+  | RestDeletePromiseResolver
 export type RestCreatePromiseResolver<CompositeIdentifierType> = {
   key: string
   resolve: (result: RestCreateResult<CompositeIdentifierType>) => void
