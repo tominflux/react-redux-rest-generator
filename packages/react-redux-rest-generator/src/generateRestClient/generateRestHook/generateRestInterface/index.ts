@@ -11,8 +11,8 @@ import {
   RestCreateResult,
   RestUpdateResult,
   RestDeleteResult,
-} from '../../types'
-import generateUuid from '../../utils/generateUuid'
+} from '../../../types'
+import generateUuid from '../../../utils/generateUuid'
 import getApiUrlMany from './getApiUrl/getApiUrlMany'
 import getApiUrlSingle from './getApiUrl/getApiUrlSingle'
 import getApiUrlSingleAnon from './getApiUrl/getApiUrlSingleAnon'

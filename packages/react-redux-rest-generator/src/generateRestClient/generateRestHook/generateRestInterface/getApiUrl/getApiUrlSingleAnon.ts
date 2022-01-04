@@ -1,12 +1,15 @@
 import * as path from 'path'
-import { RestSingleApiUrlGetter, RestResourceConfig } from '../../../types'
+import {
+  RestSingleAnonApiUrlGetter,
+  RestResourceConfig,
+} from '../../../../types'
 
-const getApiUrlSingle: RestSingleApiUrlGetter = <
+const getApiUrlSingleAnon: RestSingleAnonApiUrlGetter = <
   CompositeIdentifierType,
   AnonResourceType,
   ReadParamsType
 >(
-  compositeIdentifier: CompositeIdentifierType,
+  parentsIdentifier: Record<string, string>,
   resourceConfig: RestResourceConfig<
     CompositeIdentifierType,
     AnonResourceType,
@@ -47,7 +50,7 @@ const getApiUrlSingle: RestSingleApiUrlGetter = <
         )
       }
 
-      // Get parent's primary identifier key from parent config
+      // Get parent's primary identifier key from identifiers list
       const primaryIdentifierKey = resourceConfig.identifiers[index]
 
       // Ensure parent's primary identifier key is not nullish
@@ -67,10 +70,8 @@ const getApiUrlSingle: RestSingleApiUrlGetter = <
         )
       }
 
-      // Get parent's primary identifier from composite identifier
-      const id = ((compositeIdentifier as unknown) as Record<string, string>)[
-        primaryIdentifierKey
-      ]
+      // Get parent's primary identifier from parents identifier
+      const id = parentsIdentifier[primaryIdentifierKey]
 
       // Ensure parent's primary identifier is not nullish
       if ((id ?? null) === null) {
@@ -94,16 +95,13 @@ const getApiUrlSingle: RestSingleApiUrlGetter = <
     []
   )
 
-  // TODO: camel to snake case
-  // Build child resource segment of route ('.../child/abc123')
-  const childId = ((compositeIdentifier as unknown) as Record<string, string>)[
-    resourceConfig.primaryIdentifier
-  ]
-  const child: Array<string> = [resourceConfig.name, childId]
+  // Append child resource segment of route ('.../child')
+  const child = resourceConfig.name
 
-  const trail = path.join(apiRootPath ?? '/api', ...parents, ...child)
+  // Put together URL
+  const url = path.join(apiRootPath ?? '/api', ...parents, child)
 
-  return `${trail}`
+  return `${url}`
 }
 
-export default getApiUrlSingle
+export default getApiUrlSingleAnon

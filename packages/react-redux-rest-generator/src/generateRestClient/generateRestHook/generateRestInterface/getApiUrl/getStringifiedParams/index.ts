@@ -1,4 +1,4 @@
-import mapObj from '../../../../utils/mapObj'
+import mapObj from '../../../../../utils/mapObj'
 
 const getStringifiedParams: (
   params: Record<string, unknown>

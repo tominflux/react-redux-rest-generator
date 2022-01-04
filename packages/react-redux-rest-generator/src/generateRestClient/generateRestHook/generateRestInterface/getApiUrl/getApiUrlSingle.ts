@@ -1,12 +1,12 @@
 import * as path from 'path'
-import { RestSingleAnonApiUrlGetter, RestResourceConfig } from '../../../types'
+import { RestSingleApiUrlGetter, RestResourceConfig } from '../../../../types'
 
-const getApiUrlSingleAnon: RestSingleAnonApiUrlGetter = <
+const getApiUrlSingle: RestSingleApiUrlGetter = <
   CompositeIdentifierType,
   AnonResourceType,
   ReadParamsType
 >(
-  parentsIdentifier: Record<string, string>,
+  compositeIdentifier: CompositeIdentifierType,
   resourceConfig: RestResourceConfig<
     CompositeIdentifierType,
     AnonResourceType,
@@ -47,7 +47,7 @@ const getApiUrlSingleAnon: RestSingleAnonApiUrlGetter = <
         )
       }
 
-      // Get parent's primary identifier key from identifiers list
+      // Get parent's primary identifier key from parent config
       const primaryIdentifierKey = resourceConfig.identifiers[index]
 
       // Ensure parent's primary identifier key is not nullish
@@ -67,8 +67,10 @@ const getApiUrlSingleAnon: RestSingleAnonApiUrlGetter = <
         )
       }
 
-      // Get parent's primary identifier from parents identifier
-      const id = parentsIdentifier[primaryIdentifierKey]
+      // Get parent's primary identifier from composite identifier
+      const id = ((compositeIdentifier as unknown) as Record<string, string>)[
+        primaryIdentifierKey
+      ]
 
       // Ensure parent's primary identifier is not nullish
       if ((id ?? null) === null) {
@@ -92,13 +94,16 @@ const getApiUrlSingleAnon: RestSingleAnonApiUrlGetter = <
     []
   )
 
-  // Append child resource segment of route ('.../child')
-  const child = resourceConfig.name
+  // TODO: camel to snake case
+  // Build child resource segment of route ('.../child/abc123')
+  const childId = ((compositeIdentifier as unknown) as Record<string, string>)[
+    resourceConfig.primaryIdentifier
+  ]
+  const child: Array<string> = [resourceConfig.name, childId]
 
-  // Put together URL
-  const url = path.join(apiRootPath ?? '/api', ...parents, child)
+  const trail = path.join(apiRootPath ?? '/api', ...parents, ...child)
 
-  return `${url}`
+  return `${trail}`
 }
 
-export default getApiUrlSingleAnon
+export default getApiUrlSingle
