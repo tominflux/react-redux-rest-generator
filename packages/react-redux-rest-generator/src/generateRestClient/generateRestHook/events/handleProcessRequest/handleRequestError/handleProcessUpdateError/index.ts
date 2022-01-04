@@ -1,9 +1,9 @@
 import {
+  RestRequest,
   RestUpdatePromiseResolver,
   RestUpdateResult,
-  RestRequest,
-} from '../../../../../types'
-import { RestHookContext } from '../../../types'
+} from '../../../../../../types'
+import { RestHookContext } from '../../../../types'
 import RestProcessUpdateErrorEventHandler from './types'
 
 const handleProcessUpdateError: RestProcessUpdateErrorEventHandler = async <

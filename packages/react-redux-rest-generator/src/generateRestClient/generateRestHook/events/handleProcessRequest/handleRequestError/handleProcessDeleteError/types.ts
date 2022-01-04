@@ -1,9 +1,9 @@
 import {
   RestRequest,
-  RestDeletePromiseResolver,
   RestDeleteResult,
-} from '../../../../../types'
-import { RestHookContext } from '../../../types'
+  RestDeletePromiseResolver,
+} from '../../../../../../types'
+import { RestHookContext } from '../../../../types'
 
 type RestProcessDeleteErrorEventHandler = <
   CompositeIdentifierType,

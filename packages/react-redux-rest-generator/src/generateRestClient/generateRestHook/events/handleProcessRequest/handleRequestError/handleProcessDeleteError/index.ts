@@ -2,8 +2,8 @@ import {
   RestDeletePromiseResolver,
   RestDeleteResult,
   RestRequest,
-} from '../../../../../types'
-import { RestHookContext } from '../../../types'
+} from '../../../../../../types'
+import { RestHookContext } from '../../../../types'
 import RestProcessDeleteErrorEventHandler from './types'
 
 const handleProcessDeleteError: RestProcessDeleteErrorEventHandler = async <
