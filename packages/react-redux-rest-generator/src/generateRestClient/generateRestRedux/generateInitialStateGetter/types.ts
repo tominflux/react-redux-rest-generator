@@ -1,4 +1,4 @@
-import { RestResourceConfig } from '../../../types'
+import { RestResourceConfig } from '../../types'
 import { RestReduxState } from '../types'
 
 export type RestReduxInitialStateGetter<

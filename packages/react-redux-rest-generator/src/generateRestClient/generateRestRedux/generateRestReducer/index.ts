@@ -1,18 +1,15 @@
-import {
-  RestApiPayload,
-  RestMethod,
-  RestPrimitive,
-  RestRequest,
-  RestResourceConfig,
-} from '../../../types'
+import { RestApiPayload, RestMethod, RestPrimitive } from '../../../types'
 import reduceResourceList from '../../../utils/reduceResourceList'
+import { RestResourceConfig } from '../../types'
+import { RestReduxInitialStateGetter } from '../generateInitialStateGetter/types'
 import { RestReduxActionSet } from '../generateRestActions/types'
-import { RestReduxState } from '../types'
 import {
-  RestReducer,
-  RestReducerGenerator,
-  RestReduxInitialStateGetter,
-} from './types'
+  RestReadPayload,
+  RestReduxState,
+  RestRequest,
+  RestResult,
+} from '../types'
+import { RestReducer, RestReducerGenerator } from './types'
 
 const generateRestReducer: RestReducerGenerator = <
   CompositeIdentifierType,
@@ -55,9 +52,10 @@ const generateRestReducer: RestReducerGenerator = <
         return nextState
       }
       case actions.QUEUE_REQUEST: {
-        const { key, method, url, body } = action.payload
+        const { requestKey, hookKey, method, url, body } = action.payload
         const request: RestRequest = {
-          key: key as string,
+          requestKey: requestKey as string,
+          hookKey: hookKey as string,
           method: method as RestMethod,
           url: url as string,
           body: body as string,
@@ -75,7 +73,7 @@ const generateRestReducer: RestReducerGenerator = <
       case actions.CANCEL_REQUEST: {
         const { key } = action.payload
         const index = state.pendingRequests.findIndex(
-          (request) => request.key === key
+          (request) => request.requestKey === key
         )
         if (index === -1) return state
         const pendingRequests = [
@@ -102,7 +100,7 @@ const generateRestReducer: RestReducerGenerator = <
           )
         }
         // Ensure existing request key is null
-        if (state.key !== null) {
+        if (state.requestKey !== null) {
           throw new Error(
             `R3G - ${resourceConfig.name} - Attempted to fetch but a request key already exists.`
           )
@@ -116,7 +114,7 @@ const generateRestReducer: RestReducerGenerator = <
         // Find next request in queue
         const currentRequest =
           state.pendingRequests.find(
-            (pendingRequest) => pendingRequest.key === requestKey
+            (pendingRequest) => pendingRequest.requestKey === requestKey
           ) ?? null
         // Ensure request exists
         if (currentRequest === null) {
@@ -126,15 +124,16 @@ const generateRestReducer: RestReducerGenerator = <
         }
         // Remove pending request from queue
         const pendingRequests = state.pendingRequests.filter(
-          (pendingRequest) => pendingRequest.key !== requestKey
+          (pendingRequest) => pendingRequest.requestKey !== requestKey
         )
         // Extract data from request
-        const { method } = currentRequest
+        const { hookKey, method } = currentRequest
         // Set current request flags
         const requestFlags = {
-          key: requestKey as string,
+          requestKey: requestKey as string,
+          hookKey,
           fetching: true,
-          method: method as RestMethod,
+          method,
           status: null,
           message: null,
           ...(method !== 'get' ? { compositeIdentifier: null } : {}),
@@ -150,12 +149,18 @@ const generateRestReducer: RestReducerGenerator = <
         return nextState
       }
       case actions.RESPONSE: {
-        const { key, status, message, apiPayload } = action.payload
+        const {
+          requestKey,
+          hookKey,
+          status,
+          message,
+          apiPayload,
+        } = action.payload
         // Ensure response key matches current request key
-        if (key !== state.key) {
+        if (requestKey !== state.requestKey) {
           console.error('R3G response key mismatch', {
-            responseKey: key,
-            requestKey: state.key,
+            responseKey: requestKey,
+            requestKey: state.requestKey,
           })
           throw new Error(
             `R3G - ${resourceConfig.name} - Request key mismatch. New request was likely made whilst waiting for response.`
@@ -171,7 +176,7 @@ const generateRestReducer: RestReducerGenerator = <
               `R3G - ${resourceConfig.name} - No resource list returned, response payload is null.`
             )
           }
-          const { resourceList } = apiPayload as RestApiPayload<
+          const { resourceList } = apiPayload as RestReadPayload<
             CompositeIdentifierType,
             AnonResourceType
           >
@@ -181,14 +186,30 @@ const generateRestReducer: RestReducerGenerator = <
             newResourceList as Array<Record<string, unknown>>,
             resourceConfig.identifiers
           ) as Array<CompositeIdentifierType & AnonResourceType>
+          const nextResult: RestResult<
+            CompositeIdentifierType,
+            AnonResourceType
+          > = {
+            requestKey: requestKey as string,
+            hookKey: hookKey as string,
+            status: status as number,
+            message: message as string,
+            payload: apiPayload as RestReadPayload<
+              CompositeIdentifierType,
+              AnonResourceType
+            >,
+          }
+          const nextReceivedResults = [...state.receivedResults, nextResult]
           const nextState: RestReduxState<
             CompositeIdentifierType,
             AnonResourceType
           > = {
             ...state,
             resourceList: nextResourceList,
+            receivedResults: nextReceivedResults,
             fetching: false,
-            key: null,
+            requestKey: null,
+            hookKey: null,
             status: status as number,
             message: message as string,
           }
@@ -203,6 +224,17 @@ const generateRestReducer: RestReducerGenerator = <
               `R3G - ${resourceConfig.name} - No composite identifier returned, response payload is null.`
             )
           }
+          const nextResult: RestResult<
+            CompositeIdentifierType,
+            AnonResourceType
+          > = {
+            requestKey: requestKey as string,
+            hookKey: hookKey as string,
+            status: status as number,
+            message: message as string,
+            payload: apiPayload as CompositeIdentifierType,
+          }
+          const nextReceivedResults = [...state.receivedResults, nextResult]
           const { compositeIdentifier } = apiPayload as RestApiPayload<
             CompositeIdentifierType,
             AnonResourceType
@@ -212,8 +244,10 @@ const generateRestReducer: RestReducerGenerator = <
             AnonResourceType
           > = {
             ...state,
+            receivedResults: nextReceivedResults,
             fetching: false,
-            key: null,
+            requestKey: null,
+            hookKey: null,
             status: status as number,
             message: message as string,
             compositeIdentifier: compositeIdentifier ?? null,
@@ -221,13 +255,26 @@ const generateRestReducer: RestReducerGenerator = <
           return nextState
         }
         // Handle update/delete responses
+        const nextResult: RestResult<
+          CompositeIdentifierType,
+          AnonResourceType
+        > = {
+          requestKey: requestKey as string,
+          hookKey: hookKey as string,
+          status: status as number,
+          message: message as string,
+          payload: apiPayload as null,
+        }
+        const nextReceivedResults = [...state.receivedResults, nextResult]
         const nextState: RestReduxState<
           CompositeIdentifierType,
           AnonResourceType
         > = {
           ...state,
+          receivedResults: nextReceivedResults,
           fetching: false,
-          key: null,
+          requestKey: null,
+          hookKey: null,
           status: status as number,
           message: message as string,
         }
@@ -250,7 +297,8 @@ const generateRestReducer: RestReducerGenerator = <
         return {
           ...state,
           fetching: false,
-          key: null,
+          requestKey: null,
+          hookKey: null,
           method: null,
           status: null,
           message: null,

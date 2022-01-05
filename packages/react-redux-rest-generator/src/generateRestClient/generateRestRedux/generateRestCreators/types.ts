@@ -13,25 +13,27 @@ export type RestReduxCreatorSet<CompositeIdentifierType, AnonResourceType> = {
     }
   }
   queueRequest: (
-    key: string,
+    requestKey: string,
+    hookKey: string,
     method: RestMethod,
     url: string,
     body: string | null
   ) => {
     type: string
     payload: {
-      key: string
+      requestKey: string
+      hookKey: string
       method: string
       url: string
       body: string | null
     }
   }
   cancelRequest: (
-    key: string
+    requestKey: string
   ) => {
     type: string
     payload: {
-      key: string
+      requestKey: string
     }
   }
   fetch: (
@@ -41,14 +43,16 @@ export type RestReduxCreatorSet<CompositeIdentifierType, AnonResourceType> = {
     payload: { requestKey: string }
   }
   response: (
-    key: string,
+    requestKey: string,
+    hookKey: string,
     status: number,
     message: string,
     apiPayload: RestApiPayload<CompositeIdentifierType, AnonResourceType> | null
   ) => {
     type: string
     payload: {
-      key: string
+      requestKey: string
+      hookKey: string
       status: number
       message: string
       apiPayload: RestApiPayload<

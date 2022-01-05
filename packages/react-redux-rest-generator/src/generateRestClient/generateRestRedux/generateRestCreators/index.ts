@@ -8,22 +8,23 @@ const generateRestCreators: RestReduxCreatorsGenerator = (
     type: actions.SET_FIELD,
     payload: { name, value },
   }),
-  queueRequest: (key, method, url, body) => ({
+  queueRequest: (requestKey, hookKey, method, url, body) => ({
     type: actions.QUEUE_REQUEST,
-    payload: { key, method, url, body },
+    payload: { requestKey, hookKey, method, url, body },
   }),
-  cancelRequest: (key) => ({
+  cancelRequest: (requestKey) => ({
     type: actions.CANCEL_REQUEST,
-    payload: { key },
+    payload: { requestKey },
   }),
   fetch: (requestKey) => ({
     type: actions.FETCH,
     payload: { requestKey },
   }),
-  response: (key, status, message, apiPayload) => ({
+  response: (requestKey, hookKey, status, message, apiPayload) => ({
     type: actions.RESPONSE,
     payload: {
-      key,
+      requestKey,
+      hookKey,
       status,
       message,
       apiPayload,

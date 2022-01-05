@@ -1,4 +1,4 @@
-import { RestResourceConfig } from '../../../types'
+import { RestResourceConfig } from '../../types'
 import { RestReduxInitialStateGetterGenerator } from './types'
 
 const generateInitialStateGetter: RestReduxInitialStateGetterGenerator = <
@@ -13,15 +13,17 @@ const generateInitialStateGetter: RestReduxInitialStateGetterGenerator = <
   >
 ) => () => ({
   fields: resourceConfig.initialFields,
-  resourceList: [] as Array<CompositeIdentifierType & AnonResourceType>,
+  resourceList: [],
   pendingRequests: [],
+  receivedResults: [],
   fetching: false,
-  key: null,
+  requestKey: null,
+  hookKey: null,
   method: null,
   status: null,
   message: null,
   invalidationIndex: 0,
-  compositeIdentifier: null as CompositeIdentifierType | null,
+  compositeIdentifier: null,
 })
 
 export default generateInitialStateGetter

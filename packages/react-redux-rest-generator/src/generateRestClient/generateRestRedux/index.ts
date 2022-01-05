@@ -1,8 +1,9 @@
-import { RestReduxGenerator, RestResourceConfig } from '../../types'
+import { RestResourceConfig } from '../types'
 import generateInitialStateGetter from './generateInitialStateGetter'
 import generateRestActions from './generateRestActions'
 import generateRestCreators from './generateRestCreators'
 import generateRestReducer from './generateRestReducer'
+import { RestReduxGenerator } from './types'
 
 const generateRestRedux: RestReduxGenerator = <
   CompositeIdentifierType,

@@ -1,6 +1,6 @@
-import { RestClientGenerator, RestResourceConfig } from '../types'
 import generateRestHook from './generateRestHook'
 import generateRestRedux from './generateRestRedux'
+import { RestClientGenerator, RestResourceConfig } from './types'
 
 /**
  * Generate a react-redux REST client for the described resource.
