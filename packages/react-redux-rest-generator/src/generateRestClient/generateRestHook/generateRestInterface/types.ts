@@ -1,17 +1,11 @@
+import { RestMethod } from '../../../types'
 import {
-  RestCreatePromiseResolver,
+  RestControllerHookContext,
   RestCreateResult,
-  RestDeletePromiseResolver,
   RestDeleteResult,
-  RestMethod,
-  RestReadPromiseResolver,
   RestReadResult,
-  RestResourceConfig,
-  RestUpdatePromiseResolver,
   RestUpdateResult,
-} from '../../../types'
-import { RestReduxCreatorSet } from '../../generateRestRedux/generateRestCreators/types'
-import { RestReduxState } from '../../generateRestRedux/types'
+} from '../../generateRestControllerHook/types'
 
 export type RestInterface<
   CompositeIdentifierType,
@@ -57,20 +51,9 @@ export type RestInterfaceGenerator = <
   AnonResourceType,
   ReadParamsType
 >(
-  state: RestReduxState<CompositeIdentifierType, AnonResourceType>,
-  dispatch: (action: { type: string; payload: unknown }) => void,
-  creators: RestReduxCreatorSet<CompositeIdentifierType, AnonResourceType>,
-  resourceConfig: RestResourceConfig<
+  hookContext: RestControllerHookContext<
     CompositeIdentifierType,
     AnonResourceType,
     ReadParamsType
-  >,
-  putCreatePromiseResolver: (
-    resolver: RestCreatePromiseResolver<CompositeIdentifierType>
-  ) => void,
-  putReadPromiseResolver: (
-    resolver: RestReadPromiseResolver<CompositeIdentifierType, AnonResourceType>
-  ) => void,
-  putUpdatePromiseResolver: (resolver: RestUpdatePromiseResolver) => void,
-  putDeletePromiseResolver: (resolver: RestDeletePromiseResolver) => void
+  >
 ) => RestInterface<CompositeIdentifierType, AnonResourceType, ReadParamsType>

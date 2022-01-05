@@ -1,17 +1,11 @@
-import {
-  RestCreatePromiseResolver,
-  RestCreateResult,
-  RestDeletePromiseResolver,
-  RestDeleteResult,
-  RestReadPromiseResolver,
-  RestReadResult,
-  RestResourceConfig,
-  RestUpdatePromiseResolver,
-  RestUpdateResult,
-} from '../../../types'
 import generateUuid from '../../../utils/generateUuid'
-import { RestReduxCreatorSet } from '../../generateRestRedux/generateRestCreators/types'
-import { RestReduxState } from '../../generateRestRedux/types'
+import {
+  RestControllerHookContext,
+  RestCreateResult,
+  RestDeleteResult,
+  RestReadResult,
+  RestUpdateResult,
+} from '../../generateRestControllerHook/types'
 import getApiUrlMany from './getApiUrl/getApiUrlMany'
 import getApiUrlSingle from './getApiUrl/getApiUrlSingle'
 import getApiUrlSingleAnon from './getApiUrl/getApiUrlSingleAnon'
@@ -22,23 +16,25 @@ const generateRestInterface: RestInterfaceGenerator = <
   AnonResourceType,
   ReadParamsType
 >(
-  state: RestReduxState<CompositeIdentifierType, AnonResourceType>,
-  dispatch: (action: { type: string; payload: unknown }) => void,
-  creators: RestReduxCreatorSet<CompositeIdentifierType, AnonResourceType>,
-  resourceConfig: RestResourceConfig<
+  hookContext: RestControllerHookContext<
     CompositeIdentifierType,
     AnonResourceType,
     ReadParamsType
-  >,
-  putCreatePromiseResolver: (
-    resolver: RestCreatePromiseResolver<CompositeIdentifierType>
-  ) => void,
-  putReadPromiseResolver: (
-    resolver: RestReadPromiseResolver<CompositeIdentifierType, AnonResourceType>
-  ) => void,
-  putUpdatePromiseResolver: (resolver: RestUpdatePromiseResolver) => void,
-  putDeletePromiseResolver: (resolver: RestDeletePromiseResolver) => void
+  >
 ) => {
+  // Deconstruct context
+  const {
+    hookKey,
+    state,
+    dispatch,
+    creators,
+    resourceConfig,
+    putCreatePromiseResolver,
+    putReadPromiseResolver,
+    putUpdatePromiseResolver,
+    putDeletePromiseResolver,
+  } = hookContext
+
   // Error Checks
   // - Ensure REST-redux state is not nullish
   if ((state ?? null) === null) {
@@ -84,7 +80,13 @@ const generateRestInterface: RestInterfaceGenerator = <
       const body = JSON.stringify(data)
 
       // Queue request
-      const queueAction = creators.queueRequest(requestKey, 'post', url, body)
+      const queueAction = creators.queueRequest(
+        requestKey,
+        hookKey,
+        'post',
+        url,
+        body
+      )
       dispatch(queueAction)
 
       // Return request promise
@@ -114,7 +116,13 @@ const generateRestInterface: RestInterfaceGenerator = <
       >(resourceConfig, params)
 
       // Queue request
-      const queueAction = creators.queueRequest(requestKey, 'get', url, null)
+      const queueAction = creators.queueRequest(
+        requestKey,
+        hookKey,
+        'get',
+        url,
+        null
+      )
       dispatch(queueAction)
 
       // Return request promise
@@ -149,7 +157,13 @@ const generateRestInterface: RestInterfaceGenerator = <
       const body = JSON.stringify(data)
 
       // Queue request
-      const queueAction = creators.queueRequest(requestKey, 'put', url, body)
+      const queueAction = creators.queueRequest(
+        requestKey,
+        hookKey,
+        'put',
+        url,
+        body
+      )
       dispatch(queueAction)
 
       // Return request promise
@@ -175,7 +189,13 @@ const generateRestInterface: RestInterfaceGenerator = <
       const url = getApiUrlSingle(compositeIdentifier, resourceConfig)
 
       // Queue request
-      const queueAction = creators.queueRequest(requestKey, 'delete', url, null)
+      const queueAction = creators.queueRequest(
+        requestKey,
+        hookKey,
+        'delete',
+        url,
+        null
+      )
       dispatch(queueAction)
 
       // Return request promise

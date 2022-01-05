@@ -1,16 +1,15 @@
 import axios, { AxiosError } from 'axios'
-import {
-  RestAmbiguousResult,
-  RestCreatePromiseResolver,
-  RestDeletePromiseResolver,
-  RestReadPromiseResolver,
-  RestRequest,
-  RestUpdatePromiseResolver,
-} from '../../../../types'
 import { RestHookContext } from '../../types'
 import handleRequestSuccess from './handleRequestSuccess'
 import RestProcessRequestEventHandler from './types'
 import handleRequestError from './handleRequestError'
+import { RestRequest } from '../../../generateRestRedux/types'
+import {
+  RestCreatePromiseResolver,
+  RestDeletePromiseResolver,
+  RestReadPromiseResolver,
+  RestUpdatePromiseResolver,
+} from '../../../generateRestControllerHook/types'
 
 const handleProcessRequest: RestProcessRequestEventHandler = async <
   CompositeIdentifierType,
