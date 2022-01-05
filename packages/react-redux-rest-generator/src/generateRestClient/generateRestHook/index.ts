@@ -17,9 +17,9 @@ import {
   RestPrimitive,
 } from '../../types'
 import { Dispatch } from 'redux'
-import handleDismount from './events/handleDismount'
+import handleDismount from '../generateRestControllerHook/events/handleDismount'
 import { RestHookContext } from './types'
-import handleProcessRequest from './events/handleProcessRequest'
+import handleProcessRequest from '../generateRestControllerHook/events/handleProcessRequest'
 
 const generateRestHook: RestHookGenerator = <
   CompositeIdentifierType,
