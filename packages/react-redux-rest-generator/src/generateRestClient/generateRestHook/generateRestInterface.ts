@@ -51,7 +51,10 @@ const generateRestInterface: RestInterfaceGenerator = <
     method: state.method,
     status: state.status,
     message: state.message,
-    create: async (parentsIdentifier?: Record<string, string>) => {
+    create: async (
+      parentsIdentifier?: Record<string, string>,
+      overrideData?: AnonResourceType
+    ) => {
       // Ensure parentsIdentifier supplied if needed
       if (resourceConfig.identifiers.length > 1 && !parentsIdentifier) {
         throw new Error(
@@ -80,7 +83,7 @@ const generateRestInterface: RestInterfaceGenerator = <
         AnonResourceType,
         ReadParamsType
       >(parentsIdentifier ?? {}, resourceConfig)
-      const data = { ...state.fields }
+      const data = overrideData ? overrideData : { ...state.fields }
       const body = JSON.stringify(data)
 
       // Queue request
