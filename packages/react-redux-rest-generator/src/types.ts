@@ -333,7 +333,8 @@ export type RestInterface<
   clearResponse: () => void
   // CRUD
   create: (
-    parentsIdentifier?: Record<string, string>
+    parentsIdentifier?: Record<string, string>,
+    overrideData?: AnonResourceType
   ) => Promise<RestCreateResult<CompositeIdentifierType>>
   read: (
     params: ReadParamsType
