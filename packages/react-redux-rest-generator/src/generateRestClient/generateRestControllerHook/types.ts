@@ -1,8 +1,8 @@
 import { Dispatch } from 'redux'
-import { RestInterface } from '../generateRestHook/generateRestInterface/types'
 import { RestReduxCreatorSet } from '../generateRestRedux/generateRestCreators/types'
 import { RestReduxState } from '../generateRestRedux/types'
 import { RestResourceConfig } from '../types'
+import { RestInterface } from './generateRestInterface/types'
 
 export type RestAmbiguousResult = {
   status: number

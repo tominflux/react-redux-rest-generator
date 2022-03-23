@@ -1,161 +1,104 @@
-import axios, { AxiosError } from 'axios'
-import handleRequestSuccess from './handleRequestSuccess'
+import axios, { AxiosError, AxiosRequestConfig } from 'axios'
+import { RestApiPayload } from '../../../../types'
+import { RestSchedulerHookContext } from '../../types'
 import RestProcessRequestEventHandler from './types'
-import handleRequestError from './handleRequestError'
-import { RestRequest } from '../../../generateRestRedux/types'
-import {
-  RestAmbiguousResult,
-  RestControllerHookContext,
-  RestCreatePromiseResolver,
-  RestDeletePromiseResolver,
-  RestReadPromiseResolver,
-  RestUpdatePromiseResolver,
-} from '../../types'
-import { RestMethod } from '../../../../types'
 
 const handleProcessRequest: RestProcessRequestEventHandler = async <
   CompositeIdentifierType,
   AnonResourceType,
   ReadParamsType
 >(
-  hookContext: RestControllerHookContext<
+  hookContext: RestSchedulerHookContext<
     CompositeIdentifierType,
     AnonResourceType,
     ReadParamsType
   >
 ) => {
   // Deconstruct context
-  const {
-    resourceConfig,
-    hookKey,
-    state,
-    creators,
-    dispatch,
-    takeCreatePromiseResolver,
-    takeReadPromiseResolver,
-    takeUpdatePromiseResolver,
-    takeDeletePromiseResolver,
-  } = hookContext
+  const { state, creators, dispatch } = hookContext
 
-  // Do nothing if request queue is empty
-  if (state.pendingRequests.length === 0) return
+  // Deconstruct state
+  const { pendingRequests } = state
 
-  // Get the request promise resolver
-  const resolverTakers = {
-    post: takeCreatePromiseResolver,
-    get: takeReadPromiseResolver,
-    put: takeUpdatePromiseResolver,
-    delete: takeDeletePromiseResolver,
-  }
+  // Select first request from pending requests
+  const [currentRequest] = pendingRequests
 
-  // Get next pending request and resolver
-  const findMatchedRequestAndResolver: (
-    index?: number
-  ) => {
-    request: RestRequest
-    resolver:
-      | RestCreatePromiseResolver<CompositeIdentifierType>
-      | RestReadPromiseResolver<CompositeIdentifierType, AnonResourceType>
-      | RestUpdatePromiseResolver
-      | RestDeletePromiseResolver
-  } | null = (index = 0) => {
-    if (index >= state.pendingRequests.length) return null
-    const request = state.pendingRequests[index]
-    const { method, requestKey } = request
-    const requestPromiseResolver = resolverTakers[method as RestMethod](
-      requestKey
-    )
-    if (requestPromiseResolver === null)
-      return findMatchedRequestAndResolver(index + 1)
-    return {
-      request,
-      resolver: requestPromiseResolver,
-    }
-  }
-  const requestAndResolver = findMatchedRequestAndResolver()
-
-  // If does not belong, skip.
-  if (requestAndResolver === null) {
-    if (resourceConfig.verboseLogging) {
-      console.log(
-        `R3G - ${resourceConfig.name} - Could not find matched request`,
-        {
-          hook: hookKey,
-        }
-      )
-    }
+  // If no requests, skip
+  if ((currentRequest ?? null) === null) {
     return
   }
-  const { request, resolver } = requestAndResolver
 
-  // Determine if request belongs to this hook.
-  if (resourceConfig.verboseLogging) {
-    console.log(`R3G - ${resourceConfig.name} - Processing Request`, {
-      hook: hookKey,
-      ...request,
-    })
-  }
+  // Deconstruct request information
+  const { requestKey, hookKey, method, url, body } = currentRequest
 
   // Inform reducer that request is being handled
-  const { requestKey } = request
   const fetchAction = creators.fetch(requestKey)
   dispatch(fetchAction)
 
-  // Attempt to contact API and run operation
+  // Attempt to perform operation
   try {
-    // Send request to API
-    const { method, url, body } = request
-    const response = await axios.request({
+    // Construct axios request config
+    const axiosRequestConfig: AxiosRequestConfig = {
       method,
       url,
       data: body,
       headers: {
         'Content-Type': 'application/json',
       },
-    })
-
-    // Extract information from API response
-    const status = response.status
-    const message = response.data.message as string
-    const payload = response.data.payload as unknown
-
-    // Re-construct into ambiguous REST result
-    const result: RestAmbiguousResult = {
-      status,
-      message,
-      payload,
     }
 
-    // Handle request success case
-    await handleRequestSuccess<
-      CompositeIdentifierType,
-      AnonResourceType,
-      ReadParamsType
-    >(hookContext, request, result, resolver)
+    // Send request to API
+    const axiosResponse = await axios.request<{
+      message: string
+      payload: RestApiPayload<CompositeIdentifierType, AnonResourceType> | null
+    }>(axiosRequestConfig)
+
+    // Deconstruct response
+    const { status, data: axiosResponseData } = axiosResponse
+
+    // Deconstruct response data
+    const { message, payload } = axiosResponseData
+
+    // Inform reducer of response
+    const responseAction = creators.response(
+      requestKey,
+      hookKey,
+      status,
+      message,
+      payload
+    )
+    dispatch(responseAction)
   } catch (err) {
-    const axiosErr = err as AxiosError
+    // Contextualize error
+    const axiosErr = err as AxiosError<{
+      message: string
+      payload: null
+    }>
 
     // Throw error again if not recognizable API error
     if (!axiosErr.isAxiosError || !axiosErr.response) {
-      console.error('Processing R3G request failed for unknown reason.')
+      console.error('Performing REST operation failed for unknown reason.')
       throw err
     }
 
-    // Extract information from API response
-    const status = axiosErr.response.status
-    const message = axiosErr.response.data.message
-    const payload = null
-    const result: RestAmbiguousResult = { status, message, payload }
+    // Deconstruct axios error
+    const { response: axiosResponse } = axiosErr
 
-    // Extract information from error
-    const axiosMessage = axiosErr.message
+    // Deconstruct axios response
+    const { status, data: axiosResponseData } = axiosResponse
 
-    // Handle request error case
-    handleRequestError<
-      CompositeIdentifierType,
-      AnonResourceType,
-      ReadParamsType
-    >(hookContext, request, result, resolver, axiosMessage)
+    // Deconstruct axios response data
+    const { message, payload } = axiosResponseData
+
+    // Inform reducer of response
+    const responseAction = creators.response(
+      requestKey,
+      hookKey,
+      status,
+      message,
+      payload
+    )
+    dispatch(responseAction)
   }
 }
 
