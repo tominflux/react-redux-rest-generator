@@ -1,15 +1,13 @@
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Dispatch } from 'redux'
-import {
-  RestReduxCreatorSet,
-  RestReduxState,
-  RestResourceConfig,
-} from '../../types'
 import generateUuid from '../../utils/generateUuid'
-import handleDismount from '../generateRestControllerHook/events/handleDismount'
-import handleProcessRequest from '../generateRestControllerHook/events/handleProcessRequest'
+import handleDismount from './events/handleDismount'
+import handleProcessRequest from './events/handleProcessRequest'
 import { RestHookContext } from '../generateRestHook/types'
+import { RestReduxState } from '../generateRestRedux/types'
+import { RestReduxCreatorSet } from '../generateRestRedux/generateRestCreators/types'
+import { RestResourceConfig } from '../types'
 
 const generateRequestSchedulerHook = <
   CompositeIdentifierType,

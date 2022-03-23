@@ -1,12 +1,12 @@
 import { RestControllerHookContext } from '../../types'
 import RestHookDismountHandler from './types'
 
-const handleDismount: RestHookDismountHandler = <
+const handleControllerHookDismount: RestHookDismountHandler = <
   CompositeIdentifierType,
   AnonResourceType,
   ReadParamsType
 >(
-  hookContext: RestControllerHookContext<
+  controllerHookContext: RestControllerHookContext<
     CompositeIdentifierType,
     AnonResourceType,
     ReadParamsType
@@ -21,7 +21,7 @@ const handleDismount: RestHookDismountHandler = <
     updatePromiseResolverList,
     deletePromiseResolverList,
     dispatch,
-  } = hookContext
+  } = controllerHookContext
 
   // Report dismount
   if (resourceConfig.verboseLogging) {
@@ -38,18 +38,18 @@ const handleDismount: RestHookDismountHandler = <
     ...deletePromiseResolverList,
   ]
   resolverList.forEach((resolver) => {
-    const { key: requestKey, reject } = resolver
+    const { requestKey: requestKey, reject } = resolver
     reject(
       `R3G - ${resourceConfig.name} - Hook ${hookKey} dismounted before request ${requestKey} could be handled.`
     )
   })
 
   // Remove requests from queue
-  const requestKeyList = resolverList.map((resolver) => resolver.key)
+  const requestKeyList = resolverList.map((resolver) => resolver.requestKey)
   requestKeyList.forEach((requestKey) => {
     const cancelAction = creators.cancelRequest(requestKey)
     dispatch(cancelAction)
   })
 }
 
-export default handleDismount
+export default handleControllerHookDismount

@@ -24,6 +24,7 @@ export type RestReadPayload<CompositeIdentifierType, AnonResourceType> = {
 export type RestResult<CompositeIdentifierType, AnonResourceType> = {
   requestKey: string
   hookKey: string
+  method: RestMethod
   status: number
   message: string
   payload:

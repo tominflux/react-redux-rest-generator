@@ -1,20 +1,29 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Dispatch } from 'redux'
 import generateUuid from '../../utils/generateUuid'
 import generateRestInterface from './generateRestInterface'
 import { RestReduxCreatorSet } from '../generateRestRedux/generateRestCreators/types'
-import { RestReduxState } from '../generateRestRedux/types'
+import {
+  RestCreatePayload,
+  RestReadPayload,
+  RestReduxState,
+} from '../generateRestRedux/types'
 import { RestResourceConfig } from '../types'
 import {
   RestControllerHook,
   RestControllerHookContext,
   RestControllerHookGenerator,
   RestCreatePromiseResolver,
+  RestCreateResult,
   RestDeletePromiseResolver,
+  RestDeleteResult,
   RestReadPromiseResolver,
+  RestReadResult,
   RestUpdatePromiseResolver,
+  RestUpdateResult,
 } from './types'
+import handleControllerHookDismount from './events/handleControllerHookDismount'
 
 const generateControllerHook: RestControllerHookGenerator = <
   CompositeIdentifierType,
@@ -74,7 +83,7 @@ const generateControllerHook: RestControllerHookGenerator = <
       setResolverList((prevResolverList) => [...prevResolverList, resolver])
     }
     const takeRequestPromiseResolver = (
-      key: string,
+      requestKey: string,
       resolverList: Array<unknown>,
       setResolverList: React.Dispatch<React.SetStateAction<Array<unknown>>>
     ) => {
@@ -82,9 +91,9 @@ const generateControllerHook: RestControllerHookGenerator = <
       const resolver =
         resolverList.find((promiseResolver) => {
           const keyedResolver = promiseResolver as Record<string, unknown> & {
-            key: string
+            requestKey: string
           }
-          const isMatch = keyedResolver.key === key
+          const isMatch = keyedResolver.requestKey === requestKey
           return isMatch
         }) ?? null
       if (resolver === null) return null
@@ -93,9 +102,9 @@ const generateControllerHook: RestControllerHookGenerator = <
       setResolverList((prevResolverList) =>
         prevResolverList.filter((promiseResolver) => {
           const keyedResolver = promiseResolver as Record<string, unknown> & {
-            key: string
+            requestKey: string
           }
-          const isMatch = keyedResolver.key === key
+          const isMatch = keyedResolver.requestKey === requestKey
           return !isMatch
         })
       )
@@ -113,9 +122,9 @@ const generateControllerHook: RestControllerHookGenerator = <
           React.SetStateAction<Array<unknown>>
         >
       )
-    const takeCreatePromiseResolver = (key: string) =>
+    const takeCreatePromiseResolver = (requestKey: string) =>
       takeRequestPromiseResolver(
-        key,
+        requestKey,
         createPromiseResolverList,
         setCreatePromiseResolverList as React.Dispatch<
           React.SetStateAction<Array<unknown>>
@@ -134,9 +143,9 @@ const generateControllerHook: RestControllerHookGenerator = <
           React.SetStateAction<Array<unknown>>
         >
       )
-    const takeReadPromiseResolver = (key: string) =>
+    const takeReadPromiseResolver = (requestKey: string) =>
       takeRequestPromiseResolver(
-        key,
+        requestKey,
         readPromiseResolverList,
         setReadPromiseResolverList as React.Dispatch<
           React.SetStateAction<Array<unknown>>
@@ -150,9 +159,9 @@ const generateControllerHook: RestControllerHookGenerator = <
           React.SetStateAction<Array<unknown>>
         >
       )
-    const takeUpdatePromiseResolver = (key: string) =>
+    const takeUpdatePromiseResolver = (requestKey: string) =>
       takeRequestPromiseResolver(
-        key,
+        requestKey,
         updatePromiseResolverList,
         setUpdatePromiseResolverList as React.Dispatch<
           React.SetStateAction<Array<unknown>>
@@ -176,7 +185,7 @@ const generateControllerHook: RestControllerHookGenerator = <
       ) as RestDeletePromiseResolver
 
     // Construct hook context
-    const hookContext: RestControllerHookContext<
+    const controllerHookContext: RestControllerHookContext<
       CompositeIdentifierType,
       AnonResourceType,
       ReadParamsType
@@ -210,10 +219,151 @@ const generateControllerHook: RestControllerHookGenerator = <
     }
 
     // Interface (methods and flags)
-    const _interface = generateRestInterface(hookContext)
+    const _interface = generateRestInterface(controllerHookContext)
+
+    // Derivations
+    // Deconstruct request results from state
+    const { receivedResults: requestResultList } = state
 
     // Effects
-    // TODO: Observe received results & resolve promises
+    // - Observe received results & resolve promises
+    useEffect(() => {
+      // Find request result that belongs to this hook
+      const matchedRequestResult =
+        requestResultList.find(
+          (receivedResult) => receivedResult.hookKey === hookKey
+        ) ?? null
+
+      // Do nothing if no matched request found
+      if (matchedRequestResult === null) {
+        return
+      }
+
+      // Deconstruct matched result
+      const {
+        requestKey: matchedRequestKey,
+        method: matchedRequestMethod,
+        status: matchedRequestResultStatus,
+        message: matchedRequestResultMessage,
+        payload: matchedRequestResultPayload,
+      } = matchedRequestResult
+
+      // Resolve promise
+      switch (matchedRequestMethod) {
+        // Create Operation
+        case 'post': {
+          // Contextualize payload
+          const matchedCreateRequestResultPayload = matchedRequestResultPayload as RestCreatePayload<CompositeIdentifierType>
+          const resourceIdentifier: CompositeIdentifierType | null = matchedCreateRequestResultPayload
+
+          // Take create promise resolver
+          const createPromiseResolver = takeCreatePromiseResolver(
+            matchedRequestKey
+          )
+
+          // Deconstruct create promise resolver
+          const { resolve: resolveCreatePromise } = createPromiseResolver
+
+          // Construct create operation result
+          const createOperationResult: RestCreateResult<CompositeIdentifierType> = {
+            status: matchedRequestResultStatus,
+            message: matchedRequestResultMessage,
+            compositeIdentifier: resourceIdentifier,
+          }
+
+          // Resolve create operation promise
+          resolveCreatePromise(createOperationResult)
+        }
+        // Read Operation
+        case 'get': {
+          // Contextualize payload
+          const matchesReadRequestResultPayload = matchedRequestResultPayload as RestReadPayload<
+            CompositeIdentifierType,
+            AnonResourceType
+          >
+
+          // Deconstruct payload
+          const { resourceList } = matchesReadRequestResultPayload
+
+          // Take read promise resolver
+          const readPromiseResolver = takeReadPromiseResolver(matchedRequestKey)
+
+          // Deconstruct read promise resolver
+          const { resolve: resolveReadPromise } = readPromiseResolver
+
+          // Construct read operation result
+          const readOperationResult: RestReadResult<
+            CompositeIdentifierType,
+            AnonResourceType
+          > = {
+            status: matchedRequestResultStatus,
+            message: matchedRequestResultMessage,
+            resourceList,
+          }
+
+          // Resolve read operation promise
+          resolveReadPromise(readOperationResult)
+        }
+        // Update Operation
+        case 'put': {
+          // Take update promise resolver
+          const updatePromiseResolver = takeUpdatePromiseResolver(
+            matchedRequestKey
+          )
+
+          // Deconstruct update promise resolver
+          const { resolve: resolveUpdatePromise } = updatePromiseResolver
+
+          // Construct update operation result
+          const updateOperationResult: RestUpdateResult = {
+            status: matchedRequestResultStatus,
+            message: matchedRequestResultMessage,
+          }
+
+          // Resolve update operation promise
+          resolveUpdatePromise(updateOperationResult)
+        }
+        // Delete Operation
+        case 'delete': {
+          // Take delete promise resolver
+          const deletePromiseResolver = takeDeletePromiseResolver(
+            matchedRequestKey
+          )
+
+          // Deconstruct delete promise resolver
+          const { resolve: resolveDeletePromise } = deletePromiseResolver
+
+          // Construct delete operation result
+          const deleteOperationResult: RestDeleteResult = {
+            status: matchedRequestResultStatus,
+            message: matchedRequestResultMessage,
+          }
+
+          // Resolve delete operation promise
+          resolveDeletePromise(deleteOperationResult)
+        }
+        // Unrecognized Method
+        default: {
+          throw new Error(
+            `Cannot resolve REST operation promise. ` +
+              `Unrecognized request method '${matchedRequestMethod}'.`
+          )
+        }
+      }
+    }, [
+      ...requestResultList
+        .map(({ requestKey }) => requestKey)
+        .reduce<string>((concatenatedKeys, requestKey) => {
+          if (concatenatedKeys === '') return `${requestKey}`
+          return `${concatenatedKeys}-${requestKey}`
+        }, ''),
+    ])
+    // - Clean up on dismount
+    useEffect(() => {
+      return () => {
+        handleControllerHookDismount(controllerHookContext)
+      }
+    }, [])
 
     return _interface
   }

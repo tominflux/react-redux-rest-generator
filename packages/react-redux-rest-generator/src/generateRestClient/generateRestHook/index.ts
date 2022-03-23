@@ -17,7 +17,7 @@ import {
   RestPrimitive,
 } from '../../types'
 import { Dispatch } from 'redux'
-import handleDismount from '../generateRestControllerHook/events/handleDismount'
+import handleControllerHookDismount from '../generateRestControllerHook/events/handleControllerHookDismount'
 import { RestHookContext } from './types'
 import handleProcessRequest from '../generateRestControllerHook/events/handleProcessRequest'
 
@@ -267,7 +267,7 @@ const generateRestHook: RestHookGenerator = <
     // - Clean up on dismount
     useEffect(() => {
       return () => {
-        handleDismount(hookContext)
+        handleControllerHookDismount(hookContext)
       }
     }, [])
 

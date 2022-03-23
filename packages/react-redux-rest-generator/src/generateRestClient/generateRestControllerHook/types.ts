@@ -37,7 +37,7 @@ export type RestAmbiguousPromiseResolver<
   | RestUpdatePromiseResolver
   | RestDeletePromiseResolver
 export type RestCreatePromiseResolver<CompositeIdentifierType> = {
-  key: string
+  requestKey: string
   resolve: (result: RestCreateResult<CompositeIdentifierType>) => void
   reject: (reason: string) => void
 }
@@ -45,19 +45,19 @@ export type RestReadPromiseResolver<
   CompositeIdentifierType,
   AnonResourceType
 > = {
-  key: string
+  requestKey: string
   resolve: (
     result: RestReadResult<CompositeIdentifierType, AnonResourceType>
   ) => void
   reject: (reason: string) => void
 }
 export type RestUpdatePromiseResolver = {
-  key: string
+  requestKey: string
   resolve: (result: RestUpdateResult) => void
   reject: (reason: string) => void
 }
 export type RestDeletePromiseResolver = {
-  key: string
+  requestKey: string
   resolve: (result: RestDeleteResult) => void
   reject: (reason: string) => void
 }
