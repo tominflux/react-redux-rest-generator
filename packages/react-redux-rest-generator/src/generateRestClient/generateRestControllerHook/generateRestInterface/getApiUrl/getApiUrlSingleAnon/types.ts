@@ -1,4 +1,4 @@
-import { RestResourceConfig } from '../../../../../types'
+import { RestResourceConfig } from '../../../../types'
 
 export type RestSingleAnonApiUrlGetter = <
   CompositeIdentifierType,

@@ -12,6 +12,11 @@ export type RestReadParams = Record<string, RestPrimitive>
 
 export type RestMethod = 'get' | 'post' | 'put' | 'delete'
 
+export type RestApiReadPayload<
+  CompositeIdentifierType,
+  AnonResourceType
+> = Record<string, Array<CompositeIdentifierType & AnonResourceType>>
+
 export type RestApiPayload<CompositeIdentifierType, AnonResourceType> = {
   compositeIdentifier?: CompositeIdentifierType
   resourceList?: Array<CompositeIdentifierType & AnonResourceType>

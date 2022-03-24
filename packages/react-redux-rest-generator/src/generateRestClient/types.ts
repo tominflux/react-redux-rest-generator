@@ -1,4 +1,5 @@
-import { RestHook } from './generateRestHook/types'
+import { RestSchedulerHook } from './generateRequestSchedulerHook/types'
+import { RestControllerHook } from './generateRestControllerHook/types'
 import { RestReduxInitialStateGetter } from './generateRestRedux/generateInitialStateGetter/types'
 import { RestReducer } from './generateRestRedux/generateRestReducer/types'
 
@@ -43,7 +44,12 @@ export type RestClient<
     ReadParamsType
   >
   reducer: RestReducer<CompositeIdentifierType, AnonResourceType>
-  hook: RestHook<CompositeIdentifierType, AnonResourceType, ReadParamsType>
+  controllerHook: RestControllerHook<
+    CompositeIdentifierType,
+    AnonResourceType,
+    ReadParamsType
+  >
+  schedulerHook: RestSchedulerHook
   getInitialState: RestReduxInitialStateGetter<
     CompositeIdentifierType,
     AnonResourceType

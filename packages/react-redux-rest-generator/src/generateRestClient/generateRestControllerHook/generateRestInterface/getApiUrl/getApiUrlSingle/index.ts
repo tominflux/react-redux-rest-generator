@@ -1,5 +1,5 @@
 import * as path from 'path'
-import { RestResourceConfig } from '../../../../../types'
+import { RestResourceConfig } from '../../../../types'
 import { RestSingleApiUrlGetter } from './types'
 
 const getApiUrlSingle: RestSingleApiUrlGetter = <

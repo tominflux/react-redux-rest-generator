@@ -1,5 +1,6 @@
 import axios, { AxiosError, AxiosRequestConfig } from 'axios'
-import { RestApiPayload } from '../../../../types'
+import { RestApiPayload, RestApiReadPayload } from '../../../../types'
+import { RestReadPayload } from '../../../generateRestRedux/types'
 import { RestSchedulerHookContext } from '../../types'
 import RestProcessRequestEventHandler from './types'
 
@@ -8,14 +9,17 @@ const handleProcessRequest: RestProcessRequestEventHandler = async <
   AnonResourceType,
   ReadParamsType
 >(
-  hookContext: RestSchedulerHookContext<
+  schedulerHookContext: RestSchedulerHookContext<
     CompositeIdentifierType,
     AnonResourceType,
     ReadParamsType
   >
 ) => {
   // Deconstruct context
-  const { state, creators, dispatch } = hookContext
+  const { resourceConfig, state, creators, dispatch } = schedulerHookContext
+
+  // Deconstruct config
+  const { apiPayloadResourceListName, name: resourceName } = resourceConfig
 
   // Deconstruct state
   const { pendingRequests } = state
@@ -57,12 +61,44 @@ const handleProcessRequest: RestProcessRequestEventHandler = async <
     const { status, data: axiosResponseData } = axiosResponse
 
     // Deconstruct response data
-    const { message, payload } = axiosResponseData
+    const { message, payload: axiosResponsePayload } = axiosResponseData
+
+    // Construct payload
+    const getPayload = () => {
+      switch (method) {
+        case 'get': {
+          // Get name of resource list from config or use default
+          const listName = apiPayloadResourceListName ?? `${resourceName}List`
+
+          // Deconstruct axios response payload
+          const {
+            [listName]: resourceList,
+          } = axiosResponsePayload as RestApiReadPayload<
+            CompositeIdentifierType,
+            AnonResourceType
+          >
+
+          // Contextualize axios
+          const payload: RestReadPayload<
+            CompositeIdentifierType,
+            AnonResourceType
+          > = {
+            resourceList,
+          }
+
+          return payload
+        }
+        default:
+          return axiosResponsePayload
+      }
+    }
+    const payload = getPayload()
 
     // Inform reducer of response
     const responseAction = creators.response(
       requestKey,
       hookKey,
+      method,
       status,
       message,
       payload
@@ -77,6 +113,7 @@ const handleProcessRequest: RestProcessRequestEventHandler = async <
 
     // Throw error again if not recognizable API error
     if (!axiosErr.isAxiosError || !axiosErr.response) {
+      console.error((err as Error).message)
       console.error('Performing REST operation failed for unknown reason.')
       throw err
     }
@@ -94,6 +131,7 @@ const handleProcessRequest: RestProcessRequestEventHandler = async <
     const responseAction = creators.response(
       requestKey,
       hookKey,
+      method,
       status,
       message,
       payload

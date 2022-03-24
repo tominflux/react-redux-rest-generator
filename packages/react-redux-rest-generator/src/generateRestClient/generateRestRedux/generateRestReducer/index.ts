@@ -152,6 +152,7 @@ const generateRestReducer: RestReducerGenerator = <
         const {
           requestKey,
           hookKey,
+          method,
           status,
           message,
           apiPayload,
@@ -192,6 +193,7 @@ const generateRestReducer: RestReducerGenerator = <
           > = {
             requestKey: requestKey as string,
             hookKey: hookKey as string,
+            method: method as RestMethod,
             status: status as number,
             message: message as string,
             payload: apiPayload as RestReadPayload<
@@ -230,6 +232,7 @@ const generateRestReducer: RestReducerGenerator = <
           > = {
             requestKey: requestKey as string,
             hookKey: hookKey as string,
+            method: method as RestMethod,
             status: status as number,
             message: message as string,
             payload: apiPayload as CompositeIdentifierType,
@@ -261,6 +264,7 @@ const generateRestReducer: RestReducerGenerator = <
         > = {
           requestKey: requestKey as string,
           hookKey: hookKey as string,
+          method: method as RestMethod,
           status: status as number,
           message: message as string,
           payload: apiPayload as null,

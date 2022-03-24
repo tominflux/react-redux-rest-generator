@@ -20,11 +20,12 @@ const generateRestCreators: RestReduxCreatorsGenerator = (
     type: actions.FETCH,
     payload: { requestKey },
   }),
-  response: (requestKey, hookKey, status, message, apiPayload) => ({
+  response: (requestKey, hookKey, method, status, message, apiPayload) => ({
     type: actions.RESPONSE,
     payload: {
       requestKey,
       hookKey,
+      method,
       status,
       message,
       apiPayload,

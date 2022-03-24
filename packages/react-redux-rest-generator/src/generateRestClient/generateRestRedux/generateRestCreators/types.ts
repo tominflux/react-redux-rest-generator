@@ -45,6 +45,7 @@ export type RestReduxCreatorSet<CompositeIdentifierType, AnonResourceType> = {
   response: (
     requestKey: string,
     hookKey: string,
+    method: RestMethod,
     status: number,
     message: string,
     apiPayload: RestApiPayload<CompositeIdentifierType, AnonResourceType> | null
@@ -53,6 +54,7 @@ export type RestReduxCreatorSet<CompositeIdentifierType, AnonResourceType> = {
     payload: {
       requestKey: string
       hookKey: string
+      method: RestMethod
       status: number
       message: string
       apiPayload: RestApiPayload<

@@ -1,9 +1,13 @@
 import generateUuid from '../../../utils/generateUuid'
 import {
   RestControllerHookContext,
+  RestCreatePromiseResolver,
   RestCreateResult,
+  RestDeletePromiseResolver,
   RestDeleteResult,
+  RestReadPromiseResolver,
   RestReadResult,
+  RestUpdatePromiseResolver,
   RestUpdateResult,
 } from '../../generateRestControllerHook/types'
 import getApiUrlMany from './getApiUrl/getApiUrlMany'
@@ -62,8 +66,8 @@ const generateRestInterface: RestInterfaceGenerator = <
       const requestPromise = new Promise<
         RestCreateResult<CompositeIdentifierType>
       >((resolve, reject) => {
-        const promiseResolver = {
-          key: requestKey,
+        const promiseResolver: RestCreatePromiseResolver<CompositeIdentifierType> = {
+          requestKey,
           resolve,
           reject,
         }
@@ -100,8 +104,11 @@ const generateRestInterface: RestInterfaceGenerator = <
       const requestPromise = new Promise<
         RestReadResult<CompositeIdentifierType, AnonResourceType>
       >((resolve, reject) => {
-        const promiseResolver = {
-          key: requestKey,
+        const promiseResolver: RestReadPromiseResolver<
+          CompositeIdentifierType,
+          AnonResourceType
+        > = {
+          requestKey,
           resolve,
           reject,
         }
@@ -138,8 +145,8 @@ const generateRestInterface: RestInterfaceGenerator = <
       // Register request promise
       const requestPromise = new Promise<RestUpdateResult>(
         (resolve, reject) => {
-          const promiseResolver = {
-            key: requestKey,
+          const promiseResolver: RestUpdatePromiseResolver = {
+            requestKey,
             resolve,
             reject,
           }
@@ -176,8 +183,8 @@ const generateRestInterface: RestInterfaceGenerator = <
       // Register request promise
       const requestPromise = new Promise<RestDeleteResult>(
         (resolve, reject) => {
-          const promiseResolver = {
-            key: requestKey,
+          const promiseResolver: RestDeletePromiseResolver = {
+            requestKey,
             resolve,
             reject,
           }

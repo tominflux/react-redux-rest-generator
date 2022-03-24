@@ -1,5 +1,5 @@
 import * as path from 'path'
-import { RestResourceConfig } from '../../../../../types'
+import { RestResourceConfig } from '../../../../types'
 import getStringifiedParams from '../getStringifiedParams'
 import { RestManyApiUrlGetter } from './types'
 

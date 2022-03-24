@@ -20,6 +20,8 @@ const exampleRestClient = generateRestClient<
     filter: filterExample,
     sort: sortExample
 })
-
+console.log('REST CLIENT', exampleRestClient)
+console.log('INTIIAL STATE', exampleRestClient.getInitialState())
 export const exampleReducer = exampleRestClient.reducer
-export const useExample = exampleRestClient.hook
+export const useExample = exampleRestClient.controllerHook
+export const useExampleScheduler = exampleRestClient.schedulerHook

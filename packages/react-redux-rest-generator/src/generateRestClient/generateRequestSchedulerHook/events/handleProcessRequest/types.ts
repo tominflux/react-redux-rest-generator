@@ -1,11 +1,11 @@
-import { RestControllerHookContext } from '../../types'
+import { RestSchedulerHookContext } from '../../types'
 
 type RestProcessRequestEventHandler = <
   CompositeIdentifierType,
   AnonResourceType,
   ReadParamsType
 >(
-  hookContext: RestControllerHookContext<
+  schedulerHookContext: RestSchedulerHookContext<
     CompositeIdentifierType,
     AnonResourceType,
     ReadParamsType

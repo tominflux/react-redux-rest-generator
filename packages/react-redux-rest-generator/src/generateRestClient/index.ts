@@ -1,4 +1,5 @@
-import generateRestHook from './generateRestHook'
+import generateRequestSchedulerHook from './generateRequestSchedulerHook'
+import generateRestControllerHook from './generateRestControllerHook'
 import generateRestRedux from './generateRestRedux'
 import { RestClientGenerator, RestResourceConfig } from './types'
 
@@ -22,7 +23,13 @@ const generateRestClient: RestClientGenerator = <
     ReadParamsType
   >(resourceConfig)
 
-  const hook = generateRestHook<
+  const controllerHook = generateRestControllerHook<
+    CompositeIdentifierType,
+    AnonResourceType,
+    ReadParamsType
+  >(creators, resourceConfig)
+
+  const schedulerHook = generateRequestSchedulerHook<
     CompositeIdentifierType,
     AnonResourceType,
     ReadParamsType
@@ -31,7 +38,8 @@ const generateRestClient: RestClientGenerator = <
   const restClient = {
     config: resourceConfig,
     reducer,
-    hook,
+    controllerHook,
+    schedulerHook,
     getInitialState,
   }
 
