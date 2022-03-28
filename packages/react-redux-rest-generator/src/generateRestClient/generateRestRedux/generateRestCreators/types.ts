@@ -63,6 +63,12 @@ export type RestReduxCreatorSet<CompositeIdentifierType, AnonResourceType> = {
       > | null
     }
   }
+  resolve: (
+    requestKey: string
+  ) => {
+    type: string
+    payload: { requestKey: string }
+  }
   invalidate: () => { type: string; payload: Record<string, never> }
   clearFields: () => { type: string; payload: Record<string, never> }
   clearResponse: () => { type: string; payload: Record<string, never> }

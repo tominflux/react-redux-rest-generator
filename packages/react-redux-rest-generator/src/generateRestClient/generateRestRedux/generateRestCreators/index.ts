@@ -31,6 +31,10 @@ const generateRestCreators: RestReduxCreatorsGenerator = (
       apiPayload,
     },
   }),
+  resolve: (requestKey) => ({
+    type: actions.RESOLVE,
+    payload: { requestKey },
+  }),
   invalidate: () => ({
     type: actions.INVALIDATE,
     payload: {},

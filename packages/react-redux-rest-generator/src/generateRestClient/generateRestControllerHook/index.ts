@@ -273,6 +273,7 @@ const generateControllerHook: RestControllerHookGenerator = <
 
           // Resolve create operation promise
           resolveCreatePromise(createOperationResult)
+          break
         }
         // Read Operation
         case 'get': {
@@ -303,6 +304,7 @@ const generateControllerHook: RestControllerHookGenerator = <
 
           // Resolve read operation promise
           resolveReadPromise(readOperationResult)
+          break
         }
         // Update Operation
         case 'put': {
@@ -322,6 +324,7 @@ const generateControllerHook: RestControllerHookGenerator = <
 
           // Resolve update operation promise
           resolveUpdatePromise(updateOperationResult)
+          break
         }
         // Delete Operation
         case 'delete': {
@@ -341,6 +344,7 @@ const generateControllerHook: RestControllerHookGenerator = <
 
           // Resolve delete operation promise
           resolveDeletePromise(deleteOperationResult)
+          break
         }
         // Unrecognized Method
         default: {
@@ -350,6 +354,10 @@ const generateControllerHook: RestControllerHookGenerator = <
           )
         }
       }
+
+      // Inform reducer of resolution
+      const resolveAction = creators.resolve(matchedRequestKey)
+      dispatch(resolveAction)
     }, [
       requestResultList
         .map(({ requestKey }) => requestKey)

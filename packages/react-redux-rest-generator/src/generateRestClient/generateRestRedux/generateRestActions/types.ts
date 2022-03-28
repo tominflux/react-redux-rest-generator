@@ -6,6 +6,7 @@ export type RestReduxActionKey =
   | 'CANCEL_REQUEST'
   | 'FETCH'
   | 'RESPONSE'
+  | 'RESOLVE'
   | 'INVALIDATE'
   | 'CLEAR_FIELDS'
   | 'CLEAR_RESPONSE'

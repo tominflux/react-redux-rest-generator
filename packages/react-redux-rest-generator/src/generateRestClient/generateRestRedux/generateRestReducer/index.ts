@@ -284,6 +284,16 @@ const generateRestReducer: RestReducerGenerator = <
         }
         return nextState
       }
+      case actions.RESOLVE: {
+        const { requestKey } = action.payload
+        const receivedResults = state.receivedResults.filter(
+          (receivedResult) => receivedResult.requestKey !== requestKey
+        )
+        return {
+          ...state,
+          receivedResults,
+        }
+      }
       case actions.INVALIDATE: {
         return {
           ...state,

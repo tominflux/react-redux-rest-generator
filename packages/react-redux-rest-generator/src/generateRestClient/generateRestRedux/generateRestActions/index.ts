@@ -1,12 +1,17 @@
 import mapObj from '../../../utils/mapObj'
-import { RestReduxActionSet, RestReduxActionsGenerator } from './types'
+import {
+  RestReduxActionKey,
+  RestReduxActionSet,
+  RestReduxActionsGenerator,
+} from './types'
 
-const actionsTemplate = {
+const actionsTemplate: Record<RestReduxActionKey, RestReduxActionKey> = {
   SET_FIELD: 'SET_FIELD',
   QUEUE_REQUEST: 'QUEUE_REQUEST',
   CANCEL_REQUEST: 'CANCEL_REQUEST',
   FETCH: 'FETCH',
   RESPONSE: 'RESPONSE',
+  RESOLVE: 'RESOLVE',
   INVALIDATE: 'INVALIDATE',
   CLEAR_FIELDS: 'CLEAR_FIELDS',
   CLEAR_RESPONSE: 'CLEAR_RESPONSE',
