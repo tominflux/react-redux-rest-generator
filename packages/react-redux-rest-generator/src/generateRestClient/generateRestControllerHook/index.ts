@@ -351,7 +351,7 @@ const generateControllerHook: RestControllerHookGenerator = <
         }
       }
     }, [
-      ...requestResultList
+      requestResultList
         .map(({ requestKey }) => requestKey)
         .reduce<string>((concatenatedKeys, requestKey) => {
           if (concatenatedKeys === '') return `${requestKey}`
