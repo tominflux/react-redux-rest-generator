@@ -1,4 +1,5 @@
 import { RestApiPayload, RestMethod, RestPrimitive } from '../../../types'
+import isStatusOk from '../../../utils/isStatusOk'
 import reduceResourceList from '../../../utils/reduceResourceList'
 import { RestResourceConfig } from '../../types'
 import { RestReduxInitialStateGetter } from '../generateInitialStateGetter/types'
@@ -169,24 +170,79 @@ const generateRestReducer: RestReducerGenerator = <
         }
         // Handle read responses
         if (state.method === 'get') {
+          // Handle error scenario
+          if (!isStatusOk(status as number)) {
+            // Construct operation result
+            const nextResult: RestResult<
+              CompositeIdentifierType,
+              AnonResourceType
+            > = {
+              requestKey: requestKey as string,
+              hookKey: hookKey as string,
+              method: method as RestMethod,
+              status: status as number,
+              message: message as string,
+              payload: apiPayload as null,
+            }
+
+            // Concatenate operation result list
+            const nextReceivedResults = [...state.receivedResults, nextResult]
+
+            // Construct next redux state
+            const nextState: RestReduxState<
+              CompositeIdentifierType,
+              AnonResourceType
+            > = {
+              ...state,
+              receivedResults: nextReceivedResults,
+              fetching: false,
+              requestKey: null,
+              hookKey: null,
+              status: status as number,
+              message: message as string,
+            }
+
+            // Return next redux state
+            return nextState
+          }
+
+          // Ensure payload is delivered
           if ((apiPayload ?? null) === null) {
             console.error('REST Resource Config', resourceConfig)
             console.error('REST Reducer State', state)
             console.error('REST Action Payload', action.payload)
             throw new Error(
-              `R3G - ${resourceConfig.name} - No resource list returned, response payload is null.`
+              `R3G - ${resourceConfig.name} - No resource list returned, response payload is nullish.`
             )
           }
+
+          // Deconstruct response payload
           const { resourceList } = apiPayload as RestReadPayload<
             CompositeIdentifierType,
             AnonResourceType
           >
-          const newResourceList = resourceList ?? []
+
+          // Ensure resourceLst is delivered
+          if ((resourceList ?? null) === null) {
+            console.error('REST Resource Config', resourceConfig)
+            console.error('REST Reducer State', state)
+            console.error('REST Action Payload', action.payload)
+            throw new Error(
+              `R3G - ${resourceConfig.name} - No resource list returned, resource list is nullish.`
+            )
+          }
+
+          // Contextualize resource list
+          const newResourceList = resourceList
+
+          // Reduce resource list (update cache)
           const nextResourceList = reduceResourceList(
             state.resourceList as Array<Record<string, unknown>>,
             newResourceList as Array<Record<string, unknown>>,
             resourceConfig.identifiers
           ) as Array<CompositeIdentifierType & AnonResourceType>
+
+          // Construct operation result
           const nextResult: RestResult<
             CompositeIdentifierType,
             AnonResourceType
@@ -201,7 +257,11 @@ const generateRestReducer: RestReducerGenerator = <
               AnonResourceType
             >,
           }
+
+          // Concatenate received result list
           const nextReceivedResults = [...state.receivedResults, nextResult]
+
+          // Construct next redux state
           const nextState: RestReduxState<
             CompositeIdentifierType,
             AnonResourceType
@@ -215,6 +275,8 @@ const generateRestReducer: RestReducerGenerator = <
             status: status as number,
             message: message as string,
           }
+
+          // Return next redux state
           return nextState
         }
         // Handle create responses
