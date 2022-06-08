@@ -1,0 +1,10 @@
+make --dry-run --always-make --keep-going --print-directory
+make: Entering directory `/Users/tominflux/Dev/react-redux-rest-generator'
+docker-compose down --remove-orphans && \
+		docker-compose build --pull && \
+		docker-compose \
+			-f docker-compose.yml \
+		up -d --remove-orphans
+ 
+make: Leaving directory `/Users/tominflux/Dev/react-redux-rest-generator'
+ 
