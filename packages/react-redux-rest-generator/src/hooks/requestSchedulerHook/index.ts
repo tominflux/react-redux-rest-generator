@@ -9,16 +9,16 @@ import RequestSchedulerHookOperations from './operations'
 import { R3gGenericRequestSchedulerHook } from './types'
 
 const useRequestScheduler: R3gGenericRequestSchedulerHook = <
-  CompositeIdentifierType,
-  AnonResourceType,
-  ReadParamsType
+  ResourceIdentifier,
+  ResourceBody,
+  ReadParams
 >(
   resourceConfig: R3gResourceConfig<
-    CompositeIdentifierType,
-    AnonResourceType,
-    ReadParamsType
+    ResourceIdentifier,
+    ResourceBody,
+    ReadParams
   >,
-  creators: R3gCreatorRecord<CompositeIdentifierType, AnonResourceType>
+  creators: R3gCreatorRecord<ResourceIdentifier, ResourceBody>
 ) => {
   // Deconstruct: Resource config
   const {
@@ -32,13 +32,10 @@ const useRequestScheduler: R3gGenericRequestSchedulerHook = <
   const stateName = resourceConfig.stateName ?? `${resourceConfig.name}State`
   const state = useSelector<
     Record<string | number | symbol, unknown>,
-    R3gState<CompositeIdentifierType, AnonResourceType>
-  >(
-    (state) =>
-      state[stateName] as R3gState<CompositeIdentifierType, AnonResourceType>
-  )
+    R3gState<ResourceIdentifier, ResourceBody>
+  >((state) => state[stateName] as R3gState<ResourceIdentifier, ResourceBody>)
   const dispatch = useDispatch<
-    Dispatch<R3gAction<CompositeIdentifierType, AnonResourceType>>
+    Dispatch<R3gAction<ResourceIdentifier, ResourceBody>>
   >()
 
   // Deconstruct: Redux state
@@ -74,8 +71,8 @@ const useRequestScheduler: R3gGenericRequestSchedulerHook = <
 
     // Operation: Execute Axios Request
     const requestResult = await RequestSchedulerHookOperations.executeAxiosRequest<
-      CompositeIdentifierType,
-      AnonResourceType
+      ResourceIdentifier,
+      ResourceBody
     >({
       hookKey,
       requestKey,

@@ -2,12 +2,12 @@ import { R3gInvalidateReducer, R3gInvalidateReducerParams } from '../types'
 
 // Reducer: Invalidate
 const reduceR3gStateInvalidate: R3gInvalidateReducer = <
-  CompositeIdentifierType,
-  AnonResourceType
+  ResourceIdentifier,
+  ResourceBody
 >({
   state,
   payload,
-}: R3gInvalidateReducerParams<CompositeIdentifierType, AnonResourceType>) => {
+}: R3gInvalidateReducerParams<ResourceIdentifier, ResourceBody>) => {
   // Deconstruct: Payload
   const {} = payload
 

@@ -8,8 +8,8 @@ import {
 
 // Operation: Execute Axios Request
 const executeAxiosRequest: ExecuteAxiosRequestOperation = async <
-  CompositeIdentifierType,
-  AnonResourceType
+  ResourceIdentifier,
+  ResourceBody
 >({
   hookKey,
   requestKey,
@@ -34,13 +34,13 @@ const executeAxiosRequest: ExecuteAxiosRequestOperation = async <
 
     // Axios: Execute request
     const axiosResponse = await axios.request<
-      R3gAxiosResponseData<CompositeIdentifierType, AnonResourceType>
+      R3gAxiosResponseData<ResourceIdentifier, ResourceBody>
     >(axiosRequestConfig)
 
     // Validate: Axios response
     const axiosResponseValidationState = R3gRequestFunctions.validateAxiosResponse<
-      CompositeIdentifierType,
-      AnonResourceType
+      ResourceIdentifier,
+      ResourceBody
     >({
       resourceIdentifierKeys,
       resourceListName,
@@ -61,8 +61,8 @@ const executeAxiosRequest: ExecuteAxiosRequestOperation = async <
 
     // Derive: Request result
     const requestResult = R3gRequestFunctions.getRequestResult<
-      CompositeIdentifierType,
-      AnonResourceType
+      ResourceIdentifier,
+      ResourceBody
     >({
       hookKey,
       requestKey,
@@ -75,7 +75,7 @@ const executeAxiosRequest: ExecuteAxiosRequestOperation = async <
   } catch (err) {
     // Contextualize: error
     const axiosErr = err as AxiosError<
-      R3gAxiosResponseData<CompositeIdentifierType, AnonResourceType>
+      R3gAxiosResponseData<ResourceIdentifier, ResourceBody>
     >
 
     // Throw: If not axios error
@@ -90,8 +90,8 @@ const executeAxiosRequest: ExecuteAxiosRequestOperation = async <
 
     // Validate: Axios response
     const axiosResponseValidationState = R3gRequestFunctions.validateAxiosResponse<
-      CompositeIdentifierType,
-      AnonResourceType
+      ResourceIdentifier,
+      ResourceBody
     >({
       resourceIdentifierKeys,
       resourceListName,
@@ -112,8 +112,8 @@ const executeAxiosRequest: ExecuteAxiosRequestOperation = async <
 
     // Derive: Request result
     const requestResult = R3gRequestFunctions.getRequestResult<
-      CompositeIdentifierType,
-      AnonResourceType
+      ResourceIdentifier,
+      ResourceBody
     >({
       hookKey,
       requestKey,

@@ -11,36 +11,33 @@ import {
 /*********************************/
 
 // Create Operation Result
-export type R3gCreateOperationSuccessResult<CompositeIdentifierType> = {
+export type R3gCreateOperationSuccessResult<ResourceIdentifier> = {
   status: number
   message: string
-  payload: R3gCreateResultPayload<CompositeIdentifierType>
+  payload: R3gCreateResultPayload<ResourceIdentifier>
 }
 export type R3gCreateOperationErrorResult = {
   status: number
   message: string
   payload: null
 }
-export type R3gCreateOperationResult<CompositeIdentifierType> =
-  | R3gCreateOperationSuccessResult<CompositeIdentifierType>
+export type R3gCreateOperationResult<ResourceIdentifier> =
+  | R3gCreateOperationSuccessResult<ResourceIdentifier>
   | R3gCreateOperationErrorResult
 
 // Read Operation Result
-export type R3gReadOperationSuccessResult<
-  CompositeIdentifierType,
-  AnonResourceType
-> = {
+export type R3gReadOperationSuccessResult<ResourceIdentifier, ResourceBody> = {
   status: number
   message: string
-  payload: R3gReadResultPayload<CompositeIdentifierType, AnonResourceType>
+  payload: R3gReadResultPayload<ResourceIdentifier, ResourceBody>
 }
 export type R3gReadOperationErrorResult = {
   status: number
   message: string
   payload: null
 }
-export type R3gReadOperationResult<CompositeIdentifierType, AnonResourceType> =
-  | R3gReadOperationSuccessResult<CompositeIdentifierType, AnonResourceType>
+export type R3gReadOperationResult<ResourceIdentifier, ResourceBody> =
+  | R3gReadOperationSuccessResult<ResourceIdentifier, ResourceBody>
   | R3gReadOperationErrorResult
 
 // Update Operation Result
@@ -76,9 +73,9 @@ export type R3gDeleteOperationResult =
 //
 
 export type R3gRequestController<
-  CompositeIdentifierType,
-  AnonResourceType,
-  ReadParamsType
+  ResourceIdentifier,
+  ResourceBody,
+  ReadParams
 > = {
   // API
   fetching: boolean
@@ -89,47 +86,39 @@ export type R3gRequestController<
   // CRUD
   create: (
     parentsIdentifier?: Record<string, string>,
-    overrideData?: AnonResourceType
-  ) => Promise<R3gCreateOperationResult<CompositeIdentifierType>>
+    overrideData?: ResourceBody
+  ) => Promise<R3gCreateOperationResult<ResourceIdentifier>>
   read: (
-    params: ReadParamsType
-  ) => Promise<
-    R3gReadOperationResult<CompositeIdentifierType, AnonResourceType>
-  >
+    params: ReadParams
+  ) => Promise<R3gReadOperationResult<ResourceIdentifier, ResourceBody>>
   update: (
-    compositeIdentifier: CompositeIdentifierType,
-    overrideData?: AnonResourceType
+    resourceIdentifier: ResourceIdentifier,
+    overrideData?: ResourceBody
   ) => Promise<R3gUpdateOperationResult>
   delete: (
-    compositeIdentifier: CompositeIdentifierType
+    resourceIdentifier: ResourceIdentifier
   ) => Promise<R3gDeleteOperationResult>
   // Form
-  getField: (name: keyof AnonResourceType) => unknown
-  setField: (name: keyof AnonResourceType, value: unknown) => void
+  getField: (name: keyof ResourceBody) => unknown
+  setField: (name: keyof ResourceBody, value: unknown) => void
   clearFields: () => void
   // Cache
-  getMany: (
-    params?: ReadParamsType
-  ) => Array<CompositeIdentifierType & AnonResourceType>
+  getMany: (params?: ReadParams) => Array<ResourceIdentifier & ResourceBody>
   getOne: (
-    compositeIdentifier: CompositeIdentifierType
-  ) => (CompositeIdentifierType & AnonResourceType) | null
+    resourceIdentifier: ResourceIdentifier
+  ) => (ResourceIdentifier & ResourceBody) | null
   invalidate: () => void
 }
 
 export type R3gGenericRequestControllerHook = <
-  CompositeIdentifierType,
-  AnonResourceType,
-  ReadParamsType
+  ResourceIdentifier,
+  ResourceBody,
+  ReadParams
 >(
-  creators: R3gCreatorRecord<CompositeIdentifierType, AnonResourceType>,
+  creators: R3gCreatorRecord<ResourceIdentifier, ResourceBody>,
   resourceConfig: R3gResourceConfig<
-    CompositeIdentifierType,
-    AnonResourceType,
-    ReadParamsType
+    ResourceIdentifier,
+    ResourceBody,
+    ReadParams
   >
-) => R3gRequestController<
-  CompositeIdentifierType,
-  AnonResourceType,
-  ReadParamsType
->
+) => R3gRequestController<ResourceIdentifier, ResourceBody, ReadParams>

@@ -2,12 +2,12 @@ import { R3gFetchReducer, R3gFetchReducerParams } from '../types'
 
 // Reducer: Fetch
 const reduceR3gStateFetch: R3gFetchReducer = <
-  CompositeIdentifierType,
-  AnonResourceType
+  ResourceIdentifier,
+  ResourceBody
 >({
   state,
   payload,
-}: R3gFetchReducerParams<CompositeIdentifierType, AnonResourceType>) => {
+}: R3gFetchReducerParams<ResourceIdentifier, ResourceBody>) => {
   // Deconstruct: Payload
   const { requestKey } = payload
 
@@ -42,7 +42,7 @@ const reduceR3gStateFetch: R3gFetchReducer = <
     method,
     status: null,
     message: null,
-    ...(method !== 'get' ? { compositeIdentifier: null } : {}),
+    ...(method !== 'get' ? { resourceIdentifier: null } : {}),
   }
 
   // Return: Next state

@@ -4,13 +4,11 @@ import {
   R3gRequestResult,
 } from '../request/types'
 
-export type R3gState<CompositeIdentifierType, AnonResourceType> = {
-  fields: AnonResourceType
-  resourceList: Array<CompositeIdentifierType & AnonResourceType>
+export type R3gState<ResourceIdentifier, ResourceBody> = {
+  fields: ResourceBody
+  resourceList: Array<ResourceIdentifier & ResourceBody>
   pendingRequests: Array<R3gRequest>
-  receivedResults: Array<
-    R3gRequestResult<CompositeIdentifierType, AnonResourceType>
-  >
+  receivedResults: Array<R3gRequestResult<ResourceIdentifier, ResourceBody>>
   fetching: boolean
   requestKey: string | null
   hookKey: string | null
@@ -18,5 +16,5 @@ export type R3gState<CompositeIdentifierType, AnonResourceType> = {
   status: number | null
   message: string | null
   invalidationIndex: number
-  compositeIdentifier: CompositeIdentifierType | null
+  resourceIdentifier: ResourceIdentifier | null
 }

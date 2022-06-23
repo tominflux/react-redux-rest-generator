@@ -14,28 +14,25 @@ export type R3gRequestMethod = 'get' | 'post' | 'put' | 'delete'
 
 // Create Result Payload
 export type R3gCreateResultPayload<
-  CompositeIdentifierType
-> = CompositeIdentifierType | null
+  ResourceIdentifier
+> = ResourceIdentifier | null
 
 // Read Result Payload
-export type R3gReadResultPayload<
-  CompositeIdentifierType,
-  AnonResourceType
-> = Record<string, Array<CompositeIdentifierType & AnonResourceType>>
+export type R3gReadResultPayload<ResourceIdentifier, ResourceBody> = Record<
+  string,
+  Array<ResourceIdentifier & ResourceBody>
+>
 
 // Ambiguous Result Payload
-export type R3gRequestResultPayload<
-  CompositeIdentifierType,
-  AnonResourceType
-> =
-  | R3gCreateResultPayload<CompositeIdentifierType>
-  | R3gReadResultPayload<CompositeIdentifierType, AnonResourceType>
+export type R3gRequestResultPayload<ResourceIdentifier, ResourceBody> =
+  | R3gCreateResultPayload<ResourceIdentifier>
+  | R3gReadResultPayload<ResourceIdentifier, ResourceBody>
   | null
 
 // Data Structure: Axios Create Response Data
-export type R3gAxiosCreateSuccessResponseData<CompositeIdentifierType> = {
+export type R3gAxiosCreateSuccessResponseData<ResourceIdentifier> = {
   message: string
-  payload: R3gCreateResultPayload<CompositeIdentifierType>
+  payload: R3gCreateResultPayload<ResourceIdentifier>
 }
 export type R3gAxiosCreateErrorResponseData = {
   message: string
@@ -44,11 +41,11 @@ export type R3gAxiosCreateErrorResponseData = {
 
 // Data Structure: Axios Read Response Data
 export type R3gAxiosReadSuccessResponseData<
-  CompositeIdentifierType,
-  AnonResourceType
+  ResourceIdentifier,
+  ResourceBody
 > = {
   message: string
-  payload: R3gReadResultPayload<CompositeIdentifierType, AnonResourceType>
+  payload: R3gReadResultPayload<ResourceIdentifier, ResourceBody>
 }
 export type R3gAxiosReadErrorResponseData = {
   message: string
@@ -76,10 +73,10 @@ export type R3gAxiosDeleteErrorResponseData = {
 }
 
 // Data Structure: Axios Ambiguous Response Data
-export type R3gAxiosResponseData<CompositeIdentifierType, AnonResourceType> =
-  | R3gAxiosCreateSuccessResponseData<CompositeIdentifierType>
+export type R3gAxiosResponseData<ResourceIdentifier, ResourceBody> =
+  | R3gAxiosCreateSuccessResponseData<ResourceIdentifier>
   | R3gAxiosCreateErrorResponseData
-  | R3gAxiosReadSuccessResponseData<CompositeIdentifierType, AnonResourceType>
+  | R3gAxiosReadSuccessResponseData<ResourceIdentifier, ResourceBody>
   | R3gAxiosReadErrorResponseData
   | R3gAxiosUpdateSuccessResponseData
   | R3gAxiosUpdateErrorResponseData
@@ -96,14 +93,14 @@ export type R3gRequest = {
 }
 
 // Create Request Result
-export type R3gCreateRequestSuccessResult<CompositeIdentifierType> = {
+export type R3gCreateRequestSuccessResult<ResourceIdentifier> = {
   requestKey: string
   hookKey: string
   method: 'post'
   status: number
   success: true
   message: string
-  payload: R3gCreateResultPayload<CompositeIdentifierType>
+  payload: R3gCreateResultPayload<ResourceIdentifier>
 }
 export type R3gCreateRequestErrorResult = {
   requestKey: string
@@ -116,17 +113,14 @@ export type R3gCreateRequestErrorResult = {
 }
 
 // Read Request Result
-export type R3gReadRequestSuccessResult<
-  CompositeIdentifierType,
-  AnonResourceType
-> = {
+export type R3gReadRequestSuccessResult<ResourceIdentifier, ResourceBody> = {
   requestKey: string
   hookKey: string
   method: 'get'
   status: number
   success: true
   message: string
-  payload: R3gReadResultPayload<CompositeIdentifierType, AnonResourceType>
+  payload: R3gReadResultPayload<ResourceIdentifier, ResourceBody>
 }
 export type R3gReadRequestErrorResult = {
   requestKey: string
@@ -179,10 +173,10 @@ export type R3gDeleteRequestErrorResult = {
 }
 
 // Generic Request Result
-export type R3gRequestResult<CompositeIdentifierType, AnonResourceType> =
-  | R3gCreateRequestSuccessResult<CompositeIdentifierType>
+export type R3gRequestResult<ResourceIdentifier, ResourceBody> =
+  | R3gCreateRequestSuccessResult<ResourceIdentifier>
   | R3gCreateRequestErrorResult
-  | R3gReadRequestSuccessResult<CompositeIdentifierType, AnonResourceType>
+  | R3gReadRequestSuccessResult<ResourceIdentifier, ResourceBody>
   | R3gReadRequestErrorResult
   | R3gUpdateRequestSuccessResult
   | R3gUpdateRequestErrorResult
@@ -202,50 +196,32 @@ export type R3gAxiosResponseValidationState =
   | 'WRONG_PAYLOAD_FORMAT'
   | 'UNRECOGNIZED_METHOD'
 export type R3gAxiosResponseValidatorParams<
-  CompositeIdentifierType,
-  AnonResourceType
+  ResourceIdentifier,
+  ResourceBody
 > = {
   resourceIdentifierKeys: Array<string>
   resourceListName: string
   resourcePropertyKeys: Array<string>
   method: R3gRequestMethod
   axiosResponse: AxiosResponse<
-    R3gAxiosResponseData<CompositeIdentifierType, AnonResourceType>
+    R3gAxiosResponseData<ResourceIdentifier, ResourceBody>
   >
 }
-export type R3gAxiosResponseValidator = <
-  CompositeIdentifierType,
-  AnonResourceType
->(
-  params: R3gAxiosResponseValidatorParams<
-    CompositeIdentifierType,
-    AnonResourceType
-  >
+export type R3gAxiosResponseValidator = <ResourceIdentifier, ResourceBody>(
+  params: R3gAxiosResponseValidatorParams<ResourceIdentifier, ResourceBody>
 ) => R3gAxiosResponseValidationState
 
 // Function: Get Request Result
-export type R3gRequestResultGetterParams<
-  CompositeIdentifierType,
-  AnonResourceType
-> = {
+export type R3gRequestResultGetterParams<ResourceIdentifier, ResourceBody> = {
   hookKey: string
   requestKey: string
   method: R3gRequestMethod
   status: number
-  axiosResponseData: R3gAxiosResponseData<
-    CompositeIdentifierType,
-    AnonResourceType
-  >
+  axiosResponseData: R3gAxiosResponseData<ResourceIdentifier, ResourceBody>
 }
-export type R3gRequestResultGetter = <
-  CompositeIdentifierType,
-  AnonResourceType
->(
-  params: R3gRequestResultGetterParams<
-    CompositeIdentifierType,
-    AnonResourceType
-  >
-) => R3gRequestResult<CompositeIdentifierType, AnonResourceType>
+export type R3gRequestResultGetter = <ResourceIdentifier, ResourceBody>(
+  params: R3gRequestResultGetterParams<ResourceIdentifier, ResourceBody>
+) => R3gRequestResult<ResourceIdentifier, ResourceBody>
 
 // Function: Param Stringification Validator
 export type R3gStringifiedParamsGetterValidationState =
@@ -267,75 +243,75 @@ export type R3gStringifiedParamsGetter = (
 
 // Function: Single Anonymous Resource API Url Getter
 export type R3gSingleAnonApiUrlGetterParams<
-  CompositeIdentifierType,
-  AnonResourceType,
-  ReadParamsType
+  ResourceIdentifier,
+  ResourceBody,
+  ReadParams
 > = {
   parentsIdentifier: Record<string, string>
   resourceConfig: R3gResourceConfig<
-    CompositeIdentifierType,
-    AnonResourceType,
-    ReadParamsType
+    ResourceIdentifier,
+    ResourceBody,
+    ReadParams
   >
 }
 export type R3gSingleAnonApiUrlGetter = <
-  CompositeIdentifierType,
-  AnonResourceType,
-  ReadParamsType
+  ResourceIdentifier,
+  ResourceBody,
+  ReadParams
 >(
   params: R3gSingleAnonApiUrlGetterParams<
-    CompositeIdentifierType,
-    AnonResourceType,
-    ReadParamsType
+    ResourceIdentifier,
+    ResourceBody,
+    ReadParams
   >
 ) => string
 
 // Function: Single Resource API URL Getter
 export type R3gSingleApiUrlGetterParams<
-  CompositeIdentifierType,
-  AnonResourceType,
-  ReadParamsType
+  ResourceIdentifier,
+  ResourceBody,
+  ReadParams
 > = {
-  resourceIdentifier: CompositeIdentifierType
+  resourceIdentifier: ResourceIdentifier
   resourceConfig: R3gResourceConfig<
-    CompositeIdentifierType,
-    AnonResourceType,
-    ReadParamsType
+    ResourceIdentifier,
+    ResourceBody,
+    ReadParams
   >
 }
 export type R3gSingleApiUrlGetter = <
-  CompositeIdentifierType,
-  AnonResourceType,
-  ReadParamsType
+  ResourceIdentifier,
+  ResourceBody,
+  ReadParams
 >(
   params: R3gSingleApiUrlGetterParams<
-    CompositeIdentifierType,
-    AnonResourceType,
-    ReadParamsType
+    ResourceIdentifier,
+    ResourceBody,
+    ReadParams
   >
 ) => string
 
 // Function: Many Resource API URL Getter
 export type R3gManyApiUrlGetterParams<
-  CompositeIdentifierType,
-  AnonResourceType,
-  ReadParamsType
+  ResourceIdentifier,
+  ResourceBody,
+  ReadParams
 > = {
-  readParams: ReadParamsType
+  readParams: ReadParams
   resourceConfig: R3gResourceConfig<
-    CompositeIdentifierType,
-    AnonResourceType,
-    ReadParamsType
+    ResourceIdentifier,
+    ResourceBody,
+    ReadParams
   >
 }
 export type R3gManyApiUrlGetter = <
-  CompositeIdentifierType,
-  AnonResourceType,
-  ReadParamsType
+  ResourceIdentifier,
+  ResourceBody,
+  ReadParams
 >(
   params: R3gManyApiUrlGetterParams<
-    CompositeIdentifierType,
-    AnonResourceType,
-    ReadParamsType
+    ResourceIdentifier,
+    ResourceBody,
+    ReadParams
   >
 ) => string

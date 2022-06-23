@@ -5,12 +5,12 @@ import {
 } from './types'
 
 const getInitialState: R3gGenericInitialStateGetter = <
-  CompositeIdentifierType,
-  AnonResourceType
+  ResourceIdentifier,
+  ResourceBody
 >({
   initialFields,
-}: R3gGenericInitialStateGetterParams<AnonResourceType>) => {
-  const initialState: R3gState<CompositeIdentifierType, AnonResourceType> = {
+}: R3gGenericInitialStateGetterParams<ResourceBody>) => {
+  const initialState: R3gState<ResourceIdentifier, ResourceBody> = {
     fields: initialFields,
     resourceList: [],
     pendingRequests: [],
@@ -22,7 +22,7 @@ const getInitialState: R3gGenericInitialStateGetter = <
     status: null,
     message: null,
     invalidationIndex: 0,
-    compositeIdentifier: null,
+    resourceIdentifier: null,
   }
   return initialState
 }

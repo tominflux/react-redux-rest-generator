@@ -2,12 +2,12 @@ import { R3gResolveReducer, R3gResolveReducerParams } from '../types'
 
 // Reducer: Resolve
 const reduceR3gStateResolve: R3gResolveReducer = <
-  CompositeIdentifierType,
-  AnonResourceType
+  ResourceIdentifier,
+  ResourceBody
 >({
   state,
   payload,
-}: R3gResolveReducerParams<CompositeIdentifierType, AnonResourceType>) => {
+}: R3gResolveReducerParams<ResourceIdentifier, ResourceBody>) => {
   // Deconstruct: Payload
   const { requestKey } = payload
 

@@ -23,28 +23,25 @@ import {
 } from './types'
 
 const useRequestController: R3gGenericRequestControllerHook = <
-  CompositeIdentifierType,
-  AnonResourceType,
-  ReadParamsType
+  ResourceIdentifier,
+  ResourceBody,
+  ReadParams
 >(
-  creators: R3gCreatorRecord<CompositeIdentifierType, AnonResourceType>,
+  creators: R3gCreatorRecord<ResourceIdentifier, ResourceBody>,
   resourceConfig: R3gResourceConfig<
-    CompositeIdentifierType,
-    AnonResourceType,
-    ReadParamsType
+    ResourceIdentifier,
+    ResourceBody,
+    ReadParams
   >
 ) => {
   // Redux
   const stateName = resourceConfig.stateName ?? `${resourceConfig.name}State`
   const state = useSelector<
     Record<string | number | symbol, unknown>,
-    R3gState<CompositeIdentifierType, AnonResourceType>
-  >(
-    (state) =>
-      state[stateName] as R3gState<CompositeIdentifierType, AnonResourceType>
-  )
+    R3gState<ResourceIdentifier, ResourceBody>
+  >((state) => state[stateName] as R3gState<ResourceIdentifier, ResourceBody>)
   const dispatch = useDispatch<
-    Dispatch<R3gAction<CompositeIdentifierType, AnonResourceType>>
+    Dispatch<R3gAction<ResourceIdentifier, ResourceBody>>
   >()
 
   // State: Hook Key
@@ -52,8 +49,8 @@ const useRequestController: R3gGenericRequestControllerHook = <
 
   // Request Promise Controller
   const requestPromiseController = useRequestPromiseController<
-    CompositeIdentifierType,
-    AnonResourceType
+    ResourceIdentifier,
+    ResourceBody
   >()
 
   /*********************************/
@@ -171,7 +168,7 @@ const useRequestController: R3gGenericRequestControllerHook = <
         const { resolve: resolveCreatePromise } = createPromiseResolver
 
         // Construct: Operation result
-        const createOperationResult: R3gCreateOperationResult<CompositeIdentifierType> = {
+        const createOperationResult: R3gCreateOperationResult<ResourceIdentifier> = {
           status: matchedRequestResultStatus,
           message: matchedRequestResultMessage,
           payload: matchedRequestResultPayload,
@@ -208,8 +205,8 @@ const useRequestController: R3gGenericRequestControllerHook = <
 
         // Construct: Operation result
         const readOperationResult: R3gReadOperationResult<
-          CompositeIdentifierType,
-          AnonResourceType
+          ResourceIdentifier,
+          ResourceBody
         > = {
           status: matchedRequestResultStatus,
           message: matchedRequestResultMessage,
@@ -403,7 +400,7 @@ const useRequestController: R3gGenericRequestControllerHook = <
   const create = useCallback(
     async (
       parentsIdentifier?: Record<string, string>,
-      overrideData?: AnonResourceType
+      overrideData?: ResourceBody
     ) => {
       // Ensure parentsIdentifier supplied if needed
       if (resourceConfig.identifiers.length > 1 && !parentsIdentifier) {
@@ -417,9 +414,9 @@ const useRequestController: R3gGenericRequestControllerHook = <
 
       // Register request promise
       const requestPromise = new Promise<
-        R3gCreateOperationResult<CompositeIdentifierType>
+        R3gCreateOperationResult<ResourceIdentifier>
       >((resolve, reject) => {
-        const promiseResolver: R3gCreatePromiseResolver<CompositeIdentifierType> = {
+        const promiseResolver: R3gCreatePromiseResolver<ResourceIdentifier> = {
           requestKey,
           resolve,
           reject,
@@ -429,9 +426,9 @@ const useRequestController: R3gGenericRequestControllerHook = <
 
       // Prepare POST request information
       const url = R3gRequestFunctions.getApiUrlSingleAnon<
-        CompositeIdentifierType,
-        AnonResourceType,
-        ReadParamsType
+        ResourceIdentifier,
+        ResourceBody,
+        ReadParams
       >({
         parentsIdentifier: parentsIdentifier ?? {},
         resourceConfig,
@@ -464,17 +461,17 @@ const useRequestController: R3gGenericRequestControllerHook = <
 
   // Callback: 'Read' Operation
   const read = useCallback(
-    async (params?: ReadParamsType) => {
+    async (params?: ReadParams) => {
       // Generate key for queued request
       const requestKey = generateUuid()
 
       // Register request promise
       const requestPromise = new Promise<
-        R3gReadOperationResult<CompositeIdentifierType, AnonResourceType>
+        R3gReadOperationResult<ResourceIdentifier, ResourceBody>
       >((resolve, reject) => {
         const promiseResolver: R3gReadPromiseResolver<
-          CompositeIdentifierType,
-          AnonResourceType
+          ResourceIdentifier,
+          ResourceBody
         > = {
           requestKey,
           resolve,
@@ -485,10 +482,10 @@ const useRequestController: R3gGenericRequestControllerHook = <
 
       // Prepare GET request information
       const url = R3gRequestFunctions.getApiUrlMany<
-        CompositeIdentifierType,
-        AnonResourceType,
-        ReadParamsType
-      >({ resourceConfig, readParams: params ?? ({} as ReadParamsType) })
+        ResourceIdentifier,
+        ResourceBody,
+        ReadParams
+      >({ resourceConfig, readParams: params ?? ({} as ReadParams) })
 
       // Queue request
       const queueAction = creators.queueRequest(
@@ -509,8 +506,8 @@ const useRequestController: R3gGenericRequestControllerHook = <
   // Callback: 'Read' Operation
   const update = useCallback(
     async (
-      compositeIdentifier: CompositeIdentifierType,
-      overrideData?: AnonResourceType
+      resourceIdentifier: ResourceIdentifier,
+      overrideData?: ResourceBody
     ) => {
       // Generate key for queued request
       const requestKey = generateUuid()
@@ -529,10 +526,10 @@ const useRequestController: R3gGenericRequestControllerHook = <
 
       // Prepare PUT request information
       const url = R3gRequestFunctions.getApiUrlSingle<
-        CompositeIdentifierType,
-        AnonResourceType,
-        ReadParamsType
-      >({ resourceIdentifier: compositeIdentifier, resourceConfig })
+        ResourceIdentifier,
+        ResourceBody,
+        ReadParams
+      >({ resourceIdentifier: resourceIdentifier, resourceConfig })
       const data = overrideData ? overrideData : { ...state.fields }
       const body = JSON.stringify(data)
 
@@ -561,7 +558,7 @@ const useRequestController: R3gGenericRequestControllerHook = <
 
   // Callback: 'Delete' Operation
   const _delete = useCallback(
-    async (compositeIdentifier: CompositeIdentifierType) => {
+    async (resourceIdentifier: ResourceIdentifier) => {
       // Generate key for queued request
       const requestKey = generateUuid()
 
@@ -579,11 +576,11 @@ const useRequestController: R3gGenericRequestControllerHook = <
 
       // Prepare DELETE request information
       const url = R3gRequestFunctions.getApiUrlSingle<
-        CompositeIdentifierType,
-        AnonResourceType,
-        ReadParamsType
+        ResourceIdentifier,
+        ResourceBody,
+        ReadParams
       >({
-        resourceIdentifier: compositeIdentifier,
+        resourceIdentifier: resourceIdentifier,
         resourceConfig,
       })
 
@@ -611,13 +608,13 @@ const useRequestController: R3gGenericRequestControllerHook = <
   const { fields } = state
 
   // Callback: Get field
-  const getField = useCallback((name: keyof AnonResourceType) => fields[name], [
+  const getField = useCallback((name: keyof ResourceBody) => fields[name], [
     fields,
   ])
 
   // Callback: Set field
   const setField = useCallback(
-    (name: keyof AnonResourceType, value: unknown) => {
+    (name: keyof ResourceBody, value: unknown) => {
       const action = creators.setField(name, value)
       dispatch(action)
     },
@@ -647,7 +644,7 @@ const useRequestController: R3gGenericRequestControllerHook = <
 
   // Callback: Get list of resources
   const getMany = useCallback(
-    (params?: ReadParamsType) =>
+    (params?: ReadParams) =>
       (postProcessResourceList ?? ((resourceList) => resourceList))(
         resourceList
           .filter((resource, index) =>
@@ -663,12 +660,12 @@ const useRequestController: R3gGenericRequestControllerHook = <
 
   // Callback: Get single resource instance
   const getOne = useCallback(
-    (compositeIdentifier: CompositeIdentifierType) =>
+    (resourceIdentifier: ResourceIdentifier) =>
       resourceList.find((resource) => {
         const doIdentifiersMatch = resourceIdentifierKeys
           .map(
             (identifierKey) =>
-              compositeIdentifier[identifierKey] === resource[identifierKey]
+              resourceIdentifier[identifierKey] === resource[identifierKey]
           )
           .reduce(
             (doAllPreviousMatch, doesCurrentMatch) =>

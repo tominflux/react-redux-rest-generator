@@ -17,12 +17,9 @@ export type ExecuteAxiosRequestOperationParams = {
   url: string
   body: string | null
 }
-export type ExecuteAxiosRequestOperation = <
-  CompositeIdentifierType,
-  AnonResourceType
->(
+export type ExecuteAxiosRequestOperation = <ResourceIdentifier, ResourceBody>(
   params: ExecuteAxiosRequestOperationParams
-) => Promise<R3gRequestResult<CompositeIdentifierType, AnonResourceType>>
+) => Promise<R3gRequestResult<ResourceIdentifier, ResourceBody>>
 
 /*********************************/
 /************  Hook  *************/
@@ -30,14 +27,14 @@ export type ExecuteAxiosRequestOperation = <
 
 // Hook: Generic Request Scheduler
 export type R3gGenericRequestSchedulerHook = <
-  CompositeIdentifierType,
-  AnonResourceType,
-  ReadParamsType
+  ResourceIdentifier,
+  ResourceBody,
+  ReadParams
 >(
   resourceConfig: R3gResourceConfig<
-    CompositeIdentifierType,
-    AnonResourceType,
-    ReadParamsType
+    ResourceIdentifier,
+    ResourceBody,
+    ReadParams
   >,
-  creators: R3gCreatorRecord<CompositeIdentifierType, AnonResourceType>
+  creators: R3gCreatorRecord<ResourceIdentifier, ResourceBody>
 ) => void

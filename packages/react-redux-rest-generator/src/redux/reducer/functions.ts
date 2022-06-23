@@ -11,24 +11,20 @@ import reduceR3gStateSetField from './functions/reduceR3gStateSetField'
 import { R3gGenericReducer, R3gGenericReducerParams } from './types'
 
 // Reducer: Root
-const reduceR3gState: R3gGenericReducer = <
-  CompositeIdentifierType,
-  AnonResourceType
->({
+const reduceR3gState: R3gGenericReducer = <ResourceIdentifier, ResourceBody>({
   state,
   action,
   actionKeyRecord,
   resourceIdentifiers,
   resourceListName,
   initialResourceFields,
-}: R3gGenericReducerParams<CompositeIdentifierType, AnonResourceType>) => {
+}: R3gGenericReducerParams<ResourceIdentifier, ResourceBody>) => {
   // Derive: Previous state (defaults to initial state)
   const prevState =
     state ??
-    R3gInitialStateFunctions.getInitialState<
-      CompositeIdentifierType,
-      AnonResourceType
-    >({ initialFields: initialResourceFields })
+    R3gInitialStateFunctions.getInitialState<ResourceIdentifier, ResourceBody>({
+      initialFields: initialResourceFields,
+    })
 
   // Switch: Action type
   switch (action.type) {
@@ -38,7 +34,7 @@ const reduceR3gState: R3gGenericReducer = <
       const { payload } = action
 
       // Return: Reduced state
-      return reduceR3gStateSetField<CompositeIdentifierType, AnonResourceType>({
+      return reduceR3gStateSetField<ResourceIdentifier, ResourceBody>({
         state: prevState,
         payload,
       })
@@ -49,10 +45,10 @@ const reduceR3gState: R3gGenericReducer = <
       const { payload } = action
 
       // Return: Reduced state
-      return reduceR3gStateQueueRequest<
-        CompositeIdentifierType,
-        AnonResourceType
-      >({ state: prevState, payload })
+      return reduceR3gStateQueueRequest<ResourceIdentifier, ResourceBody>({
+        state: prevState,
+        payload,
+      })
     }
     // Case: Cancel request action
     case actionKeyRecord.cancelRequest: {
@@ -60,10 +56,10 @@ const reduceR3gState: R3gGenericReducer = <
       const { payload } = action
 
       // Return: Reduced state
-      return reduceR3gStateCancelRequest<
-        CompositeIdentifierType,
-        AnonResourceType
-      >({ state: prevState, payload })
+      return reduceR3gStateCancelRequest<ResourceIdentifier, ResourceBody>({
+        state: prevState,
+        payload,
+      })
     }
     // Case: Fetch action
     case actionKeyRecord.fetch: {
@@ -71,7 +67,7 @@ const reduceR3gState: R3gGenericReducer = <
       const { payload } = action
 
       // Return: Reduced state
-      return reduceR3gStateFetch<CompositeIdentifierType, AnonResourceType>({
+      return reduceR3gStateFetch<ResourceIdentifier, ResourceBody>({
         state: prevState,
         payload,
       })
@@ -82,7 +78,7 @@ const reduceR3gState: R3gGenericReducer = <
       const { payload } = action
 
       // Return: Reduced state
-      return reduceR3gStateResponse<CompositeIdentifierType, AnonResourceType>({
+      return reduceR3gStateResponse<ResourceIdentifier, ResourceBody>({
         state: prevState,
         payload,
         resourceIdentifiers,
@@ -95,7 +91,7 @@ const reduceR3gState: R3gGenericReducer = <
       const { payload } = action
 
       // Return: Reduced state
-      return reduceR3gStateResolve<CompositeIdentifierType, AnonResourceType>({
+      return reduceR3gStateResolve<ResourceIdentifier, ResourceBody>({
         state: prevState,
         payload,
       })
@@ -106,10 +102,7 @@ const reduceR3gState: R3gGenericReducer = <
       const { payload } = action
 
       // Return: Reduced state
-      return reduceR3gStateInvalidate<
-        CompositeIdentifierType,
-        AnonResourceType
-      >({
+      return reduceR3gStateInvalidate<ResourceIdentifier, ResourceBody>({
         state: prevState,
         payload,
       })
@@ -120,10 +113,7 @@ const reduceR3gState: R3gGenericReducer = <
       const { payload } = action
 
       // Return: Reduced state
-      return reduceR3gStateClearFields<
-        CompositeIdentifierType,
-        AnonResourceType
-      >({
+      return reduceR3gStateClearFields<ResourceIdentifier, ResourceBody>({
         state: prevState,
         payload,
         initialResourceFields,
@@ -135,10 +125,7 @@ const reduceR3gState: R3gGenericReducer = <
       const { payload } = action
 
       // Return: Reduced state
-      return reduceR3gStateClearResponse<
-        CompositeIdentifierType,
-        AnonResourceType
-      >({
+      return reduceR3gStateClearResponse<ResourceIdentifier, ResourceBody>({
         state: prevState,
         payload,
       })

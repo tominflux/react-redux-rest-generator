@@ -29,18 +29,15 @@ import {
 
 // Function: Axios Response Validator
 const validateAxiosResponse: R3gAxiosResponseValidator = <
-  CompositeIdentifierType,
-  AnonResourceType
+  ResourceIdentifier,
+  ResourceBody
 >({
   resourceIdentifierKeys,
   resourceListName,
   resourcePropertyKeys,
   method,
   axiosResponse,
-}: R3gAxiosResponseValidatorParams<
-  CompositeIdentifierType,
-  AnonResourceType
->) => {
+}: R3gAxiosResponseValidatorParams<ResourceIdentifier, ResourceBody>) => {
   // Deconstruct: Axios response
   const { status, data } = axiosResponse
 
@@ -118,8 +115,8 @@ const validateAxiosResponse: R3gAxiosResponseValidator = <
           return 'WRONG_PAYLOAD_FORMAT'
         }
         const readPayload = payload as R3gReadResultPayload<
-          CompositeIdentifierType,
-          AnonResourceType
+          ResourceIdentifier,
+          ResourceBody
         >
         const resourceList = readPayload[resourceListName]
         if (
@@ -177,15 +174,15 @@ const validateAxiosResponse: R3gAxiosResponseValidator = <
 
 // Function: Get Request Result
 const getRequestResult: R3gRequestResultGetter = <
-  CompositeIdentifierType,
-  AnonResourceType
+  ResourceIdentifier,
+  ResourceBody
 >({
   hookKey,
   requestKey,
   method,
   status,
   axiosResponseData,
-}: R3gRequestResultGetterParams<CompositeIdentifierType, AnonResourceType>) => {
+}: R3gRequestResultGetterParams<ResourceIdentifier, ResourceBody>) => {
   // Deconstruct: Axios response data
   const { message, payload } = axiosResponseData
 
@@ -198,14 +195,14 @@ const getRequestResult: R3gRequestResultGetter = <
       // Condition: Successful request
       if (success) {
         // Construct: Request Result
-        const requestResult: R3gCreateRequestSuccessResult<CompositeIdentifierType> = {
+        const requestResult: R3gCreateRequestSuccessResult<ResourceIdentifier> = {
           requestKey,
           hookKey,
           method,
           status,
           success,
           message,
-          payload: payload as R3gCreateResultPayload<CompositeIdentifierType>,
+          payload: payload as R3gCreateResultPayload<ResourceIdentifier>,
         }
         // Return
         return requestResult
@@ -230,8 +227,8 @@ const getRequestResult: R3gRequestResultGetter = <
       if (success) {
         // Construct: Request Result
         const requestResult: R3gReadRequestSuccessResult<
-          CompositeIdentifierType,
-          AnonResourceType
+          ResourceIdentifier,
+          ResourceBody
         > = {
           requestKey,
           hookKey,
@@ -240,8 +237,8 @@ const getRequestResult: R3gRequestResultGetter = <
           success,
           message,
           payload: payload as R3gReadResultPayload<
-            CompositeIdentifierType,
-            AnonResourceType
+            ResourceIdentifier,
+            ResourceBody
           >,
         }
 
@@ -436,16 +433,16 @@ const getStringifiedParams: R3gStringifiedParamsGetter = (
 
 // Function: Single Anonymous Resource API Url Getter
 const getApiUrlSingleAnon: R3gSingleAnonApiUrlGetter = <
-  CompositeIdentifierType,
-  AnonResourceType,
-  ReadParamsType
+  ResourceIdentifier,
+  ResourceBody,
+  ReadParams
 >({
   parentsIdentifier,
   resourceConfig,
 }: R3gSingleAnonApiUrlGetterParams<
-  CompositeIdentifierType,
-  AnonResourceType,
-  ReadParamsType
+  ResourceIdentifier,
+  ResourceBody,
+  ReadParams
 >) => {
   // Deconstruct: Resource configuration
   const {
@@ -474,16 +471,16 @@ const getApiUrlSingleAnon: R3gSingleAnonApiUrlGetter = <
 
 // Function: Single Resource API Url Getter
 const getApiUrlSingle: R3gSingleApiUrlGetter = <
-  CompositeIdentifierType,
-  AnonResourceType,
-  ReadParamsType
+  ResourceIdentifier,
+  ResourceBody,
+  ReadParams
 >({
   resourceIdentifier,
   resourceConfig,
 }: R3gSingleApiUrlGetterParams<
-  CompositeIdentifierType,
-  AnonResourceType,
-  ReadParamsType
+  ResourceIdentifier,
+  ResourceBody,
+  ReadParams
 >) => {
   // Deconstruct: Resource configuration
   const {
@@ -520,17 +517,13 @@ const getApiUrlSingle: R3gSingleApiUrlGetter = <
 }
 
 const getApiUrlMany: R3gManyApiUrlGetter = <
-  CompositeIdentifierType,
-  AnonResourceType,
-  ReadParamsType
+  ResourceIdentifier,
+  ResourceBody,
+  ReadParams
 >({
   readParams,
   resourceConfig,
-}: R3gManyApiUrlGetterParams<
-  CompositeIdentifierType,
-  AnonResourceType,
-  ReadParamsType
->) => {
+}: R3gManyApiUrlGetterParams<ResourceIdentifier, ResourceBody, ReadParams>) => {
   // Deconstruct: Resource configuration
   const { composition: parentResourceConfigList } = resourceConfig
 

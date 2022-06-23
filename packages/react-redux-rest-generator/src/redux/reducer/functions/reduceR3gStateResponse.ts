@@ -3,14 +3,14 @@ import { R3gResponseReducer, R3gResponseReducerParams } from '../types'
 
 // Reducer: Response
 const reduceR3gStateResponse: R3gResponseReducer = <
-  CompositeIdentifierType,
-  AnonResourceType
+  ResourceIdentifier,
+  ResourceBody
 >({
   state,
   payload,
   resourceIdentifiers,
   resourceListName,
-}: R3gResponseReducerParams<CompositeIdentifierType, AnonResourceType>) => {
+}: R3gResponseReducerParams<ResourceIdentifier, ResourceBody>) => {
   // Deconstruct: Payload
   const { requestResult } = payload
 
@@ -63,7 +63,7 @@ const reduceR3gStateResponse: R3gResponseReducer = <
         prevResourceList as Array<Record<string, unknown>>,
         newResourceList as Array<Record<string, unknown>>,
         resourceIdentifiers as Array<string>
-      ) as Array<CompositeIdentifierType & AnonResourceType>
+      ) as Array<ResourceIdentifier & ResourceBody>
 
       // Construct: Next redux state
       return {
@@ -86,13 +86,13 @@ const reduceR3gStateResponse: R3gResponseReducer = <
       }
 
       // Reconstruct: Request payload
-      const { ...compositeIdentifier } = requestResultPayload
+      const { ...resourceIdentifier } = requestResultPayload
 
       // Construct: Next redux state
       return {
         ...state,
         ...requestFlags,
-        compositeIdentifier,
+        resourceIdentifier,
         receivedResults: nextReceivedResults,
       }
     }

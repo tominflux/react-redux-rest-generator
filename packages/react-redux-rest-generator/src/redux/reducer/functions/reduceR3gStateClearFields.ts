@@ -2,13 +2,13 @@ import { R3gClearFieldsReducer, R3gClearFieldsReducerParams } from '../types'
 
 // Reducer: Clear fields
 const reduceR3gStateClearFields: R3gClearFieldsReducer = <
-  CompositeIdentifierType,
-  AnonResourceType
+  ResourceIdentifier,
+  ResourceBody
 >({
   state,
   payload,
   initialResourceFields,
-}: R3gClearFieldsReducerParams<CompositeIdentifierType, AnonResourceType>) => {
+}: R3gClearFieldsReducerParams<ResourceIdentifier, ResourceBody>) => {
   // Deconstruct: Payload
   const {} = payload
 

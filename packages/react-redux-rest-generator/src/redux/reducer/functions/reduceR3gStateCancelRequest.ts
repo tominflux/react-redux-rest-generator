@@ -5,15 +5,12 @@ import {
 
 // Reducer: Cancel Request
 const reduceR3gStateCancelRequest: R3gCancelRequestReducer = <
-  CompositeIdentifierType,
-  AnonResourceType
+  ResourceIdentifier,
+  ResourceBody
 >({
   state,
   payload,
-}: R3gCancelRequestReducerParams<
-  CompositeIdentifierType,
-  AnonResourceType
->) => {
+}: R3gCancelRequestReducerParams<ResourceIdentifier, ResourceBody>) => {
   // Deconstruct: Action payload
   const { requestKey } = payload
 

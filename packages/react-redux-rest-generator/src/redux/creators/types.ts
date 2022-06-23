@@ -16,10 +16,10 @@ import {
 /*******  Redux Creators  ********/
 /*********************************/
 
-export type R3gSetFieldCreator<AnonResourceType> = (
-  name: keyof AnonResourceType,
+export type R3gSetFieldCreator<ResourceBody> = (
+  name: keyof ResourceBody,
   value: unknown
-) => R3gSetFieldAction<AnonResourceType>
+) => R3gSetFieldAction<ResourceBody>
 
 export type R3gQueueRequestCreator = (
   requestKey: string,
@@ -37,9 +37,9 @@ export type R3gFetchCreator = (requestKey: string) => R3gFetchAction
 
 export type R3gResolveCreator = (requestKey: string) => R3gResolveAction
 
-export type R3gResponseCreator<CompositeIdentifierType, AnonResourceType> = (
-  requestResult: R3gRequestResult<CompositeIdentifierType, AnonResourceType>
-) => R3gResponseAction<CompositeIdentifierType, AnonResourceType>
+export type R3gResponseCreator<ResourceIdentifier, ResourceBody> = (
+  requestResult: R3gRequestResult<ResourceIdentifier, ResourceBody>
+) => R3gResponseAction<ResourceIdentifier, ResourceBody>
 
 export type R3gInvalidateCreator = () => R3gInvalidateAction
 
@@ -51,12 +51,12 @@ export type R3gClearResponseCreator = () => R3gClearResponseAction
 /*******  Data Structures  *******/
 /*********************************/
 
-export type R3gCreatorRecord<CompositeIdentifierType, AnonResourceType> = {
-  setField: R3gSetFieldCreator<AnonResourceType>
+export type R3gCreatorRecord<ResourceIdentifier, ResourceBody> = {
+  setField: R3gSetFieldCreator<ResourceBody>
   queueRequest: R3gQueueRequestCreator
   cancelRequest: R3gCancelRequestCreator
   fetch: R3gFetchCreator
-  response: R3gResponseCreator<CompositeIdentifierType, AnonResourceType>
+  response: R3gResponseCreator<ResourceIdentifier, ResourceBody>
   resolve: R3gResolveCreator
   invalidate: R3gInvalidateCreator
   clearFields: R3gClearFieldsCreator
@@ -70,6 +70,6 @@ export type R3gCreatorRecord<CompositeIdentifierType, AnonResourceType> = {
 export type GetR3gCreatorFunctionParams = {
   actionKeyRecord: R3gActionKeyRecord
 }
-export type GetR3gCreatorFunction = <CompositeIdentifierType, AnonResourceType>(
+export type GetR3gCreatorFunction = <ResourceIdentifier, ResourceBody>(
   params: GetR3gCreatorFunctionParams
-) => R3gCreatorRecord<CompositeIdentifierType, AnonResourceType>
+) => R3gCreatorRecord<ResourceIdentifier, ResourceBody>

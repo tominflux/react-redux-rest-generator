@@ -16,14 +16,14 @@ import {
 
 // Function: Get R3G Redux Creator record
 const getR3gCreatorRecord: GetR3gCreatorFunction = <
-  CompositeIdentifierType,
-  AnonResourceType
+  ResourceIdentifier,
+  ResourceBody
 >({
   actionKeyRecord,
 }: GetR3gCreatorFunctionParams) => {
   // Function: Set Field action creator
-  const setField: R3gSetFieldCreator<AnonResourceType> = (
-    name: keyof AnonResourceType,
+  const setField: R3gSetFieldCreator<ResourceBody> = (
+    name: keyof ResourceBody,
     value: unknown
   ) => ({
     type: actionKeyRecord.setField,
@@ -55,11 +55,8 @@ const getR3gCreatorRecord: GetR3gCreatorFunction = <
   })
 
   // Function: Response creator
-  const response: R3gResponseCreator<
-    CompositeIdentifierType,
-    AnonResourceType
-  > = (
-    requestResult: R3gRequestResult<CompositeIdentifierType, AnonResourceType>
+  const response: R3gResponseCreator<ResourceIdentifier, ResourceBody> = (
+    requestResult: R3gRequestResult<ResourceIdentifier, ResourceBody>
   ) => ({
     type: actionKeyRecord.response,
     payload: {
@@ -92,10 +89,7 @@ const getR3gCreatorRecord: GetR3gCreatorFunction = <
   })
 
   // Construct: R3G Creator record
-  const r3gCreators: R3gCreatorRecord<
-    CompositeIdentifierType,
-    AnonResourceType
-  > = {
+  const r3gCreators: R3gCreatorRecord<ResourceIdentifier, ResourceBody> = {
     setField,
     queueRequest,
     cancelRequest,

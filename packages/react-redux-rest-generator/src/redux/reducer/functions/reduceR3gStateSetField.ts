@@ -2,12 +2,12 @@ import { R3gSetFieldReducer, R3gSetFieldReducerParams } from '../types'
 
 // Reducer: Set Field
 const reduceR3gStateSetField: R3gSetFieldReducer = <
-  CompositeIdentifierType,
-  AnonResourceType
+  ResourceIdentifier,
+  ResourceBody
 >({
   state,
   payload,
-}: R3gSetFieldReducerParams<CompositeIdentifierType, AnonResourceType>) => {
+}: R3gSetFieldReducerParams<ResourceIdentifier, ResourceBody>) => {
   // Deconstruct: Set Field action payload
   const { name, value } = payload
 
@@ -15,7 +15,7 @@ const reduceR3gStateSetField: R3gSetFieldReducer = <
   const { fields: prevFields } = state
 
   // Construct: New fields with updated value
-  const nextFields: AnonResourceType = {
+  const nextFields: ResourceBody = {
     ...prevFields,
     [name]: value,
   }

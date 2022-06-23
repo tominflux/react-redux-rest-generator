@@ -11,15 +11,15 @@ import {
 
 // Function: Get default resource configuration params
 const getDefaultResourceConfigParams: R3gResourceConfigGetter = <
-  CompositeIdentifierType,
-  AnonResourceType,
-  ReadParamsType
+  ResourceIdentifier,
+  ResourceBody,
+  ReadParams
 >({
   resourceConfigParams,
 }: R3gResourceConfigGetterParams<
-  CompositeIdentifierType,
-  AnonResourceType,
-  ReadParamsType
+  ResourceIdentifier,
+  ResourceBody,
+  ReadParams
 >) => {
   // Deconstruct: Optional resource configuration parameters
   const {
@@ -42,7 +42,7 @@ const getDefaultResourceConfigParams: R3gResourceConfigGetter = <
 
   // Derive: Property keys from initial fields
   const propertyKeys = Object.keys(resourceInitialFields) as Array<
-    keyof AnonResourceType
+    keyof ResourceBody
   >
 
   // Assign: Default configuration parameters where needed
@@ -50,8 +50,7 @@ const getDefaultResourceConfigParams: R3gResourceConfigGetter = <
   const sort = providedSort ?? (() => 0)
   const postProcess =
     providedPostProcess ??
-    ((resourceList: Array<CompositeIdentifierType & AnonResourceType>) =>
-      resourceList)
+    ((resourceList: Array<ResourceIdentifier & ResourceBody>) => resourceList)
   const apiRootPath = providedApiRootPath ?? '/api'
   const composition = providedComposition ?? []
   const stateName = providedStateName ?? `${resourceName}State`
@@ -61,9 +60,9 @@ const getDefaultResourceConfigParams: R3gResourceConfigGetter = <
 
   // Construct: Resource configuration
   const resourceConfig: R3gResourceConfig<
-    CompositeIdentifierType,
-    AnonResourceType,
-    ReadParamsType
+    ResourceIdentifier,
+    ResourceBody,
+    ReadParams
   > = {
     ...resourceConfigParams,
     propertyKeys,
@@ -81,28 +80,28 @@ const getDefaultResourceConfigParams: R3gResourceConfigGetter = <
 
 // Function: Get R3G Client
 const getClient: R3gClientGetter = <
-  CompositeIdentifierType,
-  AnonResourceType,
-  ReadParamsType
+  ResourceIdentifier,
+  ResourceBody,
+  ReadParams
 >(
   resourceConfigParams: R3gResourceConfigParams<
-    CompositeIdentifierType,
-    AnonResourceType,
-    ReadParamsType
+    ResourceIdentifier,
+    ResourceBody,
+    ReadParams
   >
 ) => {
   // Derive: Resource configuration
   const resourceConfig = R3gClientFunctions.getDefaultResourceConfigParams<
-    CompositeIdentifierType,
-    AnonResourceType,
-    ReadParamsType
+    ResourceIdentifier,
+    ResourceBody,
+    ReadParams
   >({ resourceConfigParams })
 
   // Derive: Client redux
   const clientRedux = R3gClientReduxFunctions.getClientRedux<
-    CompositeIdentifierType,
-    AnonResourceType,
-    ReadParamsType
+    ResourceIdentifier,
+    ResourceBody,
+    ReadParams
   >(resourceConfig)
 
   // Deconstruct: Client redux
@@ -110,19 +109,17 @@ const getClient: R3gClientGetter = <
 
   // Contextualize: Scheduler hook
   const useResourceScheduler = () =>
-    useRequestScheduler<
-      CompositeIdentifierType,
-      AnonResourceType,
-      ReadParamsType
-    >(resourceConfig, creators)
+    useRequestScheduler<ResourceIdentifier, ResourceBody, ReadParams>(
+      resourceConfig,
+      creators
+    )
 
   // Contextualize: Controller hook
   const useResource = () =>
-    useRequestController<
-      CompositeIdentifierType,
-      AnonResourceType,
-      ReadParamsType
-    >(creators, resourceConfig)
+    useRequestController<ResourceIdentifier, ResourceBody, ReadParams>(
+      creators,
+      resourceConfig
+    )
 
   return {
     config: resourceConfig,

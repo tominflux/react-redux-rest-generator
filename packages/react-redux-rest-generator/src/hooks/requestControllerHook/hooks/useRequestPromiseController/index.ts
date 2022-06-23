@@ -10,17 +10,17 @@ import {
 
 // Hook: Request promise controller
 const useRequestPromiseController: R3gRequestPromiseControllerHook = <
-  CompositeIdentifierType,
-  AnonResourceType
+  ResourceIdentifier,
+  ResourceBody
 >() => {
   // State: Create promise resolvers
   const [createPromiseResolverList, setCreatePromiseResolverList] = useState<
-    Array<R3gCreatePromiseResolver<CompositeIdentifierType>>
+    Array<R3gCreatePromiseResolver<ResourceIdentifier>>
   >([])
 
   // State: Read promise resolvers
   const [readPromiseResolverList, setReadPromiseResolverList] = useState<
-    Array<R3gReadPromiseResolver<CompositeIdentifierType, AnonResourceType>>
+    Array<R3gReadPromiseResolver<ResourceIdentifier, ResourceBody>>
   >([])
 
   // State: Update promise resolvers
@@ -35,9 +35,7 @@ const useRequestPromiseController: R3gRequestPromiseControllerHook = <
 
   // Callback: Put create request promise resolver
   const putCreatePromiseResolver = useCallback(
-    (
-      createPromiseResolver: R3gCreatePromiseResolver<CompositeIdentifierType>
-    ) => {
+    (createPromiseResolver: R3gCreatePromiseResolver<ResourceIdentifier>) => {
       setCreatePromiseResolverList((prevCreatePromiseResolverList) => {
         const nextCreatePromiseResolverList = [
           ...prevCreatePromiseResolverList,
@@ -64,8 +62,8 @@ const useRequestPromiseController: R3gRequestPromiseControllerHook = <
   const putReadPromiseResolver = useCallback(
     (
       readPromiseResolver: R3gReadPromiseResolver<
-        CompositeIdentifierType,
-        AnonResourceType
+        ResourceIdentifier,
+        ResourceBody
       >
     ) => {
       setReadPromiseResolverList((prevReadPromiseResolverList) => {
@@ -142,7 +140,7 @@ const useRequestPromiseController: R3gRequestPromiseControllerHook = <
 
   // Memo: Request promise controller
   const requestPromiseController = useMemo<
-    R3gRequestPromiseController<CompositeIdentifierType, AnonResourceType>
+    R3gRequestPromiseController<ResourceIdentifier, ResourceBody>
   >(
     () => ({
       createPromiseResolverList,

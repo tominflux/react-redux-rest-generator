@@ -5,15 +5,12 @@ import {
 
 // Reducer: Clear fields
 const reduceR3gStateClearResponse: R3gClearResponseReducer = <
-  CompositeIdentifierType,
-  AnonResourceType
+  ResourceIdentifier,
+  ResourceBody
 >({
   state,
   payload,
-}: R3gClearResponseReducerParams<
-  CompositeIdentifierType,
-  AnonResourceType
->) => {
+}: R3gClearResponseReducerParams<ResourceIdentifier, ResourceBody>) => {
   // Deconstruct: Payload
   const {} = payload
 
@@ -26,7 +23,7 @@ const reduceR3gStateClearResponse: R3gClearResponseReducer = <
     method: null,
     status: null,
     message: null,
-    compositeIdentifier: null,
+    resourceIdentifier: null,
   }
 }
 

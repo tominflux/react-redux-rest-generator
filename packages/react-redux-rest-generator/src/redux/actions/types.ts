@@ -89,13 +89,13 @@ export type R3gActionKeyRecord = {
 /*********************************/
 
 // Action: R3G Set Field
-export type R3gSetFieldActionPayload<AnonResourceType> = {
-  name: keyof AnonResourceType
+export type R3gSetFieldActionPayload<ResourceBody> = {
+  name: keyof ResourceBody
   value: unknown
 }
-export type R3gSetFieldAction<AnonResourceType> = {
+export type R3gSetFieldAction<ResourceBody> = {
   type: R3gSetFieldActionKey
-  payload: R3gSetFieldActionPayload<AnonResourceType>
+  payload: R3gSetFieldActionPayload<ResourceBody>
 }
 
 // Action: R3G Queue Request
@@ -139,15 +139,12 @@ export type R3gResolveAction = {
 }
 
 // Action: R3G Response
-export type R3gResponseActionPayload<
-  CompositeIdentifierType,
-  AnonResourceType
-> = {
-  requestResult: R3gRequestResult<CompositeIdentifierType, AnonResourceType>
+export type R3gResponseActionPayload<ResourceIdentifier, ResourceBody> = {
+  requestResult: R3gRequestResult<ResourceIdentifier, ResourceBody>
 }
-export type R3gResponseAction<CompositeIdentifierType, AnonResourceType> = {
+export type R3gResponseAction<ResourceIdentifier, ResourceBody> = {
   type: R3gResponseActionKey
-  payload: R3gResponseActionPayload<CompositeIdentifierType, AnonResourceType>
+  payload: R3gResponseActionPayload<ResourceIdentifier, ResourceBody>
 }
 
 // Action: R3G Invalidate
@@ -172,13 +169,13 @@ export type R3gClearResponseAction = {
 }
 
 // Action: R3G Ambiguous Action
-export type R3gAction<CompositeIdentifierType, AnonResourceType> =
-  | R3gSetFieldAction<AnonResourceType>
+export type R3gAction<ResourceIdentifier, ResourceBody> =
+  | R3gSetFieldAction<ResourceBody>
   | R3gQueueRequestAction
   | R3gCancelRequestAction
   | R3gFetchAction
   | R3gResolveAction
-  | R3gResponseAction<CompositeIdentifierType, AnonResourceType>
+  | R3gResponseAction<ResourceIdentifier, ResourceBody>
   | R3gInvalidateAction
   | R3gClearFieldsAction
   | R3gClearResponseAction

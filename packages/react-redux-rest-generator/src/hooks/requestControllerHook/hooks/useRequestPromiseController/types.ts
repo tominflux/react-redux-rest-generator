@@ -10,30 +10,24 @@ import {
 /*********************************/
 
 // Ambiguous Promise Resolver
-export type R3gAmbiguousPromiseResolver<
-  CompositeIdentifierType,
-  AnonResourceType
-> =
-  | R3gCreatePromiseResolver<CompositeIdentifierType>
-  | R3gReadPromiseResolver<CompositeIdentifierType, AnonResourceType>
+export type R3gAmbiguousPromiseResolver<ResourceIdentifier, ResourceBody> =
+  | R3gCreatePromiseResolver<ResourceIdentifier>
+  | R3gReadPromiseResolver<ResourceIdentifier, ResourceBody>
   | R3gUpdatePromiseResolver
   | R3gDeletePromiseResolver
 
 // Create Promise Resolver
-export type R3gCreatePromiseResolver<CompositeIdentifierType> = {
+export type R3gCreatePromiseResolver<ResourceIdentifier> = {
   requestKey: string
-  resolve: (result: R3gCreateOperationResult<CompositeIdentifierType>) => void
+  resolve: (result: R3gCreateOperationResult<ResourceIdentifier>) => void
   reject: (reason: string) => void
 }
 
 // Read Promise Resolver
-export type R3gReadPromiseResolver<
-  CompositeIdentifierType,
-  AnonResourceType
-> = {
+export type R3gReadPromiseResolver<ResourceIdentifier, ResourceBody> = {
   requestKey: string
   resolve: (
-    result: R3gReadOperationResult<CompositeIdentifierType, AnonResourceType>
+    result: R3gReadOperationResult<ResourceIdentifier, ResourceBody>
   ) => void
   reject: (reason: string) => void
 }
@@ -53,26 +47,21 @@ export type R3gDeletePromiseResolver = {
 }
 
 // Request Promise Controller
-export type R3gRequestPromiseController<
-  CompositeIdentifierType,
-  AnonResourceType
-> = {
-  createPromiseResolverList: Array<
-    R3gCreatePromiseResolver<CompositeIdentifierType>
-  >
+export type R3gRequestPromiseController<ResourceIdentifier, ResourceBody> = {
+  createPromiseResolverList: Array<R3gCreatePromiseResolver<ResourceIdentifier>>
   readPromiseResolverList: Array<
-    R3gReadPromiseResolver<CompositeIdentifierType, AnonResourceType>
+    R3gReadPromiseResolver<ResourceIdentifier, ResourceBody>
   >
   updatePromiseResolverList: Array<R3gUpdatePromiseResolver>
   deletePromiseResolverList: Array<R3gDeletePromiseResolver>
   putCreatePromiseResolver: (
-    createPromiseResolver: R3gCreatePromiseResolver<CompositeIdentifierType>
+    createPromiseResolver: R3gCreatePromiseResolver<ResourceIdentifier>
   ) => void
   removeCreatePromiseResolver: (requestKey: string) => void
   putReadPromiseResolver: (
     readPromiseResolver: R3gReadPromiseResolver<
-      CompositeIdentifierType,
-      AnonResourceType
+      ResourceIdentifier,
+      ResourceBody
     >
   ) => void
   removeReadPromiseResolver: (requestKey: string) => void
@@ -91,6 +80,6 @@ export type R3gRequestPromiseController<
 /*********************************/
 
 export type R3gRequestPromiseControllerHook = <
-  CompositeIdentifierType,
-  AnonResourceType
->() => R3gRequestPromiseController<CompositeIdentifierType, AnonResourceType>
+  ResourceIdentifier,
+  ResourceBody
+>() => R3gRequestPromiseController<ResourceIdentifier, ResourceBody>

@@ -7,28 +7,28 @@ import { R3gInitialStateGetter, R3gReducer } from './redux/types'
 
 // Data Structure: Resource configuration params
 export type R3gResourceConfigParams<
-  CompositeIdentifierType,
-  AnonResourceType,
-  ReadParamsType
+  ResourceIdentifier,
+  ResourceBody,
+  ReadParams
 > = {
   name: string
-  identifiers: Array<keyof CompositeIdentifierType>
-  primaryIdentifier: keyof CompositeIdentifierType
-  initialFields: AnonResourceType
+  identifiers: Array<keyof ResourceIdentifier>
+  primaryIdentifier: keyof ResourceIdentifier
+  initialFields: ResourceBody
   filter?: (
-    resource: AnonResourceType,
-    params: ReadParamsType | Record<string, never>,
+    resource: ResourceBody,
+    params: ReadParams | Record<string, never>,
     index?: number
   ) => boolean
   sort?: (
-    resourceA: AnonResourceType,
-    resourceB: AnonResourceType,
-    params: ReadParamsType | Record<string, never>
+    resourceA: ResourceBody,
+    resourceB: ResourceBody,
+    params: ReadParams | Record<string, never>
   ) => number
   postProcess?: (
-    resourceList: Array<CompositeIdentifierType & AnonResourceType>,
-    params: ReadParamsType | Record<string, never>
-  ) => Array<CompositeIdentifierType & AnonResourceType>
+    resourceList: Array<ResourceIdentifier & ResourceBody>,
+    params: ReadParams | Record<string, never>
+  ) => Array<ResourceIdentifier & ResourceBody>
   apiRootPath?: string
   composition?: Array<R3gResourceConfig<unknown, unknown, unknown>>
   stateName?: string
@@ -37,30 +37,26 @@ export type R3gResourceConfigParams<
 }
 
 // Data Structure: Resource configuration
-export type R3gResourceConfig<
-  CompositeIdentifierType,
-  AnonResourceType,
-  ReadParamsType
-> = {
+export type R3gResourceConfig<ResourceIdentifier, ResourceBody, ReadParams> = {
   name: string
-  identifiers: Array<keyof CompositeIdentifierType>
-  primaryIdentifier: keyof CompositeIdentifierType
-  propertyKeys: Array<keyof AnonResourceType>
-  initialFields: AnonResourceType
+  identifiers: Array<keyof ResourceIdentifier>
+  primaryIdentifier: keyof ResourceIdentifier
+  propertyKeys: Array<keyof ResourceBody>
+  initialFields: ResourceBody
   filter: (
-    resource: AnonResourceType,
-    params: ReadParamsType | Record<string, never>,
+    resource: ResourceBody,
+    params: ReadParams | Record<string, never>,
     index?: number
   ) => boolean
   sort: (
-    resourceA: AnonResourceType,
-    resourceB: AnonResourceType,
-    params: ReadParamsType | Record<string, never>
+    resourceA: ResourceBody,
+    resourceB: ResourceBody,
+    params: ReadParams | Record<string, never>
   ) => number
   postProcess: (
-    resourceList: Array<CompositeIdentifierType & AnonResourceType>,
-    params: ReadParamsType | Record<string, never>
-  ) => Array<CompositeIdentifierType & AnonResourceType>
+    resourceList: Array<ResourceIdentifier & ResourceBody>,
+    params: ReadParams | Record<string, never>
+  ) => Array<ResourceIdentifier & ResourceBody>
   apiRootPath: string
   composition: Array<R3gResourceConfig<unknown, unknown, unknown>>
   stateName: string
@@ -69,27 +65,16 @@ export type R3gResourceConfig<
 }
 
 // Data Structure: Resource client
-export type R3gClient<
-  CompositeIdentifierType,
-  AnonResourceType,
-  ReadParamsType
-> = {
-  config: R3gResourceConfig<
-    CompositeIdentifierType,
-    AnonResourceType,
-    ReadParamsType
-  >
-  reducer: R3gReducer<CompositeIdentifierType, AnonResourceType>
+export type R3gClient<ResourceIdentifier, ResourceBody, ReadParams> = {
+  config: R3gResourceConfig<ResourceIdentifier, ResourceBody, ReadParams>
+  reducer: R3gReducer<ResourceIdentifier, ResourceBody>
   useResourceScheduler: () => void
   useResource: () => R3gRequestController<
-    CompositeIdentifierType,
-    AnonResourceType,
-    ReadParamsType
+    ResourceIdentifier,
+    ResourceBody,
+    ReadParams
   >
-  getInitialState: R3gInitialStateGetter<
-    CompositeIdentifierType,
-    AnonResourceType
-  >
+  getInitialState: R3gInitialStateGetter<ResourceIdentifier, ResourceBody>
 }
 
 /*********************************/
@@ -98,41 +83,33 @@ export type R3gClient<
 
 // Function: Get resource configuration
 export type R3gResourceConfigGetterParams<
-  CompositeIdentifierType,
-  AnonResourceType,
-  ReadParamsType
+  ResourceIdentifier,
+  ResourceBody,
+  ReadParams
 > = {
   resourceConfigParams: R3gResourceConfigParams<
-    CompositeIdentifierType,
-    AnonResourceType,
-    ReadParamsType
+    ResourceIdentifier,
+    ResourceBody,
+    ReadParams
   >
 }
 export type R3gResourceConfigGetter = <
-  CompositeIdentifierType,
-  AnonResourceType,
-  ReadParamsType
+  ResourceIdentifier,
+  ResourceBody,
+  ReadParams
 >(
   params: R3gResourceConfigGetterParams<
-    CompositeIdentifierType,
-    AnonResourceType,
-    ReadParamsType
+    ResourceIdentifier,
+    ResourceBody,
+    ReadParams
   >
-) => R3gResourceConfig<
-  CompositeIdentifierType,
-  AnonResourceType,
-  ReadParamsType
->
+) => R3gResourceConfig<ResourceIdentifier, ResourceBody, ReadParams>
 
 // Function: Get R3G Client
-export type R3gClientGetter = <
-  CompositeIdentifierType,
-  AnonResourceType,
-  ReadParamsType
->(
+export type R3gClientGetter = <ResourceIdentifier, ResourceBody, ReadParams>(
   resourceConfigParams: R3gResourceConfigParams<
-    CompositeIdentifierType,
-    AnonResourceType,
-    ReadParamsType
+    ResourceIdentifier,
+    ResourceBody,
+    ReadParams
   >
-) => R3gClient<CompositeIdentifierType, AnonResourceType, ReadParamsType>
+) => R3gClient<ResourceIdentifier, ResourceBody, ReadParams>

@@ -8,14 +8,14 @@ import { R3gResourceConfig } from '../types'
 import { R3gInitialStateGetter, R3gReducer, R3gReduxGetter } from './types'
 
 const getClientRedux: R3gReduxGetter = <
-  CompositeIdentifierType,
-  AnonResourceType,
-  ReadParamsType
+  ResourceIdentifier,
+  ResourceBody,
+  ReadParams
 >(
   resourceConfig: R3gResourceConfig<
-    CompositeIdentifierType,
-    AnonResourceType,
-    ReadParamsType
+    ResourceIdentifier,
+    ResourceBody,
+    ReadParams
   >
 ) => {
   // Deconstruct: Resource config
@@ -28,13 +28,12 @@ const getClientRedux: R3gReduxGetter = <
 
   // Function: Typed initial state getter
   const getInitialState: R3gInitialStateGetter<
-    CompositeIdentifierType,
-    AnonResourceType
+    ResourceIdentifier,
+    ResourceBody
   > = () =>
-    R3gInitialStateFunctions.getInitialState<
-      CompositeIdentifierType,
-      AnonResourceType
-    >({ initialFields: initialResourceFields })
+    R3gInitialStateFunctions.getInitialState<ResourceIdentifier, ResourceBody>({
+      initialFields: initialResourceFields,
+    })
 
   // Derive: Action key record
   const actions = R3gActionFunctions.getActionKeyRecord({
@@ -43,16 +42,16 @@ const getClientRedux: R3gReduxGetter = <
 
   // Derive: Creator record
   const creators = R3gCreatorFunctions.getR3gCreatorRecord<
-    CompositeIdentifierType,
-    AnonResourceType
+    ResourceIdentifier,
+    ResourceBody
   >({
     actionKeyRecord: actions,
   })
 
   // Function: Typed reducer
-  const reducer: R3gReducer<CompositeIdentifierType, AnonResourceType> = (
-    state: R3gState<CompositeIdentifierType, AnonResourceType>,
-    action: R3gAction<CompositeIdentifierType, AnonResourceType>
+  const reducer: R3gReducer<ResourceIdentifier, ResourceBody> = (
+    state: R3gState<ResourceIdentifier, ResourceBody>,
+    action: R3gAction<ResourceIdentifier, ResourceBody>
   ) =>
     R3gReducerFunctions.reduceR3gState({
       state,

@@ -3,12 +3,12 @@ import { R3gQueueRequestReducer, R3gQueueRequestReducerParams } from '../types'
 
 // Reducer: Queue Request
 const reduceR3gStateQueueRequest: R3gQueueRequestReducer = <
-  CompositeIdentifierType,
-  AnonResourceType
+  ResourceIdentifier,
+  ResourceBody
 >({
   state,
   payload,
-}: R3gQueueRequestReducerParams<CompositeIdentifierType, AnonResourceType>) => {
+}: R3gQueueRequestReducerParams<ResourceIdentifier, ResourceBody>) => {
   // Deconstruct: Queue Request action payload
   const { requestKey, hookKey, method, url, body } = payload
 
