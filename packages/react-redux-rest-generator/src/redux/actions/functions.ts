@@ -4,10 +4,11 @@ import {
   R3gActionKeySuffix,
   R3gActionKeyRecord,
   GetGenericR3gActionKeyRecord,
+  R3gActionKeyRecordKey,
 } from './types'
 
 // Deconstruct: R3G action constants
-const { actionKeySuffixList } = R3gActionConstants
+const { actionKeySuffixList, actionKeyRecordKeyList } = R3gActionConstants
 
 // Function: Get generic R3G action key record
 const getActionKeyRecord: GetGenericR3gActionKeyRecord = (params) => {
@@ -16,9 +17,9 @@ const getActionKeyRecord: GetGenericR3gActionKeyRecord = (params) => {
 
   // Derivation: Entries for action key record
   const actionRecordEntries = actionKeySuffixList.map<
-    [R3gActionKeySuffix, R3gActionKey]
-  >((actionKeySuffix) => [
-    actionKeySuffix,
+    [R3gActionKeyRecordKey, R3gActionKey]
+  >((actionKeySuffix, index) => [
+    actionKeyRecordKeyList[index],
     `R3G_${actionKeySuffix}_${resourceName.toUpperCase()}`,
   ])
 

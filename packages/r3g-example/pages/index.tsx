@@ -3,7 +3,7 @@ import { Container } from '@chakra-ui/react'
 import ExampleGallery from 'components/example/exampleGallery'
 import ExampleControls from 'components/example/exampleControls'
 import { useSelector } from 'react-redux'
-import { RestReduxState } from 'react-redux-rest-generator/dist/generateRestClient/generateRestRedux/types'
+import { R3gState } from 'react-redux-rest-generator/dist/redux/types'
 
 const ExamplePage = () => {
     const [showCreateModal, setShowCreateModal] = useState<boolean>(false)
@@ -13,7 +13,7 @@ const ExamplePage = () => {
     const [deleteId, setDeleteId] = useState<ExampleCompositeIdentifier>(null)
 
     const state = useSelector<{
-        exampleState: RestReduxState<ExampleCompositeIdentifier, ExampleSerialized>
+        exampleState: R3gState<ExampleCompositeIdentifier, ExampleSerialized>
     }>((state) => state)
     console.log('DEBUG', state)
 

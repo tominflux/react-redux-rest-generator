@@ -1,6 +1,11 @@
 import { R3gRequestController } from '../hooks/requestControllerHook/types'
 import { R3gInitialStateGetter, R3gReducer } from './redux/types'
 
+/*********************************/
+/*******  Data Structures  *******/
+/*********************************/
+
+// Data Structure: Resource configuration params
 export type R3gResourceConfigParams<
   CompositeIdentifierType,
   AnonResourceType,
@@ -31,6 +36,7 @@ export type R3gResourceConfigParams<
   verboseLogging?: boolean
 }
 
+// Data Structure: Resource configuration
 export type R3gResourceConfig<
   CompositeIdentifierType,
   AnonResourceType,
@@ -39,6 +45,7 @@ export type R3gResourceConfig<
   name: string
   identifiers: Array<keyof CompositeIdentifierType>
   primaryIdentifier: keyof CompositeIdentifierType
+  propertyKeys: Array<keyof AnonResourceType>
   initialFields: AnonResourceType
   filter: (
     resource: AnonResourceType,
@@ -61,6 +68,7 @@ export type R3gResourceConfig<
   verboseLogging: boolean
 }
 
+// Data Structure: Resource client
 export type R3gClient<
   CompositeIdentifierType,
   AnonResourceType,
@@ -84,12 +92,45 @@ export type R3gClient<
   >
 }
 
+/*********************************/
+/*********  Functions  ***********/
+/*********************************/
+
+// Function: Get resource configuration
+export type R3gResourceConfigGetterParams<
+  CompositeIdentifierType,
+  AnonResourceType,
+  ReadParamsType
+> = {
+  resourceConfigParams: R3gResourceConfigParams<
+    CompositeIdentifierType,
+    AnonResourceType,
+    ReadParamsType
+  >
+}
+export type R3gResourceConfigGetter = <
+  CompositeIdentifierType,
+  AnonResourceType,
+  ReadParamsType
+>(
+  params: R3gResourceConfigGetterParams<
+    CompositeIdentifierType,
+    AnonResourceType,
+    ReadParamsType
+  >
+) => R3gResourceConfig<
+  CompositeIdentifierType,
+  AnonResourceType,
+  ReadParamsType
+>
+
+// Function: Get R3G Client
 export type R3gClientGetter = <
   CompositeIdentifierType,
   AnonResourceType,
   ReadParamsType
 >(
-  resourceConfig: R3gResourceConfig<
+  resourceConfigParams: R3gResourceConfigParams<
     CompositeIdentifierType,
     AnonResourceType,
     ReadParamsType

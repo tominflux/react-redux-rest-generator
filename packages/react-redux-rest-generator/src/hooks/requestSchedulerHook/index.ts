@@ -23,7 +23,8 @@ const useRequestScheduler: R3gGenericRequestSchedulerHook = <
   // Deconstruct: Resource config
   const {
     name: resourceName,
-    identifiers: resourceIdentifiers,
+    apiPayloadResourceListName: resourceListName,
+    identifiers: resourceIdentifierKeys,
     initialFields: resourceInitialFields,
   } = resourceConfig
 
@@ -44,15 +45,10 @@ const useRequestScheduler: R3gGenericRequestSchedulerHook = <
   const { fetching, requestKey, pendingRequests } = state
 
   // Memo: First request from pending requests
-  const currentRequest = useMemo(() => pendingRequests.at(0) ?? null, [
-    pendingRequests,
-  ])
-
-  // Memo: Resource identifier keys
-  const resourceIdentifierKeys = useMemo(
-    () => Object.keys(resourceIdentifiers),
-    [resourceIdentifiers]
-  )
+  const currentRequest = useMemo(() => {
+    const [nextRequest] = pendingRequests
+    return nextRequest ?? null
+  }, [pendingRequests])
 
   // Memo: Resource property keys
   const resourcePropertyKeys = useMemo(
@@ -83,7 +79,8 @@ const useRequestScheduler: R3gGenericRequestSchedulerHook = <
     >({
       hookKey,
       requestKey,
-      resourceIdentifierKeys,
+      resourceListName,
+      resourceIdentifierKeys: resourceIdentifierKeys as Array<string>,
       resourcePropertyKeys,
       method,
       url,
@@ -98,6 +95,7 @@ const useRequestScheduler: R3gGenericRequestSchedulerHook = <
     currentRequest,
     dispatch,
     resourceIdentifierKeys,
+    resourceListName,
     resourcePropertyKeys,
   ])
 

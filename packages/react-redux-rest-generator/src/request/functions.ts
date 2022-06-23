@@ -1,4 +1,5 @@
 import * as path from 'path'
+import UtilFunctions from '../utils/functions'
 import isStatusOk from '../utils/isStatusOk'
 import {
   R3gAxiosResponseValidator,
@@ -32,6 +33,7 @@ const validateAxiosResponse: R3gAxiosResponseValidator = <
   AnonResourceType
 >({
   resourceIdentifierKeys,
+  resourceListName,
   resourcePropertyKeys,
   method,
   axiosResponse,
@@ -106,26 +108,47 @@ const validateAxiosResponse: R3gAxiosResponseValidator = <
           return 'NO_PAYLOAD'
         }
 
-        // Fail Fast: Wrong payload format
+        // Fail Fast: If payload does not match expected format
         const payloadKeys = Object.keys(payload)
-        const expectedKeys = resourcePropertyKeys as Array<string>
-        const containsAllExpectedKeys = expectedKeys.reduce(
-          (onlyFoundExpectedKeys, currentKey) => {
-            if (!onlyFoundExpectedKeys) return false
-            if (!payloadKeys.includes(currentKey)) return false
+        const expectedPayloadKeys = [resourceListName] as Array<string>
+        const doPayloadKeysMatchExpected = UtilFunctions.checkIfSetsMatch({
+          setList: [payloadKeys, expectedPayloadKeys],
+        })
+        if (!doPayloadKeysMatchExpected) {
+          return 'WRONG_PAYLOAD_FORMAT'
+        }
+        const readPayload = payload as R3gReadResultPayload<
+          CompositeIdentifierType,
+          AnonResourceType
+        >
+        const resourceList = readPayload[resourceListName]
+        if (
+          !resourceList ||
+          typeof resourceList !== 'object' ||
+          !Array.isArray(resourceList)
+        ) {
+          return 'WRONG_PAYLOAD_FORMAT'
+        }
+
+        // Fail Fast: If resource instance does not match expected format
+        const areResourceFormatsValid = resourceList
+          .map((resourceInstance) => {
+            const resourceKeys = Object.keys(resourceInstance)
+            const expectedResourceKeys = [
+              ...resourceIdentifierKeys,
+              ...resourcePropertyKeys,
+            ]
+            const doResourceKeysMatchExpected = UtilFunctions.checkIfSetsMatch({
+              setList: [resourceKeys, expectedResourceKeys],
+            })
+            return doResourceKeysMatchExpected
+          })
+          .reduce((doAllKeysMatchSoFar, doResourceKeysMatchExpected) => {
+            if (!doAllKeysMatchSoFar) return false
+            if (!doResourceKeysMatchExpected) return false
             return true
-          },
-          true
-        )
-        const containsUnexpectedKey = payloadKeys.reduce(
-          (foundUnexpectedKey, currentKey) => {
-            if (!foundUnexpectedKey) return true
-            if (!expectedKeys.includes(currentKey)) return true
-            return false
-          },
-          true
-        )
-        if (!containsAllExpectedKeys || containsUnexpectedKey) {
+          }, true)
+        if (!areResourceFormatsValid) {
           return 'WRONG_PAYLOAD_FORMAT'
         }
 

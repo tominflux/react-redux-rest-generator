@@ -1,3 +1,4 @@
+import R3gInitialStateFunctions from '../initialState/functions'
 import reduceR3gStateCancelRequest from './functions/reduceR3gStateCancelRequest'
 import reduceR3gStateClearFields from './functions/reduceR3gStateClearFields'
 import reduceR3gStateClearResponse from './functions/reduceR3gStateClearResponse'
@@ -18,8 +19,18 @@ const reduceR3gState: R3gGenericReducer = <
   action,
   actionKeyRecord,
   resourceIdentifiers,
+  resourceListName,
   initialResourceFields,
 }: R3gGenericReducerParams<CompositeIdentifierType, AnonResourceType>) => {
+  // Derive: Previous state (defaults to initial state)
+  const prevState =
+    state ??
+    R3gInitialStateFunctions.getInitialState<
+      CompositeIdentifierType,
+      AnonResourceType
+    >({ initialFields: initialResourceFields })
+
+  // Switch: Action type
   switch (action.type) {
     // Case: Set field action
     case actionKeyRecord.setField: {
@@ -28,7 +39,7 @@ const reduceR3gState: R3gGenericReducer = <
 
       // Return: Reduced state
       return reduceR3gStateSetField<CompositeIdentifierType, AnonResourceType>({
-        state,
+        state: prevState,
         payload,
       })
     }
@@ -41,7 +52,7 @@ const reduceR3gState: R3gGenericReducer = <
       return reduceR3gStateQueueRequest<
         CompositeIdentifierType,
         AnonResourceType
-      >({ state, payload })
+      >({ state: prevState, payload })
     }
     // Case: Cancel request action
     case actionKeyRecord.cancelRequest: {
@@ -52,7 +63,7 @@ const reduceR3gState: R3gGenericReducer = <
       return reduceR3gStateCancelRequest<
         CompositeIdentifierType,
         AnonResourceType
-      >({ state, payload })
+      >({ state: prevState, payload })
     }
     // Case: Fetch action
     case actionKeyRecord.fetch: {
@@ -61,7 +72,7 @@ const reduceR3gState: R3gGenericReducer = <
 
       // Return: Reduced state
       return reduceR3gStateFetch<CompositeIdentifierType, AnonResourceType>({
-        state,
+        state: prevState,
         payload,
       })
     }
@@ -72,9 +83,10 @@ const reduceR3gState: R3gGenericReducer = <
 
       // Return: Reduced state
       return reduceR3gStateResponse<CompositeIdentifierType, AnonResourceType>({
-        state,
+        state: prevState,
         payload,
         resourceIdentifiers,
+        resourceListName,
       })
     }
     // Case: Resolve action
@@ -84,7 +96,7 @@ const reduceR3gState: R3gGenericReducer = <
 
       // Return: Reduced state
       return reduceR3gStateResolve<CompositeIdentifierType, AnonResourceType>({
-        state,
+        state: prevState,
         payload,
       })
     }
@@ -98,7 +110,7 @@ const reduceR3gState: R3gGenericReducer = <
         CompositeIdentifierType,
         AnonResourceType
       >({
-        state,
+        state: prevState,
         payload,
       })
     }
@@ -112,7 +124,7 @@ const reduceR3gState: R3gGenericReducer = <
         CompositeIdentifierType,
         AnonResourceType
       >({
-        state,
+        state: prevState,
         payload,
         initialResourceFields,
       })
@@ -127,12 +139,12 @@ const reduceR3gState: R3gGenericReducer = <
         CompositeIdentifierType,
         AnonResourceType
       >({
-        state,
+        state: prevState,
         payload,
       })
     }
     default:
-      return state
+      return prevState
   }
 }
 

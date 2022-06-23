@@ -78,6 +78,7 @@ export type R3gResponseReducerParams<
   state: R3gState<CompositeIdentifierType, AnonResourceType>
   payload: R3gResponseActionPayload<CompositeIdentifierType, AnonResourceType>
   resourceIdentifiers: Array<keyof CompositeIdentifierType>
+  resourceListName: string
 }
 export type R3gResponseReducer = <CompositeIdentifierType, AnonResourceType>(
   params: R3gResponseReducerParams<CompositeIdentifierType, AnonResourceType>
@@ -147,6 +148,7 @@ export type R3gGenericReducerParams<
   action: R3gAction<CompositeIdentifierType, AnonResourceType>
   actionKeyRecord: R3gActionKeyRecord
   resourceIdentifiers: Array<keyof CompositeIdentifierType>
+  resourceListName: string
   initialResourceFields: AnonResourceType
 }
 export type R3gGenericReducer = <CompositeIdentifierType, AnonResourceType>(

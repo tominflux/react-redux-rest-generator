@@ -18,8 +18,7 @@
         "url": "https://github.com/tominflux/react-redux-rest-generator/issues"
     },
     "homepage": "https://github.com/tominflux/react-redux-rest-generator#readme",
-    "main": "./dist/generateRestClient/index.js",
-    "types": "./dist/generateRestClient/index.d.ts",
+    "main": "./dist/client/functions.js",
     "files": [
         "dist",
         "LICENSE",

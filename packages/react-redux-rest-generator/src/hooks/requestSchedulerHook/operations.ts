@@ -13,6 +13,7 @@ const executeAxiosRequest: ExecuteAxiosRequestOperation = async <
 >({
   hookKey,
   requestKey,
+  resourceListName,
   resourceIdentifierKeys,
   resourcePropertyKeys,
   method,
@@ -42,6 +43,7 @@ const executeAxiosRequest: ExecuteAxiosRequestOperation = async <
       AnonResourceType
     >({
       resourceIdentifierKeys,
+      resourceListName,
       resourcePropertyKeys,
       method,
       axiosResponse,
@@ -92,6 +94,7 @@ const executeAxiosRequest: ExecuteAxiosRequestOperation = async <
       AnonResourceType
     >({
       resourceIdentifierKeys,
+      resourceListName,
       resourcePropertyKeys,
       method,
       axiosResponse,

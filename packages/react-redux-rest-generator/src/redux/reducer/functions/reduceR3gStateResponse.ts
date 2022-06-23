@@ -9,6 +9,7 @@ const reduceR3gStateResponse: R3gResponseReducer = <
   state,
   payload,
   resourceIdentifiers,
+  resourceListName,
 }: R3gResponseReducerParams<CompositeIdentifierType, AnonResourceType>) => {
   // Deconstruct: Payload
   const { requestResult } = payload
@@ -55,7 +56,7 @@ const reduceR3gStateResponse: R3gResponseReducer = <
       }
 
       // Deconstruct: Request payload
-      const { resourceList: newResourceList } = requestResultPayload
+      const newResourceList = requestResultPayload[resourceListName]
 
       // Derive: Next resource list
       const nextResourceList = reduceResourceList(

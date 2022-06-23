@@ -1,7 +1,7 @@
 import R3gActionFunctions from '../../redux/actions/functions'
 import { R3gAction } from '../../redux/actions/types'
 import R3gCreatorFunctions from '../../redux/creators/functions'
-import InitialStateFunctions from '../../redux/initialState/functions'
+import R3gInitialStateFunctions from '../../redux/initialState/functions'
 import R3gReducerFunctions from '../../redux/reducer/functions'
 import { R3gState } from '../../redux/types'
 import { R3gResourceConfig } from '../types'
@@ -22,6 +22,7 @@ const getClientRedux: R3gReduxGetter = <
   const {
     name: resourceName,
     identifiers: resourceIdentifiers,
+    apiPayloadResourceListName: resourceListName,
     initialFields: initialResourceFields,
   } = resourceConfig
 
@@ -30,7 +31,7 @@ const getClientRedux: R3gReduxGetter = <
     CompositeIdentifierType,
     AnonResourceType
   > = () =>
-    InitialStateFunctions.getInitialState<
+    R3gInitialStateFunctions.getInitialState<
       CompositeIdentifierType,
       AnonResourceType
     >({ initialFields: initialResourceFields })
@@ -58,6 +59,7 @@ const getClientRedux: R3gReduxGetter = <
       action,
       actionKeyRecord: actions,
       resourceIdentifiers,
+      resourceListName,
       initialResourceFields,
     })
 

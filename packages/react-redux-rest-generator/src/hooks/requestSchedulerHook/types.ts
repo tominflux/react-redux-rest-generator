@@ -10,6 +10,7 @@ import { R3gRequestMethod, R3gRequestResult } from '../../request/types'
 export type ExecuteAxiosRequestOperationParams = {
   hookKey: string
   requestKey: string
+  resourceListName: string
   resourceIdentifierKeys: Array<string>
   resourcePropertyKeys: Array<string>
   method: R3gRequestMethod

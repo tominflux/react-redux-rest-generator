@@ -41,9 +41,35 @@ export type R3gInvalidateActionKey = `R3G_INVALIDATE_${string}`
 export type R3gClearFieldsActionKey = `R3G_CLEAR_FIELDS_${string}`
 export type R3gClearResponseActionKey = `R3G_CLEAR_RESPONSE_${string}`
 
+// Primitives: R3G 'Action Key' Record Keys
+export type R3gSetFieldActionKeyRecordKey = 'setField'
+export type R3gQueueRequestActionKeyRecordKey = 'queueRequest'
+export type R3gCancelRequestActionKeyRecordKey = 'cancelRequest'
+export type R3gFetchActionKeyRecordKey = 'fetch'
+export type R3gResponseActionKeyRecordKey = 'response'
+export type R3gResolveActionKeyRecordKey = 'resolve'
+export type R3gInvalidateActionKeyRecordKey = 'invalidate'
+export type R3gClearFieldsActionKeyRecordKey = 'clearFields'
+export type R3gClearResponseActionKeyRecordKey = 'clearResponse'
+
+// Primitive: R3G 'Action Key' Record Key
+export type R3gActionKeyRecordKey =
+  | R3gSetFieldActionKeyRecordKey
+  | R3gQueueRequestActionKeyRecordKey
+  | R3gCancelRequestActionKeyRecordKey
+  | R3gFetchActionKeyRecordKey
+  | R3gResponseActionKeyRecordKey
+  | R3gResolveActionKeyRecordKey
+  | R3gInvalidateActionKeyRecordKey
+  | R3gClearFieldsActionKeyRecordKey
+  | R3gClearResponseActionKeyRecordKey
+
 /*********************************/
 /*******  Data Structures  *******/
 /*********************************/
+
+// List: R3G 'Action Key' Record Key List
+export type R3gActionKeyRecordKeyList = Array<R3gActionKeyRecordKey>
 
 // Record: R3G Action Key Record
 export type R3gActionKeyRecord = {

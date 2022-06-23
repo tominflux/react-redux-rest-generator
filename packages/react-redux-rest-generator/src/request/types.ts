@@ -18,9 +18,10 @@ export type R3gCreateResultPayload<
 > = CompositeIdentifierType | null
 
 // Read Result Payload
-export type R3gReadResultPayload<CompositeIdentifierType, AnonResourceType> = {
-  resourceList: Array<CompositeIdentifierType & AnonResourceType>
-}
+export type R3gReadResultPayload<
+  CompositeIdentifierType,
+  AnonResourceType
+> = Record<string, Array<CompositeIdentifierType & AnonResourceType>>
 
 // Ambiguous Result Payload
 export type R3gRequestResultPayload<
@@ -205,6 +206,7 @@ export type R3gAxiosResponseValidatorParams<
   AnonResourceType
 > = {
   resourceIdentifierKeys: Array<string>
+  resourceListName: string
   resourcePropertyKeys: Array<string>
   method: R3gRequestMethod
   axiosResponse: AxiosResponse<
