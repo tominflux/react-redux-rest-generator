@@ -94,14 +94,14 @@ const read: (db: Db, params: ReadExampleParams) => Promise<ReadExampleResult> = 
         const cases = {
             true: {
                 $match: {
-                    $expiryDate: {
+                    expiryDate: {
                         $lte: new Date(Date.now())
                     }
                 }
             },
             false: {
                 $match: {
-                    $expiryDate: {
+                    expiryDate: {
                         $gt: new Date(Date.now())
                     }
                 }
@@ -148,8 +148,6 @@ const read: (db: Db, params: ReadExampleParams) => Promise<ReadExampleResult> = 
             aggregation: getProjectFinal
         }
     ])
-
-    console.log(aggregations)
 
     // Aggregate Examples
     const cursor = await db.collection('example').aggregate(aggregations)
@@ -224,7 +222,7 @@ const update: (
 
     // Return success
     return {
-        status: 204,
+        status: 200,
         message: `Example ${key} successfully updated.`,
         payload: null
     }
@@ -260,7 +258,7 @@ const _delete: (db: Db, params: DeleteExampleParams) => Promise<DeleteExampleRes
 
     // Return success
     return {
-        status: 204,
+        status: 200,
         message: `Example ${key} successfully deleted.`,
         payload: null
     }

@@ -4,7 +4,10 @@ import { connectToDatabase } from 'utils/database'
 /**
  * Wraps request handler in boilerplate, ensuring mongo connection is established.
  */
-const wrapRequestHandler: ApiRequestHandlerWrapper = (requestHandler: ApiRequestHandler) => {
+const wrapRequestHandler: ApiRequestHandlerWrapper = (
+    requestHandler: ApiRequestHandler,
+    id: string
+) => {
     const wrappedHandler: WrappedRequestHandler = async (
         req: NextApiRequest,
         res: NextApiResponse
@@ -15,11 +18,13 @@ const wrapRequestHandler: ApiRequestHandlerWrapper = (requestHandler: ApiRequest
         // ~Insert any other boilerplate here~
 
         try {
-            await requestHandler(req, res, db)
+            const wasHandled = (await requestHandler(req, res, db)) ?? true
+            return wasHandled
         } catch (err) {
-            console.error(`Server error when handling ${req.method} - ${req.url}`)
             console.error(err)
             res.status(500).json({ message: 'Unknown error occurred', payload: null })
+            const wasHandled = true
+            return wasHandled
         }
     }
     return wrappedHandler
@@ -28,7 +33,7 @@ const wrapRequestHandler: ApiRequestHandlerWrapper = (requestHandler: ApiRequest
 /**
  * Converts an API config into an Array of API Method Handlers.
  */
-const generateMethodHandlers: ApiMethodHandlersGenerator = (apiConfig) =>
+const generateMethodHandlers: ApiMethodHandlersGenerator = (apiConfig, id) =>
     Object.keys(apiConfig).map((key) => {
         // Convert config object key into method identifier (e.g 'POST').
         const method = key.toUpperCase() as ApiMethod
@@ -37,7 +42,7 @@ const generateMethodHandlers: ApiMethodHandlersGenerator = (apiConfig) =>
         const handler = apiConfig[key] as ApiRequestHandler
 
         // Wrap the handler in boilerplate.
-        const wrappedHandler = wrapRequestHandler(handler)
+        const wrappedHandler = wrapRequestHandler(handler, id)
 
         // Create method handler object from key and function.
         const methodHandler: ApiMethodHandler = {
@@ -62,10 +67,16 @@ const handleMethods: ApiMethodsIterator = async (req, res, methodHandlers) => {
     // Check if current handler's method matches that of request.
     const currentMethod = methodHandlers[0]
     if (req.method.toUpperCase() === currentMethod.method) {
+        /*
+        // Set 'Access-Control-Allow-Methods' header to explicitly
+        // only allow required methods for resource (rather than wildcard '*').
+        const allow = methodHandlers.map((methodHandler) => methodHandler.method)
+        res.setHeader('Access-Control-Allow-Methods', allow)
+        */
         // Execute handler.
-        await currentMethod.handler(req, res)
-        // Return true to indicate request has been handled.
-        return true
+        const wasHandled = await currentMethod.handler(req, res)
+        // Return boolean to indicate if request has been handled.
+        return wasHandled ?? true
     }
 
     // Iterate to next handler.
@@ -73,11 +84,11 @@ const handleMethods: ApiMethodsIterator = async (req, res, methodHandlers) => {
 }
 
 const generateApiHandler: ApiHandlerGenerator = (apiConfig) => {
-    const apiHandler: ApiRequestHandler = async (req, res) => {
+    const apiHandler: NextApiRequestHandler = async (req, res) => {
+        const id = new Date().toISOString()
         try {
             // Generate method handler objects from api config.
-            const methodHandlers = generateMethodHandlers(apiConfig)
-
+            const methodHandlers = generateMethodHandlers(apiConfig, id)
             // Recursively iterate over methods handlers, executing against
             // request if a method match is found.
             const reqWasHandled = await handleMethods(req, res, methodHandlers)
@@ -93,7 +104,6 @@ const generateApiHandler: ApiHandlerGenerator = (apiConfig) => {
             res.status(500).json({ message: 'An unknown error occurred' })
         }
     }
-
     return apiHandler
 }
 
