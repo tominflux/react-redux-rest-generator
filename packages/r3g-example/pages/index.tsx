@@ -9,11 +9,11 @@ const ExamplePage = () => {
     const [showCreateModal, setShowCreateModal] = useState<boolean>(false)
     const [showEditModal, setShowEditModal] = useState<boolean>(false)
     const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false)
-    const [editId, setEditId] = useState<ExampleCompositeIdentifier>(null)
-    const [deleteId, setDeleteId] = useState<ExampleCompositeIdentifier>(null)
+    const [editId, setEditId] = useState<ExampleIdentifier>(null)
+    const [deleteId, setDeleteId] = useState<ExampleIdentifier>(null)
 
     const state = useSelector<{
-        exampleState: R3gState<ExampleCompositeIdentifier, ExampleSerialized>
+        exampleState: R3gState<ExampleIdentifier, ExampleBody>
     }>((state) => state)
     console.log('DEBUG', state)
 
@@ -22,7 +22,7 @@ const ExamplePage = () => {
     const handleCreatePrompt = () => setShowCreateModal(true)
     const handleCloseCreateModal = () => setShowCreateModal(false)
     // - Edit modal
-    const handleCardClick = (example: ExampleCompositeIdentifier & ExampleSerialized) => {
+    const handleCardClick = (example: ExampleIdentifier & ExampleBody) => {
         setEditId({ key: example.key })
         setShowEditModal(true)
     }
@@ -31,7 +31,7 @@ const ExamplePage = () => {
         setEditId(null)
     }
     // - Delete modal
-    const handlePromptDeletion = (example: ExampleCompositeIdentifier & ExampleSerialized) => {
+    const handlePromptDeletion = (example: ExampleIdentifier & ExampleBody) => {
         setDeleteId({ key: example.key })
         setShowDeleteModal(true)
     }

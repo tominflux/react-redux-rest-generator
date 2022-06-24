@@ -3,8 +3,8 @@ import { Box, Button, FormControl, FormLabel, Input, Textarea } from '@chakra-ui
 import DatePicker from 'components/datePicker'
 
 type ExampleFormProps = {
-    getField: (name: keyof ExampleSerialized) => unknown
-    setField: (name: keyof ExampleSerialized, value: unknown) => void
+    getField: (name: keyof ExampleBody) => unknown
+    setField: (name: keyof ExampleBody, value: unknown) => void
     onConfirm: () => void
 }
 

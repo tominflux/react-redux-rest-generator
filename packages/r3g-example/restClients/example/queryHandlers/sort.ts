@@ -1,8 +1,8 @@
 import { DateTime } from 'luxon'
 
 const sortExample = (
-    exampleA: ExampleCompositeIdentifier & ExampleSerialized,
-    exampleB: ExampleCompositeIdentifier & ExampleSerialized,
+    exampleA: ExampleIdentifier & ExampleBody,
+    exampleB: ExampleIdentifier & ExampleBody,
     params: ReadExampleParams
 ) => {
     const { byExpiryDate } = params

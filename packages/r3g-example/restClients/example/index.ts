@@ -5,8 +5,8 @@ import { DateTime } from 'luxon'
 import { R3gResourceConfigParams } from 'react-redux-rest-generator/dist/client/types'
 
 const exampleConfigParams: R3gResourceConfigParams<
-    ExampleCompositeIdentifier,
-    ExampleSerialized,
+    ExampleIdentifier,
+    ExampleBody,
     ReadExampleParams
 > = {
     name: 'example',
@@ -23,11 +23,10 @@ const exampleConfigParams: R3gResourceConfigParams<
 
 //
 const exampleRestClient = R3gClientFunctions.getClient<
-    ExampleCompositeIdentifier,
-    ExampleSerialized,
+    ExampleIdentifier,
+    ExampleBody,
     ReadExampleParams
 >(exampleConfigParams)
-// console.log('REST CLIENT', exampleRestClient)
 export const exampleConfig = exampleRestClient.config
 export const exampleReducer = exampleRestClient.reducer
 export const useExample = exampleRestClient.useResource

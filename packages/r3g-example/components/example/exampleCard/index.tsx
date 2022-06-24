@@ -3,9 +3,9 @@ import { Box, Button, Heading, Text, Stack, useColorModeValue } from '@chakra-ui
 import { DateTime } from 'luxon'
 
 type ExampleCardProps = {
-    example: ExampleCompositeIdentifier & ExampleSerialized
-    onClick: (example: ExampleCompositeIdentifier & ExampleSerialized) => void
-    onDelete: (example: ExampleCompositeIdentifier & ExampleSerialized) => void
+    example: ExampleIdentifier & ExampleBody
+    onClick: (example: ExampleIdentifier & ExampleBody) => void
+    onDelete: (example: ExampleIdentifier & ExampleBody) => void
 }
 
 const ExampleCard = ({ example, onClick, onDelete }: ExampleCardProps) => {

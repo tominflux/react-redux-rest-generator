@@ -1,6 +1,6 @@
 // Example Model
 
-type ExampleCompositeIdentifier = {
+type ExampleIdentifier = {
     key: string
 }
 
@@ -10,7 +10,7 @@ type Example = {
     expiryDate: Date
 }
 
-type ExampleSerialized = {
+type ExampleBody = {
     title: string
     description: string
     expiryDate: string
@@ -18,8 +18,8 @@ type ExampleSerialized = {
 
 // Example Model - Create
 
-type CreateExampleData = ExampleSerialized
-type CreateExamplePayload = ExampleCompositeIdentifier
+type CreateExampleData = ExampleBody
+type CreateExamplePayload = ExampleIdentifier
 type CreateExampleResult = {
     status: 201 | 406 | 409
     message: string
@@ -34,7 +34,7 @@ type ReadExampleParams = {
     byExpiryDate?: boolean
 }
 type ReadExamplePayload = {
-    exampleList: Array<ExampleCompositeIdentifier & ExampleSerialized>
+    exampleList: Array<ExampleIdentifier & ExampleBody>
 }
 type ReadExampleResult = {
     status: 200
@@ -43,8 +43,8 @@ type ReadExampleResult = {
 }
 
 // Example Model - Update
-type UpdateExampleParams = ExampleCompositeIdentifier
-type UpdateExampleData = ExampleSerialized
+type UpdateExampleParams = ExampleIdentifier
+type UpdateExampleData = ExampleBody
 type UpdateExampleResult = {
     status: 200 | 404 | 406
     message: string
@@ -52,7 +52,7 @@ type UpdateExampleResult = {
 }
 
 // Example Model - Delete
-type DeleteExampleParams = ExampleCompositeIdentifier
+type DeleteExampleParams = ExampleIdentifier
 type DeleteExampleResult = {
     status: 200 | 404 | 406
     message: string

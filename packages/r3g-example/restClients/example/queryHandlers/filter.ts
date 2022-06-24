@@ -1,9 +1,6 @@
 import { DateTime } from 'luxon'
 
-const filterExample = (
-    example: ExampleCompositeIdentifier & ExampleSerialized,
-    params: ReadExampleParams
-) => {
+const filterExample = (example: ExampleIdentifier & ExampleBody, params: ReadExampleParams) => {
     const { key, title, expired } = params
 
     // Match key filter
