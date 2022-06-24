@@ -5,6 +5,34 @@ import { R3gInitialStateGetter, R3gReducer } from './redux/types'
 /*******  Data Structures  *******/
 /*********************************/
 
+// Data Structure: Generic resource configuration
+export type R3gGenericResourceConfig = {
+  name: string
+  identifiers: Array<string>
+  primaryIdentifier: string
+  propertyKeys: Array<string>
+  initialFields: Record<string, unknown>
+  filter: (
+    resource: Record<string, unknown>,
+    params: Record<string, unknown> | Record<string, never>,
+    index?: number
+  ) => boolean
+  sort: (
+    resourceA: Record<string, unknown>,
+    resourceB: Record<string, unknown>,
+    params: Record<string, unknown> | Record<string, never>
+  ) => number
+  postProcess: (
+    resourceList: Array<Record<string, unknown>>,
+    params: Record<string, unknown> | Record<string, never>
+  ) => Array<Record<string, unknown>>
+  apiRootPath: string
+  composition: Array<R3gGenericResourceConfig>
+  stateName: string
+  apiPayloadResourceListName: string
+  verboseLogging: boolean
+}
+
 // Data Structure: Resource configuration params
 export type R3gResourceConfigParams<
   ResourceIdentifier,
@@ -30,7 +58,7 @@ export type R3gResourceConfigParams<
     params: ReadParams | Record<string, never>
   ) => Array<ResourceIdentifier & ResourceBody>
   apiRootPath?: string
-  composition?: Array<R3gResourceConfig<unknown, unknown, unknown>>
+  composition?: Array<R3gGenericResourceConfig>
   stateName?: string
   apiPayloadResourceListName?: string
   verboseLogging?: boolean
@@ -58,7 +86,7 @@ export type R3gResourceConfig<ResourceIdentifier, ResourceBody, ReadParams> = {
     params: ReadParams | Record<string, never>
   ) => Array<ResourceIdentifier & ResourceBody>
   apiRootPath: string
-  composition: Array<R3gResourceConfig<unknown, unknown, unknown>>
+  composition: Array<R3gGenericResourceConfig>
   stateName: string
   apiPayloadResourceListName: string
   verboseLogging: boolean
