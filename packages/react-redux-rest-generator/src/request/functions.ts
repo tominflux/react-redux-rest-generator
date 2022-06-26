@@ -80,11 +80,11 @@ const validateAxiosResponse: R3gAxiosResponseValidator = <
         )
         const containsUnexpectedKey = payloadKeys.reduce(
           (foundUnexpectedKey, currentKey) => {
-            if (!foundUnexpectedKey) return true
+            if (foundUnexpectedKey) return true
             if (!expectedKeys.includes(currentKey)) return true
             return false
           },
-          true
+          false
         )
         if (!containsAllExpectedKeys || containsUnexpectedKey) {
           return 'WRONG_PAYLOAD_FORMAT'
