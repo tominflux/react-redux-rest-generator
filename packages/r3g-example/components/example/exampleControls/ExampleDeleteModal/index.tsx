@@ -5,7 +5,7 @@ import { useExample } from 'restClients/example'
 
 type ExampleDeleteModalProps = {
     show: boolean
-    example: ExampleCompositeIdentifier & ExampleSerialized
+    example: ExampleIdentifier & ExampleBody
     onClose: () => void
     onConfirm: () => void
 }

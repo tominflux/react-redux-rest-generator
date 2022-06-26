@@ -9,8 +9,8 @@ type ExampleControlsProps = {
     showCreateModal: boolean
     showEditModal: boolean
     showDeleteModal: boolean
-    editId: ExampleCompositeIdentifier
-    deleteId: ExampleCompositeIdentifier
+    editId: ExampleIdentifier
+    deleteId: ExampleIdentifier
     onCreateModalClose: () => void
     onEditModalClose: () => void
     onDeleteModalClose: () => void

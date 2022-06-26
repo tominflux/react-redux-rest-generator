@@ -1,6 +1,6 @@
 {
     "name": "react-redux-rest-generator",
-    "version": "0.2.24",
+    "version": "0.3.4",
     "author": "Tom Chesters",
     "description": "Generate a reducer and a hook for interacting with a REST API without all the boilerplate.",
     "keywords": [
@@ -18,8 +18,7 @@
         "url": "https://github.com/tominflux/react-redux-rest-generator/issues"
     },
     "homepage": "https://github.com/tominflux/react-redux-rest-generator#readme",
-    "main": "./dist/generateRestClient/index.js",
-    "types": "./dist/generateRestClient/index.d.ts",
+    "main": "./dist/client/functions.js",
     "files": [
         "dist",
         "LICENSE",
@@ -38,6 +37,7 @@
         "eslint": "^7.17.0",
         "eslint-config-prettier": "^7.1.0",
         "eslint-plugin-prettier": "^3.3.1",
+        "eslint-plugin-react-hooks": "^4.5.0",
         "prettier": "^2.2.1",
         "react": "^17.0.2",
         "react-dom": "^17.0.2",
@@ -45,7 +45,7 @@
         "redux": "^4.0.5",
         "ts-node": "^9.1.1",
         "ts-node-dev": "^1.1.1",
-        "typescript": "^4.2.4"
+        "typescript": "^4.7.4"
     },
     "peerDependencies": {
         "axios": "^0.21.1",

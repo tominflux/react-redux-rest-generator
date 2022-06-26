@@ -6,11 +6,8 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # PARTICULAR PURPOSE.
 
 # This program built for i386-apple-darwin11.3.0
- 
-make: *** No rule to make target `all'.  Stop.
 
-
-# Make data base, printed on Wed Jun  8 15:29:11 2022
+# Make data base, printed on Thu Jun 23 15:13:00 2022
 
 # Variables
 
@@ -39,7 +36,7 @@ MAKEFILE_LIST :=  Makefile
 # environment
 VSCODE_VERBOSE_LOGGING = true
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /var/folders/_r/vt8ddpxn2qg8x7tzntg56b0h0000gn/T/vscode-ipc-15ee4f77-2495-4094-a162-e74693f5b5a2.sock
+VSCODE_IPC_HOOK_EXTHOST = /var/folders/_r/vt8ddpxn2qg8x7tzntg56b0h0000gn/T/vscode-ipc-a7c354b1-5186-415b-99f2-bbf271355097.sock
 # environment
 VSCODE_CWD = /
 # environment
@@ -51,7 +48,7 @@ ELECTRON_RUN_AS_NODE = 1
 # default
 .FEATURES := target-specific order-only second-expansion else-if archives jobserver check-symlink
 # environment
-SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.Zs7a0hMgil/Listeners
+SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.i1ce6z62HY/Listeners
 # automatic
 %F = $(notdir $%)
 # environment
@@ -67,11 +64,11 @@ HOME = /Users/tominflux
 # default
 MAKEFILEPATH := /Applications/Xcode.app/Contents/Developer/Makefiles
 # environment
-VSCODE_CODE_CACHE_PATH = /Users/tominflux/Library/Application Support/Code/CachedData/c3511e6c69bb39013c4a4b7b9566ec1ca73fc4d5
+VSCODE_CODE_CACHE_PATH = /Users/tominflux/Library/Application Support/Code/CachedData/4af164ea3a06f701fe3e89a2bcbb421d2026b68f
 # environment
 LOGNAME = tominflux
 # environment
-APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = 1
+APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = true
 # environment
 VSCODE_HANDLES_UNCAUGHT_ERRORS = true
 # automatic
@@ -101,7 +98,7 @@ TMPDIR = /var/folders/_r/vt8ddpxn2qg8x7tzntg56b0h0000gn/T/
 # automatic
 *F = $(notdir $*)
 # environment
-VSCODE_IPC_HOOK = /Users/tominflux/Library/Application Support/Code/1.67.2-main.sock
+VSCODE_IPC_HOOK = /Users/tominflux/Library/Application Support/Code/1.68.0-main.sock
 # makefile
 MAKEFLAGS = Rrqp
 # environment
@@ -109,7 +106,7 @@ MFLAGS = -Rrqp
 # automatic
 *D = $(patsubst %/,%,$(dir $*))
 # environment
-XPC_SERVICE_NAME = com.microsoft.VSCode.66992
+XPC_SERVICE_NAME = com.microsoft.VSCode.69236
 # automatic
 +D = $(patsubst %/,%,$(dir $+))
 # automatic
@@ -133,7 +130,7 @@ MAKELEVEL := 0
 # environment
 LANG = C
 # environment
-VSCODE_PID = 7633
+VSCODE_PID = 779
 # variable set hash-table stats:
 # Load=60/1024=6%, Rehash=0, Collisions=1/84=1%
 
@@ -143,7 +140,7 @@ VSCODE_PID = 7633
 
 # Directories
 
-# . (device 16777221, inode 30672426): 20 files, no impossibilities.
+# . (device 16777220, inode 30672426): 20 files, no impossibilities.
 
 # 20 files, no impossibilities in 1 directories.
 
@@ -157,7 +154,6 @@ VSCODE_PID = 7633
 all:
 #  Command-line target.
 #  Implicit rule search has been done.
- 
 #  File does not exist.
 #  File has not been updated.
 # variable set hash-table stats:
@@ -209,6 +205,8 @@ dev:
 # strcache size: total = 4096 / max = 4096 / min = 4096 / avg = 4096
 # strcache free: total = 4087 / max = 4087 / min = 4087 / avg = 4087
 
-# Finished Make data base on Wed Jun  8 15:29:11 2022
+# Finished Make data base on Thu Jun 23 15:13:00 2022
 
  
+make: *** No rule to make target `all'.  Stop.
+

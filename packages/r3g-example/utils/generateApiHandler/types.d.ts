@@ -5,9 +5,18 @@ type ApiResponse = {
     data?: any
 }
 
-type ApiRequestHandler = (req: NextApiRequest, res: NextApiResponse, db: Db) => Promise<void>
+type NextApiRequestHandler = (req: NextApiRequest, res: NextApiResponse) => Promise<void>
 
-type WrappedRequestHandler = (req: NextApiRequest, res: NextApiResponse) => Promise<void>
+type ApiRequestHandler = (
+    req: NextApiRequest,
+    res: NextApiResponse,
+    db: Db
+) => Promise<boolean | undefined>
+
+type WrappedRequestHandler = (
+    req: NextApiRequest,
+    res: NextApiResponse
+) => Promise<boolean | undefined>
 
 type ApiConfig = {
     post?: ApiRequestHandler
@@ -22,9 +31,9 @@ type ApiMethodHandler = {
     handler: WrappedRequestHandler
 }
 
-type ApiRequestHandlerWrapper = (handler: ApiRequestHandler) => WrappedRequestHandler
+type ApiRequestHandlerWrapper = (handler: ApiRequestHandler, id: string) => WrappedRequestHandler
 
-type ApiMethodHandlersGenerator = (apiConfig: ApiConfig) => Array<ApiMethodHandler>
+type ApiMethodHandlersGenerator = (apiConfig: ApiConfig, id: string) => Array<ApiMethodHandler>
 
 type ApiMethodsIterator = (
     req: NextApiRequest,
@@ -32,4 +41,4 @@ type ApiMethodsIterator = (
     methods: Array<ApiMethodHandler>
 ) => Promise<boolean>
 
-type ApiHandlerGenerator = (apiConfig: ApiConfig) => ApiRequestHandler
+type ApiHandlerGenerator = (apiConfig: ApiConfig) => NextApiRequestHandler

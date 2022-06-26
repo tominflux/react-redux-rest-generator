@@ -2,14 +2,14 @@ import { Db } from 'mongodb'
 import concatAggregations from 'utils/concatAggregations'
 import generateUUID from 'utils/generateUUID'
 
-const serialize: (example: Example) => ExampleSerialized = (example) => {
+const serialize: (example: Example) => ExampleBody = (example) => {
     return {
         ...example,
         expiryDate: example.expiryDate.toISOString()
     }
 }
 
-const deserialize: (example: ExampleSerialized) => Example = (example) => {
+const deserialize: (example: ExampleBody) => Example = (example) => {
     return {
         ...example,
         expiryDate: new Date(example.expiryDate)
@@ -54,7 +54,7 @@ const create: (db: Db, data: CreateExampleData) => Promise<CreateExampleResult> 
     const key = generateUUID(7)
 
     // Create example object (serialized) from API data
-    const exampleSerialized: ExampleSerialized = {
+    const exampleSerialized: ExampleBody = {
         title,
         description,
         expiryDate
@@ -64,7 +64,7 @@ const create: (db: Db, data: CreateExampleData) => Promise<CreateExampleResult> 
     const example = deserialize(exampleSerialized)
 
     // Add identifer
-    const exampleIdentified: ExampleCompositeIdentifier & Example = {
+    const exampleIdentified: ExampleIdentifier & Example = {
         key,
         ...example
     }
@@ -94,14 +94,14 @@ const read: (db: Db, params: ReadExampleParams) => Promise<ReadExampleResult> = 
         const cases = {
             true: {
                 $match: {
-                    $expiryDate: {
+                    expiryDate: {
                         $lte: new Date(Date.now())
                     }
                 }
             },
             false: {
                 $match: {
-                    $expiryDate: {
+                    expiryDate: {
                         $gt: new Date(Date.now())
                     }
                 }
@@ -148,8 +148,6 @@ const read: (db: Db, params: ReadExampleParams) => Promise<ReadExampleResult> = 
             aggregation: getProjectFinal
         }
     ])
-
-    console.log(aggregations)
 
     // Aggregate Examples
     const cursor = await db.collection('example').aggregate(aggregations)
@@ -214,7 +212,7 @@ const update: (
 
     // Build example model props
     const example = deserialize(exampleSerialized)
-    const exampleIdentified: ExampleCompositeIdentifier & Example = {
+    const exampleIdentified: ExampleIdentifier & Example = {
         key,
         ...example
     }
@@ -224,7 +222,7 @@ const update: (
 
     // Return success
     return {
-        status: 204,
+        status: 200,
         message: `Example ${key} successfully updated.`,
         payload: null
     }
@@ -260,7 +258,7 @@ const _delete: (db: Db, params: DeleteExampleParams) => Promise<DeleteExampleRes
 
     // Return success
     return {
-        status: 204,
+        status: 200,
         message: `Example ${key} successfully deleted.`,
         payload: null
     }

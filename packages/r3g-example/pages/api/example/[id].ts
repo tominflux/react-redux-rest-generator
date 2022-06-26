@@ -9,8 +9,9 @@ export default generateApiHandler({
 
         const { status, message, payload } = await ExampleModel.update(db, { key }, { ...example })
 
-        res.setHeader('Access-Control-Allow-Methods', 'PUT')
-        res.status(status).json({ message, payload })
+        const responseBody = { message, payload }
+        res.status(status).json(responseBody)
+        return true
     },
     delete: async (req, res, db) => {
         const { id } = req.query
@@ -18,7 +19,8 @@ export default generateApiHandler({
 
         const { status, message, payload } = await ExampleModel.delete(db, { key })
 
-        res.setHeader('Access-Control-Allow-Methods', 'DELETE')
+        res.setHeader('Access-Control-Allow-Methods', 'POST, GET, PATCH, PUT, DELETE, OPTIONS')
         res.status(status).json({ message, payload })
+        return true
     }
 })

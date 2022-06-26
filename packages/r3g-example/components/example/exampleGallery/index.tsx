@@ -6,8 +6,8 @@ import { useExample } from 'restClients/example'
 import Busy from 'components/busy'
 
 type ExampleGalleryProps = {
-    onCardClick: (example: ExampleCompositeIdentifier & ExampleSerialized) => void
-    onPromptDeletion: (example: ExampleCompositeIdentifier & ExampleSerialized) => void
+    onCardClick: (example: ExampleIdentifier & ExampleBody) => void
+    onPromptDeletion: (example: ExampleIdentifier & ExampleBody) => void
 }
 
 export default function ExampleGallery({

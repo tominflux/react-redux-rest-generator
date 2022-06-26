@@ -8,7 +8,7 @@ import { useExample } from 'restClients/example'
 
 type ExampleEditModalProps = {
     show: boolean
-    example: ExampleCompositeIdentifier & ExampleSerialized
+    example: ExampleIdentifier & ExampleBody
     onClose: () => void
 }
 
@@ -77,7 +77,7 @@ export default function ExampleEditModal({
     useEffect(() => {
         if (!example) return
         const exampleFields = Object.entries(example)
-        exampleFields.forEach(([name, value]) => setField(name as keyof ExampleSerialized, value))
+        exampleFields.forEach(([name, value]) => setField(name as keyof ExampleBody, value))
     }, [example ? example.key : null, show])
 
     return (
