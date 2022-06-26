@@ -103,6 +103,7 @@ const reduceR3gStateResponse: R3gResponseReducer = <
       return {
         ...state,
         ...requestFlags,
+        receivedResults: nextReceivedResults,
       }
     }
   }
