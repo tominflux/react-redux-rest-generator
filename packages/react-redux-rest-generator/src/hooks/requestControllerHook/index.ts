@@ -254,6 +254,8 @@ const useRequestController: R3gGenericRequestControllerHook = <
 
         // Callback: Remove resolver
         removeUpdatePromiseResolver(matchedRequestKey)
+
+        break
       }
       // Case: DELETE request
       case 'delete': {
@@ -288,6 +290,8 @@ const useRequestController: R3gGenericRequestControllerHook = <
 
         // Callback: Remove resolver
         removeDeletePromiseResolver(matchedRequestKey)
+
+        break
       }
       // Unrecognized Method
       default: {
