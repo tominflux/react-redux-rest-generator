@@ -44,7 +44,7 @@ export type R3gResourceConfigParams<
   primaryIdentifier: keyof ResourceIdentifier
   initialFields: ResourceBody
   filter?: (
-    resource: ResourceBody,
+    resource: ResourceIdentifier & ResourceBody,
     params: ReadParams | Record<string, never>,
     index?: number
   ) => boolean
@@ -72,7 +72,7 @@ export type R3gResourceConfig<ResourceIdentifier, ResourceBody, ReadParams> = {
   propertyKeys: Array<keyof ResourceBody>
   initialFields: ResourceBody
   filter: (
-    resource: ResourceBody,
+    resource: ResourceIdentifier & ResourceBody,
     params: ReadParams | Record<string, never>,
     index?: number
   ) => boolean

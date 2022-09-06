@@ -691,24 +691,44 @@ const useRequestController: R3gGenericRequestControllerHook = <
   /************ Return *************/
   /*********************************/
 
-  // Return: Request Controller
-  return {
-    fetching,
-    method,
-    status,
-    message,
-    clearResponse,
-    create,
-    read,
-    update,
-    delete: _delete,
-    getField,
-    setField,
-    clearFields,
-    getMany,
-    getOne,
-    invalidate,
-  }
+  // Memo: Request Controller
+  const controller = useMemo(
+    () => ({
+      fetching,
+      method,
+      status,
+      message,
+      clearResponse,
+      create,
+      read,
+      update,
+      delete: _delete,
+      getField,
+      setField,
+      clearFields,
+      getMany,
+      getOne,
+      invalidate,
+    }),
+    [
+      _delete,
+      clearFields,
+      clearResponse,
+      create,
+      fetching,
+      getField,
+      getMany,
+      getOne,
+      invalidate,
+      message,
+      method,
+      read,
+      setField,
+      status,
+      update,
+    ]
+  )
+  return controller
 }
 
 export default useRequestController

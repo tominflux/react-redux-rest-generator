@@ -29,7 +29,7 @@ const useRequestScheduler: R3gGenericRequestSchedulerHook = <
   } = resourceConfig
 
   // Redux
-  const stateName = resourceConfig.stateName ?? `${resourceConfig.name}State`
+  const stateName = resourceConfig.stateName
   const state = useSelector<
     Record<string | number | symbol, unknown>,
     R3gState<ResourceIdentifier, ResourceBody>

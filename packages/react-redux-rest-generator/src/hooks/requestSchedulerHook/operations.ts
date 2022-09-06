@@ -52,7 +52,7 @@ const executeAxiosRequest: ExecuteAxiosRequestOperation = async <
     // Throw: If response is not valid
     if (axiosResponseValidationState !== 'VALID') {
       throw new Error(
-        `R3G: Invalid Axios response... '${axiosResponseValidationState}'`
+        `R3G: Invalid Axios response - ${axiosResponseValidationState}`
       )
     }
 
