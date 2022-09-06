@@ -27,7 +27,7 @@ export type R3gGenericResourceConfig = {
     params: Record<string, unknown> | Record<string, never>
   ) => Array<Record<string, unknown>>
   apiRootPath: string
-  composition: Array<R3gGenericResourceConfig>
+  composition: Array<string>
   stateName: string
   apiPayloadResourceListName: string
   verboseLogging: boolean
@@ -58,7 +58,7 @@ export type R3gResourceConfigParams<
     params: ReadParams | Record<string, never>
   ) => Array<ResourceIdentifier & ResourceBody>
   apiRootPath?: string
-  composition?: Array<R3gGenericResourceConfig>
+  composition?: Array<string>
   stateName?: string
   apiPayloadResourceListName?: string
   verboseLogging?: boolean
@@ -86,7 +86,7 @@ export type R3gResourceConfig<ResourceIdentifier, ResourceBody, ReadParams> = {
     params: ReadParams | Record<string, never>
   ) => Array<ResourceIdentifier & ResourceBody>
   apiRootPath: string
-  composition: Array<R3gGenericResourceConfig>
+  composition: Array<string>
   stateName: string
   apiPayloadResourceListName: string
   verboseLogging: boolean

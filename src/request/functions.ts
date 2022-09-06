@@ -448,14 +448,13 @@ const getApiUrlSingleAnon: R3gSingleAnonApiUrlGetter = <
 >) => {
   // Deconstruct: Resource configuration
   const {
-    composition: parentResourceConfigList,
+    composition: composition,
     identifiers: resourceIdentifierKeys,
   } = resourceConfig
 
   // Derive: Parent Route Parts
-  const parentRouteParts = parentResourceConfigList
-    .map((parentResourceConfig, index) => {
-      const { name: parentResourceName } = parentResourceConfig
+  const parentRouteParts = composition
+    .map((parentResourceName, index) => {
       const parentPrimaryIdentifierKey = resourceIdentifierKeys[index]
       const parentPrimaryIdentifier =
         parentsIdentifier[parentPrimaryIdentifierKey as string]
@@ -486,14 +485,13 @@ const getApiUrlSingle: R3gSingleApiUrlGetter = <
 >) => {
   // Deconstruct: Resource configuration
   const {
-    composition: parentResourceConfigList,
+    composition: composition,
     identifiers: resourceIdentifierKeys,
   } = resourceConfig
 
   // Derive: Parent Route Parts
-  const parentRouteParts = parentResourceConfigList
-    .map((parentResourceConfig, index) => {
-      const { name: parentResourceName } = parentResourceConfig
+  const parentRouteParts = composition
+    .map((parentResourceName, index) => {
       const parentPrimaryIdentifierKey = resourceIdentifierKeys[index]
       const parentPrimaryIdentifier = `${resourceIdentifier[parentPrimaryIdentifierKey]}`
       return [parentResourceName, parentPrimaryIdentifier]
@@ -527,11 +525,11 @@ const getApiUrlMany: R3gManyApiUrlGetter = <
   resourceConfig,
 }: R3gManyApiUrlGetterParams<ResourceIdentifier, ResourceBody, ReadParams>) => {
   // Deconstruct: Resource configuration
-  const { composition: parentResourceConfigList } = resourceConfig
+  const { composition: composition } = resourceConfig
 
   // Derive: Parent Route Parts
-  const parentRouteParts = parentResourceConfigList.map(
-    ({ name: parentResourceName }) => parentResourceName
+  const parentRouteParts = composition.map(
+    (parentResourceName) => parentResourceName
   )
 
   // Deconstruct: Resource configuration
