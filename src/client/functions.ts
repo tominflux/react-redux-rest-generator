@@ -41,9 +41,9 @@ const getDefaultResourceConfigParams: R3gResourceConfigGetter = <
   } = resourceConfigParams
 
   // Derive: Property keys from initial fields
-  const propertyKeys = Object.keys(resourceInitialFields) as Array<
-    keyof ResourceBody
-  >
+  const propertyKeys = Object.keys(
+    resourceInitialFields as Record<string | number | symbol, unknown>
+  ) as Array<keyof ResourceBody>
 
   // Assign: Default configuration parameters where needed
   const filter = providedFilter ?? (() => true)

@@ -130,7 +130,9 @@ const validateAxiosResponse: R3gAxiosResponseValidator = <
         // Fail Fast: If resource instance does not match expected format
         const areResourceFormatsValid = resourceList
           .map((resourceInstance) => {
-            const resourceKeys = Object.keys(resourceInstance)
+            const resourceKeys = Object.keys(
+              resourceInstance as Record<string | number | symbol, unknown>
+            )
             const expectedResourceKeys = [
               ...resourceIdentifierKeys,
               ...resourcePropertyKeys,

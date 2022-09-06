@@ -49,7 +49,10 @@ const useRequestScheduler: R3gGenericRequestSchedulerHook = <
 
   // Memo: Resource property keys
   const resourcePropertyKeys = useMemo(
-    () => Object.keys(resourceInitialFields),
+    () =>
+      Object.keys(
+        resourceInitialFields as Record<string | number | symbol, unknown>
+      ),
     [resourceInitialFields]
   )
 

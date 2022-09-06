@@ -2,13 +2,15 @@
   "compilerOptions": {
     "target": "es6",
     "sourceMap": true,
-    "outDir": "./dist",
-    "rootDir": "./src",
+    "outDir": "dist",
+    "rootDir": "src",
     "strict": true,
     "declaration": true,
     "declarationMap": true,
     "lib": ["esnext", "dom"],
-    "module": "commonjs"
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true
   },
   "include": ["src"],
   "exclude": ["node_modules"],
